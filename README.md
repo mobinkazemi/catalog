@@ -24,7 +24,8 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Catalog is a file management application written by
+[Nest](https://github.com/nestjs/nest) framework.
 
 ## Installation
 
