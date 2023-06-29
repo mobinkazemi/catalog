@@ -5,11 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
 // console.log(require("dotenv").config())
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true, envFilePath: `${process.env.NODE_ENV}.env`, load: [configuration]}),
     DatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
