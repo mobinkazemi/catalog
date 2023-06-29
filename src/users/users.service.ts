@@ -1,51 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/request/create-user.dto';
+import { FindUserDto } from './dto/request/findone-user.dto';
+import { UpdateUserDto } from './dto/request/update-user.dto';
+import { User } from './schema/users.schema'
 import { UserDocument } from './schema/users.schema';
-
+import * as bcrypt from 'bcryptjs'
+import { FindUserResponseDto } from './dto/response/findOne-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    this.userModel.create({
-      username: 'testtsttest',
-    });
+  
+  async validateUser(username:string,password:string):Promise<boolean>{
+    const user = await this.findOne({username})
+    if(!user) return false;
+
+    try {
+      await bcrypt.compare(password, user.password);
+      return true;
+    } catch (error) {
+      return false
+    }
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    const exist = await this.findOne({username: createUserDto.username});
+    if(exist) throw new ConflictException()
+    const result = await this.userModel.create(createUserDto);
+    return result.id;
   }
 
   findAll() {
-    return `This action returns all users`;
+    throw new NotImplementedException();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne({id,username}:FindUserDto, error?:boolean):Promise<User> {
+    let user:User;
+
+    if(id) {
+      user = await this.userModel.findById(id);
+    }else {
+      user = await this.userModel.findOne({username});
+    }
+
+    if(!user && error) throw new NotFoundException();
+
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    await this.userModel.updateOne(
-      {
-        _id: new mongoose.Types.ObjectId('649d7da4f33a5a61a4bac9aa'),
-        // id: new mongoose.Types.ObjectId('649d7da4f33a5a61a4bac9aa'),
-      },
-      {
-        $set: { username: 'testtsttest_new2' },
-        username: 'me',
-      },
-    );
+    throw new NotImplementedException();
   }
 
   async remove(id: number) {
-    await this.userModel.updateMany(
-      {
-        _id: new mongoose.Types.ObjectId('649d7da4f33a5a61a4bac9aa'),
-      },
-      {
-        deletedAt: new Date(),
-      },
-    );
+    throw new NotImplementedException();
   }
 }

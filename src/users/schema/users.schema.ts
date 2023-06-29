@@ -1,17 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {  Document } from 'mongoose';
+import mongoose, {  Document } from 'mongoose';
 import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions';
 import { Base } from 'src/database/schema/base.schema';
+import * as bcrypt from 'bcryptjs'
 export type UserDocument = Document & User;
 
 @Schema({ id: true, timestamps: true })
 export class User extends Base{
   @Prop({ type: String, unique: true, minlength: 8, maxlength: 12 })
   username: string;
+
+  @Prop({ type: String, required:true })
+  password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
+UserSchema.pre('save', async function (next) {
+  if (this.password && this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
+  
+  next();
+});
 UserSchema.pre('updateOne', function(next){
     let updateData = this.getUpdate()
     if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);    

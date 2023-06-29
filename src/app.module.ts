@@ -6,12 +6,13 @@ import configuration from 'config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
-// console.log(require("dotenv").config())
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true, envFilePath: `${process.env.NODE_ENV}.env`, load: [configuration]}),
+    ConfigModule.forRoot({isGlobal: true, envFilePath: [`${process.env.NODE_ENV}.env`, `secret.env`], load: [configuration]}),
     DatabaseModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
