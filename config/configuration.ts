@@ -10,6 +10,11 @@ const defaults = {
     host: 'localhost',
     name: 'catalog-default',
   },
+  redis:{
+    port:6379,
+    host:'localhost',
+    name:'catalog-default',
+  }
 };
 
 export default () => ({
@@ -23,4 +28,9 @@ export default () => ({
       env.DATABASE_PORT || defaults.database.port
     }/${env.DATABASE_NAME || defaults.database.name}`,
   },
+  redis:{
+    port: env.REDIS_PORT || defaults.redis.port,
+    host: env.REDIS_HOST || defaults.redis.host,
+    name: env.REDIS_NAME || defaults.redis.name,
+  }
 });
