@@ -13,7 +13,7 @@ export class UsersController {
 
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto, true);
   }
 
   @Get('list')

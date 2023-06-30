@@ -26,9 +26,12 @@ export class UsersService {
     }
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, error?:boolean) {
     const exist = await this.findOne({username: createUserDto.username});
-    if(exist) throw new ConflictException()
+
+    if(exist && error) throw new ConflictException()
+    if(exist) return null;
+    
     const result = await this.userModel.create(createUserDto);
     return result.id;
   }
