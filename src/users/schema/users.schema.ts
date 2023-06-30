@@ -12,6 +12,9 @@ export class User extends Base{
 
   @Prop({ type: String, required:true })
   password: string;
+
+  @Prop({type: Array<mongoose.Types.ObjectId>, default: [], required: false})
+  roles: Array<mongoose.Types.ObjectId>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

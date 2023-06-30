@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator"
+import { IsArray, IsOptional, IsString } from "class-validator"
 
 export class FindUserDto {
     @IsOptional()
@@ -7,5 +7,9 @@ export class FindUserDto {
 
     @IsOptional()
     @IsString()
-    username?:string
+    username?:string;
+
+    @IsOptional()
+    @IsArray()
+    roles?:string[];
 }
