@@ -10,11 +10,16 @@ const defaults = {
     host: 'localhost',
     name: 'catalog-default',
   },
-  redis:{
-    port:6379,
-    host:'localhost',
-    name:'catalog-default',
-  }
+  redis: {
+    port: 6379,
+    host: 'localhost',
+    name: 'catalog-default',
+  },
+  minio: {
+    port: 9000,
+    host: 'localhost',
+    bucket: 'minio_default_bucket',
+  },
 };
 
 export default () => ({
@@ -28,9 +33,14 @@ export default () => ({
       env.DATABASE_PORT || defaults.database.port
     }/${env.DATABASE_NAME || defaults.database.name}`,
   },
-  redis:{
+  redis: {
     port: env.REDIS_PORT || defaults.redis.port,
     host: env.REDIS_HOST || defaults.redis.host,
     name: env.REDIS_NAME || defaults.redis.name,
-  }
+  },
+  minio: {
+    port: env.MINIO_PORT || defaults.minio.port,
+    host: env.MINIO_HOST || defaults.minio.host,
+    bucket: env.MINIO_NAME || defaults.minio.bucket,
+  },
 });
