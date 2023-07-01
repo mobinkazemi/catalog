@@ -8,9 +8,14 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { RedisProxyModule } from './redis/redis.module';
+import { MinioClientService } from './minio/minio.service';
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true, envFilePath: [`${process.env.NODE_ENV}.env`, `secret.env`], load: [configuration]}),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [`${process.env.NODE_ENV}.env`, `secret.env`],
+      load: [configuration],
+    }),
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -18,8 +23,6 @@ import { RedisProxyModule } from './redis/redis.module';
     RedisProxyModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MinioClientService],
 })
 export class AppModule {}
-
-

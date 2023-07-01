@@ -18,11 +18,12 @@ const defaults = {
   minio: {
     port: 9000,
     host: 'localhost',
-    bucket: 'minio_default_bucket',
+    bucket: 'minio-default-bucket',
   },
 };
 
 export default () => ({
+  
   port: env.PORT || defaults.port,
   jwtSecret: env.SECRET || defaults.jwtSecret,
   accessJwtExpire: defaults.accessJwtExpire,
