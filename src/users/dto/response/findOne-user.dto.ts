@@ -7,7 +7,7 @@ export class FindUserResponseDto {
     updatedAt:Date;
 
     constructor(data:Partial<User>){
-        this.id = data._id.toString();
+        this.id = data['_id'].toString();
         this.username = data.username;
         this.createdAt = data.createdAt;
         this.updatedAt = data.updatedAt;

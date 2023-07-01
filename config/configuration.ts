@@ -1,10 +1,11 @@
 const env = process.env;
 
-const defaults = {
+export const defaults = {
   port: 3000,
   jwtSecret: 'THE_SECRET',
   accessJwtExpire: '7d',
   refreshJwtExpire: '30d',
+  maxFileUploadSize: 1024 * 1024 * 10, // 10MB
   database: {
     port: 27017,
     host: 'localhost',
@@ -23,11 +24,11 @@ const defaults = {
 };
 
 export default () => ({
-  
   port: env.PORT || defaults.port,
   jwtSecret: env.SECRET || defaults.jwtSecret,
   accessJwtExpire: defaults.accessJwtExpire,
   refreshJwtExpire: defaults.refreshJwtExpire,
+  maxFileUploadSize: defaults.maxFileUploadSize,
   database: {
     timeout: env.DATABASE_TIMEOUT || 500,
     uri: `mongodb://${env.DATABASE_HOST || defaults.database.host}:${

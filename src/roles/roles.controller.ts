@@ -5,13 +5,14 @@ import { UpdateRoleDto } from './dto/request/update-role.dto';
 import { FindRoleDto } from './dto/request/find-role.dto';
 import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
 import { RemoveUserRoleDto } from './dto/request/remove-user-role.dto';
+import { CreateResponseDto } from 'src/common/dto/create-response.dto';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post('create')
-  async create(@Body() createRoleDto: CreateRoleDto) {
+  async create(@Body() createRoleDto: CreateRoleDto):Promise<CreateResponseDto> {
     return await this.rolesService.create(createRoleDto, true);
   }
 

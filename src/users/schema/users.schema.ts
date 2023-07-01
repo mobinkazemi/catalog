@@ -3,6 +3,7 @@ import mongoose, {  Document } from 'mongoose';
 import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions';
 import { Base } from 'src/database/schema/base.schema';
 import * as bcrypt from 'bcryptjs'
+
 export type UserDocument = Document & User;
 
 @Schema({ id: true, timestamps: true })

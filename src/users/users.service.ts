@@ -8,6 +8,7 @@ import { User } from './schema/users.schema'
 import { UserDocument } from './schema/users.schema';
 import * as bcrypt from 'bcryptjs'
 import { FindUserResponseDto } from './dto/response/findOne-user.dto';
+import { CreateResponseDto } from 'src/common/dto/create-response.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -26,14 +27,14 @@ export class UsersService {
     }
   }
 
-  async create(createUserDto: CreateUserDto, error?:boolean) {
+  async create(createUserDto: CreateUserDto, error?:boolean):Promise<CreateResponseDto> {
     const exist = await this.findOne({username: createUserDto.username});
 
     if(exist && error) throw new ConflictException()
     if(exist) return null;
     
     const result = await this.userModel.create(createUserDto);
-    return result.id;
+    return new CreateResponseDto(result);
   }
 
   findAll() {

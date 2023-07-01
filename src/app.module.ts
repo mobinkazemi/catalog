@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { RedisProxyModule } from './redis/redis.module';
 import { MinioClientService } from './minio/minio.service';
+import { FilesModule } from './files/files.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { MinioClientService } from './minio/minio.service';
     AuthModule,
     RolesModule,
     RedisProxyModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService, MinioClientService],
