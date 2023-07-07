@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ConflictException } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { UpdateRoleDto } from './dto/request/update-role.dto';
@@ -13,6 +13,9 @@ export class RolesController {
 
   @Post('create')
   async create(@Body() createRoleDto: CreateRoleDto):Promise<CreateResponseDto> {
+    const exist = await this.findOne(createRoleDto);
+    if(exist) throw new ConflictException();
+    
     return await this.rolesService.create(createRoleDto, true);
   }
 

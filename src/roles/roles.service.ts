@@ -16,11 +16,6 @@ export class RolesService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
   async create(createRoleDto: CreateRoleDto, error?: boolean):Promise<CreateResponseDto> {
-    const exist = await this.findOne(createRoleDto);
-
-    if(exist && error) throw new ConflictException();
-    if(exist) return null;
-
     const result = await this.roleModel.create(createRoleDto);
     return new CreateResponseDto(result);
   }
