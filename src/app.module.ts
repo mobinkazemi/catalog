@@ -10,6 +10,8 @@ import { RolesModule } from './roles/roles.module';
 import { RedisProxyModule } from './redis/redis.module';
 import { MinioClientService } from './minio/minio.service';
 import { FilesModule } from './files/files.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,6 +25,7 @@ import { FilesModule } from './files/files.module';
     RolesModule,
     RedisProxyModule,
     FilesModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService, MinioClientService],
