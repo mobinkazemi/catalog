@@ -14,25 +14,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  
-  async validateUser(username:string,password:string):Promise<boolean>{
-    const user = await this.findOne({username})
-    if(!user) return false;
-
-    try {
-      await bcrypt.compare(password, user.password);
-      return true;
-    } catch (error) {
-      return false
-    }
-  }
-
   async create(createUserDto: CreateUserDto, error?:boolean):Promise<CreateResponseDto> {
-    const exist = await this.findOne({username: createUserDto.username});
-
-    if(exist && error) throw new ConflictException()
-    if(exist) return null;
-    
     const result = await this.userModel.create(createUserDto);
     return new CreateResponseDto(result);
   }

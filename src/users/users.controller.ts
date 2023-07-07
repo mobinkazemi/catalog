@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, BadRequestException, UseGuards, ConflictException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
@@ -14,6 +14,9 @@ export class UsersController {
 
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto):Promise<CreateResponseDto> {
+    const exist = await this.findOne({username: createUserDto.username});
+    if(exist) throw new ConflictException();
+    
     return await this.usersService.create(createUserDto, true);
   }
 
