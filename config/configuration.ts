@@ -1,6 +1,7 @@
 const env = process.env;
 
 export const defaults = {
+  appName: 'app-name',
   port: 3000,
   jwtSecret: 'THE_SECRET',
   accessJwtExpire: '7d',
@@ -24,6 +25,7 @@ export const defaults = {
 };
 
 export default () => ({
+  appName: env.APP_NAME || defaults.appName,
   port: env.PORT || defaults.port,
   jwtSecret: env.SECRET || defaults.jwtSecret,
   accessJwtExpire: defaults.accessJwtExpire,
