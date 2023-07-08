@@ -1,5 +1,5 @@
 import { ExecutionContext } from "@nestjs/common";
-import { DEFAULT_RESPONSE_CODE, DEFAULT_RESPONSE_MESSAGE } from "../constants";
+import { DEFAULT_RESPONSE_CODE, DEFAULT_RESPONSE_MESSAGE } from "../constants/default-response.constant";
 
 export class ResponseFormatterDto {
     statusCode?:number;

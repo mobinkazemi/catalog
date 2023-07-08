@@ -31,7 +31,7 @@ export class AuthService {
   async loginWithCredentials(user: any) {
     user = new FindUserResponseDto(user);
 
-    const payload = { sub: user.id };
+    const payload = { sub: user.id , roles: user.roles || []};
     return {
       ...user,
       accessToken: this.jwt.sign(payload, {

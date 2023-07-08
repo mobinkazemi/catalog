@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, {  Document } from 'mongoose';
-import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions';
+import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions/soft-delete.function';
 import { Base } from 'src/database/schema/base.schema';
 import * as bcrypt from 'bcryptjs'
 
