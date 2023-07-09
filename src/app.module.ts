@@ -11,6 +11,7 @@ import { RedisProxyModule } from './redis/redis.module';
 import { MinioClientService } from './minio/minio.service';
 import { FilesModule } from './files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     RedisProxyModule,
     FilesModule,
     ScheduleModule.forRoot(),
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService, MinioClientService],

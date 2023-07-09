@@ -8,7 +8,7 @@ import { FindUserResponseDto } from './dto/response/findOne-user.dto';
 import { CreateResponseDto } from 'src/common/dto/create-response.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/common/enums/roles.enum';
+import { RolesEnum } from 'src/common/enums/roles.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Controller('users')
@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @UseGuards( RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(RolesEnum.ADMIN)
   @Get('list')
   findAll() {
     return this.usersService.findAll();

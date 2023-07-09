@@ -4,6 +4,7 @@ export const defaults = {
   appName: 'app-name',
   port: 3000,
   jwtSecret: 'THE_SECRET',
+  superAdminDefaultPassword: '123456Qaz',
   accessJwtExpire: '7d',
   refreshJwtExpire: '30d',
   maxFileUploadSize: 1024 * 1024 * 10, // 10MB
@@ -27,6 +28,8 @@ export const defaults = {
 export default () => ({
   appName: env.APP_NAME || defaults.appName,
   port: env.PORT || defaults.port,
+  superAdminDefaultPassword:
+    env.ADMIN_PASSWORD || defaults.superAdminDefaultPassword,
   jwtSecret: env.SECRET || defaults.jwtSecret,
   accessJwtExpire: defaults.accessJwtExpire,
   refreshJwtExpire: defaults.refreshJwtExpire,

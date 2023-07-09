@@ -13,6 +13,7 @@ import { User, UserSchema } from 'src/users/schema/users.schema';
     ])
   ],
   controllers: [RolesController],
-  providers: [RolesService]
+  providers: [RolesService],
+  exports: [RolesService],
 })
 export class RolesModule {}

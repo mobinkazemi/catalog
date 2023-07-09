@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { Role } from 'src/common/enums/roles.enum';
 import { ROLES_METADATA_KEY } from './decorators/roles.decorator';
 import { AUTH_ERROR_MESSAGE_ENUMS } from './eunms/auth-error-response.enums';
 
