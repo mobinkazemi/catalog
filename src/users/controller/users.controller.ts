@@ -16,11 +16,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards( RolesGuard)
-  @Roles(RolesEnum.ADMIN)
   @Get('list')
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    return await this.usersService.findAll();
   }
 
   @Get('info')

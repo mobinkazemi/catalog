@@ -19,13 +19,13 @@ export class UsersService {
     return new CreateResponseDto(result);
   }
 
-  findAll() {
-    throw new NotImplementedException();
+  async findAll() {
+    const users = await this.userModel.find()
   }
 
   async findOne({id,username}:FindUserDto, error?:boolean):Promise<User> {
     let user:User;
-
+    
     if(id) {
       user = await this.userModel.findById(id);
     }else {

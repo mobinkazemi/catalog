@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, {  Document } from 'mongoose';
-import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions/soft-delete.function';
 import { Base } from 'src/database/schema/base.schema';
 import * as bcrypt from 'bcryptjs'
 import { RolesEnum } from 'src/common/enums/roles.enum';
+import { addUserHooks } from '../hook/users.hook';
 
 export type UserDocument = Document & User;
 
@@ -19,27 +19,5 @@ export class User extends Base{
   roles: Array<RolesEnum>;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.pre('save', async function (next) {
-  if (this.password && this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 8);
-  }
-  
-  next();
-});
-UserSchema.pre('updateOne', function(next){
-    let updateData = this.getUpdate()
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);    
-    return next()
-})
-UserSchema.pre('updateMany', function(next){
-    let updateData = this.getUpdate()    
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);   
-    next();
-});
-UserSchema.pre('findOneAndUpdate', function(next) {
-    let updateData = this.getUpdate()    
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);   
-    next();
-})
+let UserSchemaBase = SchemaFactory.createForClass(User);
+export const UserSchema = addUserHooks(UserSchemaBase);

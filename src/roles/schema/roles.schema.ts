@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, {  Document } from 'mongoose';
 import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions/soft-delete.function';
 import { Base } from 'src/database/schema/base.schema';
+import { addRoleHooks } from '../hook/roles.hook';
 
 export type RoleDocument = Document & Role;
 
@@ -11,20 +12,5 @@ export class Role extends Base{
   name: string;
 }
 
-export const RoleSchema = SchemaFactory.createForClass(Role);
-
-RoleSchema.pre('updateOne', function(next){
-    let updateData = this.getUpdate()
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);    
-    return next()
-})
-RoleSchema.pre('updateMany', function(next){
-    let updateData = this.getUpdate()    
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);   
-    next();
-});
-RoleSchema.pre('findOneAndUpdate', function(next) {
-    let updateData = this.getUpdate()    
-    if(isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);   
-    next();
-})
+ const RoleSchemaBase = SchemaFactory.createForClass(Role);
+ export const RoleSchema = addRoleHooks(RoleSchemaBase);
