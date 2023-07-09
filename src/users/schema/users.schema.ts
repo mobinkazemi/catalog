@@ -3,6 +3,7 @@ import mongoose, {  Document } from 'mongoose';
 import { handleSoftDeleteConcerns, isSoftDelete } from 'src/common/functions/soft-delete.function';
 import { Base } from 'src/database/schema/base.schema';
 import * as bcrypt from 'bcryptjs'
+import { RolesEnum } from 'src/common/enums/roles.enum';
 
 export type UserDocument = Document & User;
 
@@ -14,8 +15,8 @@ export class User extends Base{
   @Prop({ type: String, required:true })
   password: string;
 
-  @Prop({type: Array<mongoose.Types.ObjectId>, default: [], required: false})
-  roles: Array<mongoose.Types.ObjectId>;
+  @Prop({type: Array<RolesEnum>, default: [], required: false})
+  roles: Array<RolesEnum>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
