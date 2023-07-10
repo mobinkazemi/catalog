@@ -1,4 +1,4 @@
-export class CreateResponseDto {
+export class ResponseAfterCreateDto {
     id?:string;
 
     constructor(data:any){

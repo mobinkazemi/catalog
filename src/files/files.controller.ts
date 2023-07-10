@@ -14,7 +14,7 @@ import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
 import { UpdateFileDto } from './dto/request/update-file.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { CreateResponseDto } from 'src/common/dto/create-response.dto';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { ConfigService } from '@nestjs/config';
 import { defaults } from 'config/configuration';
 @Controller('files')
@@ -27,7 +27,7 @@ export class FilesController {
       fileSize: defaults.maxFileUploadSize,
     }
   }))
-  async create(@UploadedFile() file: Express.Multer.File):Promise<CreateResponseDto> {    
+  async create(@UploadedFile() file: Express.Multer.File):Promise<ResponseAfterCreateDto> {    
     return await this.filesService.create(file);
   }
 

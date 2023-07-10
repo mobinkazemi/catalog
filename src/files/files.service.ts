@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateResponseDto } from 'src/common/dto/create-response.dto';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { MinioClientService } from 'src/minio/minio.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
 import { UpdateFileDto } from './dto/request/update-file.dto';
@@ -14,7 +14,7 @@ export class FilesService {
     private readonly fileUpload: MinioClientService,
   ) {}
 
-  async create(file: Express.Multer.File):Promise<CreateResponseDto> {
+  async create(file: Express.Multer.File):Promise<ResponseAfterCreateDto> {
     const { size, originalname, mimetype } = file;
     const result = await this.fileModel.create({
       size, name: originalname, mime:mimetype
@@ -23,7 +23,7 @@ export class FilesService {
     await this.fileUpload.createBucketIfNotExists();
     await this.fileUpload.uploadFile(file, result.id);
 
-    return new CreateResponseDto(result);
+    return new ResponseAfterCreateDto(result);
   }
 
   findAll() {

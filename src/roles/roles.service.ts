@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { CreateResponseDto } from 'src/common/dto/create-response.dto';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { User, UserDocument } from 'src/users/schema/users.schema';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
@@ -15,9 +15,9 @@ export class RolesService {
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async create(createRoleDto: CreateRoleDto, error?: boolean):Promise<CreateResponseDto> {
+  async create(createRoleDto: CreateRoleDto, error?: boolean):Promise<ResponseAfterCreateDto> {
     const result = await this.roleModel.create(createRoleDto);
-    return new CreateResponseDto(result);
+    return new ResponseAfterCreateDto(result);
   }
 
   findAll() {

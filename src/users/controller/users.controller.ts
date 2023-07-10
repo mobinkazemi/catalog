@@ -5,11 +5,12 @@ import { UpdateUserDto } from '../dto/request/update-user.dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FindUserResponseDto } from '../dto/response/findOne-user.dto';
-import { CreateResponseDto } from 'src/common/dto/create-response.dto';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { FilterUserDto } from '../dto/request/filter-user.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -17,7 +18,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('list')
-  async findAll() {
+  async findAll(): Promise<Array<FilterUserDto>> {
     return await this.usersService.findAll();
   }
 
