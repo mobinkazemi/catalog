@@ -7,7 +7,7 @@ import { UpdateUserDto } from './dto/request/update-user.dto';
 import { User } from './schema/users.schema'
 import { UserDocument } from './schema/users.schema';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
-import { FilterUserDto } from './dto/request/filter-user.dto';
+import { UserResponseListDto, FilterRequestUserDto } from './dto/request/filter-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -18,10 +18,12 @@ export class UsersService {
     return new ResponseAfterCreateDto(result);
   }
 
-  async findAll(data?:FilterUserDto): Promise<Array<FilterUserDto>> {
-    const users = await this.userModel.find()
+  async findAll(data?:FilterRequestUserDto): Promise<Array<UserResponseListDto>> {    
+    data = new FilterRequestUserDto(data);    
 
-    return users.map(item => new FilterUserDto(item))
+    const users = await this.userModel.find(data)
+
+    return users.map(item => new UserResponseListDto(item))
   }
 
   async findOne({id,username}:FindUserDto, error?:boolean):Promise<User> {

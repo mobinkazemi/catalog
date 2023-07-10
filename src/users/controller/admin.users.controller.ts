@@ -10,12 +10,13 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { FilterRequestUserDto , UserResponseListDto} from '../dto/request/filter-user.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
 @Controller('users/admin')
 @UseGuards(AuthGuard('jwt'))
-export class UsersController {
+export class UsersAdminController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiProperty({type: CreateUserDto})
@@ -25,5 +26,12 @@ export class UsersController {
     if(exist) throw new ConflictException();
     
     return await this.usersService.create(createUserDto, true);
+  }
+
+  @Get('list')
+  async findAll(
+    @Query() data: FilterRequestUserDto
+  ): Promise<Array<UserResponseListDto>> {
+    return await this.usersService.findAll(data);
   }
 }
