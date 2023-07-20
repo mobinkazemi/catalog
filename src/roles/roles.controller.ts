@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ConflictException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ConflictException,
+  UseGuards,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { UpdateRoleDto } from './dto/request/update-role.dto';
@@ -6,16 +17,23 @@ import { FindRoleDto } from './dto/request/find-role.dto';
 import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
 import { RemoveUserRoleDto } from './dto/request/remove-user-role.dto';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
+import { RolesGuard } from 'src/auth/strategy/role.strategy';
+import { RolesEnum } from 'src/common/enums/roles.enum';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
+@UseGuards(RolesGuard)
+@Roles(RolesEnum.ADMIN)
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post('create')
-  async create(@Body() createRoleDto: CreateRoleDto):Promise<ResponseAfterCreateDto> {
+  async create(
+    @Body() createRoleDto: CreateRoleDto,
+  ): Promise<ResponseAfterCreateDto> {
     const exist = await this.findOne(createRoleDto);
-    if(exist) throw new ConflictException();
-    
+    if (exist) throw new ConflictException();
+
     return await this.rolesService.create(createRoleDto, true);
   }
 
@@ -40,16 +58,12 @@ export class RolesController {
   }
 
   @Post('user/create')
-  async createUserRole(
-    @Body() data:CreateUserRoleDto
-  ){
+  async createUserRole(@Body() data: CreateUserRoleDto) {
     return await this.rolesService.createUserRole(data, true);
   }
 
   @Delete('user/remove')
-  async removeUserRole(
-    @Body() data:RemoveUserRoleDto
-  ){
+  async removeUserRole(@Body() data: RemoveUserRoleDto) {
     return await this.rolesService.createUserRole(data, true);
   }
 }
