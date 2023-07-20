@@ -5,12 +5,14 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/users/schema/users.schema';
 import { FindUserResponseDto } from 'src/users/dto/response/findOne-user.dto';
+import { RedisProxyService } from 'src/redis/redis.service';
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwt: JwtService,
     private configService: ConfigService,
+    private redisService: RedisProxyService,
   ) {}
   async validateUser(
     username: string,
@@ -30,9 +32,9 @@ export class AuthService {
 
   async loginWithCredentials(user: any) {
     user = new FindUserResponseDto(user);
-
-    const payload = { sub: user.id , roles: user.roles || []};
-    return {
+    const sessionId = Math.ceil(Date.now() * Math.random());
+    const payload = { sub: user.id, roles: user.roles || [], sessionId };
+    const result = {
       ...user,
       accessToken: this.jwt.sign(payload, {
         secret: this.configService.get('jwtSecret'),
@@ -43,5 +45,16 @@ export class AuthService {
         expiresIn: this.configService.get('refreshJwtExpire'),
       }),
     };
+
+    // console.log('me', result.accessToken, result.refreshToken);
+
+    await this.redisService.setSession(
+      user.id,
+      result.accessToken,
+      result.refreshToken,
+      sessionId,
+    );
+
+    return result;
   }
 }
