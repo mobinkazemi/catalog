@@ -1,5 +1,5 @@
-import { RolesEnum } from 'src/common/enums/roles.enum';
-import { User } from 'src/users/schema/users.schema';
+import { RolesEnum } from '../../../common/enums/roles.enum';
+import { User } from '../../../users/schema/users.schema';
 
 export class FindUserResponseDto {
   id: string;

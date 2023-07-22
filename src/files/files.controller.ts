@@ -13,8 +13,11 @@ import {
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
 import { UpdateFileDto } from './dto/request/update-file.dto';
-import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
+import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { ConfigService } from '@nestjs/config';
 import { defaults } from 'config/configuration';
 @Controller('files')
@@ -22,12 +25,16 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', {
-    limits: {
-      fileSize: defaults.maxFileUploadSize,
-    }
-  }))
-  async create(@UploadedFile() file: Express.Multer.File):Promise<ResponseAfterCreateDto> {    
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: defaults.maxFileUploadSize,
+      },
+    }),
+  )
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseAfterCreateDto> {
     return await this.filesService.create(file);
   }
 

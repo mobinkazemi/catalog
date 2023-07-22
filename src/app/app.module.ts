@@ -18,7 +18,7 @@ import { FilesModule } from '../files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SeederModule } from '../seeder/seeder.module';
 import { sampleMiddleware } from './middlewares/test.middleware';
-import { RedisProxyService } from 'src/redis/redis.service';
+import { RedisProxyService } from '../redis/redis.service';
 
 @Module({
   imports: [

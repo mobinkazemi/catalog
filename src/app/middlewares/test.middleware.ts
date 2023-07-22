@@ -1,5 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { RedisProxyService } from 'src/redis/redis.service';
+import { RedisProxyService } from '../../redis/redis.service';
 
 @Injectable()
 export class sampleMiddleware implements NestMiddleware {

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RolesModule } from 'src/roles/roles.module';
-import { RolesService } from 'src/roles/roles.service';
-import { Role, RoleSchema } from 'src/roles/schema/roles.schema';
-import { User, UserSchema } from 'src/users/schema/users.schema';
-import { UsersModule } from 'src/users/users.module';
+import { RolesModule } from '../roles/roles.module';
+import { RolesService } from '../roles/roles.service';
+import { Role, RoleSchema } from '../roles/schema/roles.schema';
+import { User, UserSchema } from '../users/schema/users.schema';
+import { UsersModule } from '../users/users.module';
 import { SeederService } from './seeder.service';
 
 @Module({

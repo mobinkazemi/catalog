@@ -1,8 +1,13 @@
-import { ConflictException, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
-import { User, UserDocument } from 'src/users/schema/users.schema';
+import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
+import { User, UserDocument } from '../users/schema/users.schema';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
 import { RemoveUserRoleDto } from './dto/request/remove-user-role.dto';
@@ -15,7 +20,10 @@ export class RolesService {
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async create(createRoleDto: CreateRoleDto, error?: boolean):Promise<ResponseAfterCreateDto> {
+  async create(
+    createRoleDto: CreateRoleDto,
+    error?: boolean,
+  ): Promise<ResponseAfterCreateDto> {
     const result = await this.roleModel.create(createRoleDto);
     return new ResponseAfterCreateDto(result);
   }
@@ -24,7 +32,7 @@ export class RolesService {
     throw new NotImplementedException();
   }
 
-  async findOne({ id, name }: { id?: string; name?: string }, error?:boolean) {
+  async findOne({ id, name }: { id?: string; name?: string }, error?: boolean) {
     let role: Role;
     if (id) {
       role = await this.roleModel.findById(id);
@@ -32,8 +40,8 @@ export class RolesService {
       role = await this.roleModel.findOne({ name });
     }
 
-    if(!role && error) throw new NotFoundException()
-    if(!role) return null;
+    if (!role && error) throw new NotFoundException();
+    if (!role) return null;
 
     return role;
   }
@@ -46,19 +54,25 @@ export class RolesService {
     throw new NotImplementedException();
   }
 
-  async createUserRole(data:CreateUserRoleDto, error?:boolean){
-    await this.userModel.updateOne({
-      _id: new mongoose.Types.ObjectId(data.userId),
-    }, {
-      $addToSet: {roles: new mongoose.Types.ObjectId(data.roleId)}
-    });
+  async createUserRole(data: CreateUserRoleDto, error?: boolean) {
+    await this.userModel.updateOne(
+      {
+        _id: new mongoose.Types.ObjectId(data.userId),
+      },
+      {
+        $addToSet: { roles: new mongoose.Types.ObjectId(data.roleId) },
+      },
+    );
   }
 
-  async removeUserRole(data:RemoveUserRoleDto, error?:boolean){
-    await this.userModel.updateOne({
-      _id: new mongoose.Types.ObjectId(data.userId),
-    }, {
-      $pull: {roles: new mongoose.Types.ObjectId(data.roleId)}
-    });
+  async removeUserRole(data: RemoveUserRoleDto, error?: boolean) {
+    await this.userModel.updateOne(
+      {
+        _id: new mongoose.Types.ObjectId(data.userId),
+      },
+      {
+        $pull: { roles: new mongoose.Types.ObjectId(data.roleId) },
+      },
+    );
   }
 }

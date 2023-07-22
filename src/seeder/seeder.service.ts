@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RolesEnum } from 'src/common/enums/roles.enum';
-import { Role, RoleDocument } from 'src/roles/schema/roles.schema';
-import { User, UserDocument } from 'src/users/schema/users.schema';
+import { RolesEnum } from '../common/enums/roles.enum';
+import { Role, RoleDocument } from '../roles/schema/roles.schema';
+import { User, UserDocument } from '../users/schema/users.schema';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class SeederService {
     const exist = await this.userModel.findOne({
       username,
       roles: admin_role,
-      deletedAt: null
+      deletedAt: null,
     });
 
     if (!exist) {

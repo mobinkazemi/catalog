@@ -17,10 +17,10 @@ import { UpdateUserDto } from '../dto/request/update-user.dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FindUserResponseDto } from '../dto/response/findOne-user.dto';
-import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
-import { RolesGuard } from 'src/auth/strategy/role.strategy';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { RolesEnum } from 'src/common/enums/roles.enum';
+import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
+import { RolesGuard } from '../../auth/strategy/role.strategy';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { RolesEnum } from '../../common/enums/roles.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   FilterRequestUserDto,
