@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
-import { RedisKeyEnums } from 'src/auth/eunms/redis-keys.enums';
+import { RedisKeyEnums } from '../auth/eunms/redis-keys.enums';
 import { HasSessionDto } from 'src/auth/dto/hasSession.dto';
 
 @Injectable()

@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from 'src/users/schema/users.schema';
-import { FindUserResponseDto } from 'src/users/dto/response/findOne-user.dto';
-import { RedisProxyService } from 'src/redis/redis.service';
+import { User } from '../users/schema/users.schema';
+import { FindUserResponseDto } from '../users/dto/response/findOne-user.dto';
+import { RedisProxyService } from '../redis/redis.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,6 +28,41 @@ export class AuthService {
     }
 
     return user;
+  }
+  private getTokenFromHeader(req) {
+    const rawHeaders = req.rawHeaders;
+    const keyIdx = rawHeaders.indexOf('Authorization');
+    const valueIdx = keyIdx + 1;
+
+    const token = rawHeaders[valueIdx].split(' ')[1];
+    return token;
+  }
+
+  async refreshToken(req) {
+    const userId = req.user.payload.userId;
+    const refreshToken = this.getTokenFromHeader(req);
+
+    const user = await this.userService.findOne({
+      id: userId,
+    });
+
+    const result = await this.loginWithCredentials(user);
+
+    const sessionId = Math.ceil(Date.now() * Math.random());
+
+    try {
+      await this.redisService.refSession(
+        userId,
+        refreshToken,
+        result.accessToken,
+        result.refreshToken,
+        sessionId,
+      );
+    } catch (error) {
+      throw new BadRequestException('اطلاعات لاگین پیدا نشد');
+    }
+
+    return result;
   }
 
   async loginWithCredentials(user: any) {

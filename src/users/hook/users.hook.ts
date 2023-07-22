@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import {
   handleSoftDeleteConcerns,
   isSoftDelete,
-} from 'src/common/functions/soft-delete.function';
+} from '../../common/functions/soft-delete.function';
 import mongoose from 'mongoose';
 
 export function addUserHooks(schema: mongoose.Schema): mongoose.Schema {

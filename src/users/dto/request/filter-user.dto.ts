@@ -1,5 +1,5 @@
-import { FilterBaseRequestDto } from 'src/common/dto/request-filter-base.dto';
-import { BaseResponseFilterDto } from 'src/common/dto/response-filter-base.dto';
+import { FilterBaseRequestDto } from '../../../common/dto/request-filter-base.dto';
+import { BaseResponseFilterDto } from '../../../common/dto/response-filter-base.dto';
 
 export class FilterRequestUserDto extends FilterBaseRequestDto {
   username?: string;
