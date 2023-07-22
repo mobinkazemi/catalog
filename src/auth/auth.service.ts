@@ -68,6 +68,7 @@ export class AuthService {
   async loginWithCredentials(user: any) {
     user = new FindUserResponseDto(user);
     const sessionId = Math.ceil(Date.now() * Math.random());
+
     const payload = { sub: user.id, roles: user.roles || [], sessionId };
     const result = {
       ...user,

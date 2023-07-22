@@ -5,13 +5,22 @@ import { AuthController } from './auth.controller';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RedisProxyService } from '../redis/redis.service';
 import { RedisProxyModule } from '../redis/redis.module';
+import configuration from 'config/configuration';
 
 @Module({
-  imports: [ConfigModule, UsersModule, PassportModule, RedisProxyModule],
+  imports: [
+    JwtModule.register({
+      secretOrPrivateKey: process.env.SECRET,
+    }),
+    ConfigModule,
+    UsersModule,
+    PassportModule,
+    RedisProxyModule,
+  ],
   providers: [
     AuthService,
     LocalStrategy,
