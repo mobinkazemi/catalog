@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   NotImplementedException,
@@ -15,41 +16,43 @@ import {
   UserResponseListDto,
   FilterRequestUserDto,
 } from './dto/request/filter-user.dto';
+import { UsersRepository } from './users.repository';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly userRepository: UsersRepository,
   ) {}
   async create(
     createUserDto: CreateUserDto,
     error?: boolean,
   ): Promise<ResponseAfterCreateDto> {
-    const result = await this.userModel.create(createUserDto);
+    const duplicateUsername = await this.userRepository.findOne(
+      {
+        username: createUserDto.username,
+      },
+      { show: 'all' },
+    );
+
+    if (duplicateUsername && error) throw new ConflictException();
+    if (duplicateUsername) return;
+
+    const result = await this.userRepository.create(createUserDto);
+
     return new ResponseAfterCreateDto(result);
   }
 
   async findAll(
     data?: FilterRequestUserDto,
   ): Promise<Array<UserResponseListDto>> {
-    data = new FilterRequestUserDto(data);
-
-    const users = await this.userModel.find(data);
-
-    return users.map((item) => new UserResponseListDto(item));
+    const result: User[] = await this.userRepository.findAll(data);
+    return result.map((item) => new UserResponseListDto(item));
   }
 
-  async findOne({ id, username }: FindUserDto, error?: boolean): Promise<User> {
-    let user: User;
-
-    if (id) {
-      user = await this.userModel.findById(id);
-    } else {
-      user = await this.userModel.findOne({ username });
-    }
-
-    if (!user && error) throw new NotFoundException();
-
-    return user;
+  async findOne(data: FindUserDto, error?: boolean): Promise<User> {
+    const result: User = await this.userRepository.findOne(data);
+    if (!result && error) throw new NotFoundException();
+    return result;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
