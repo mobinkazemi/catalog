@@ -35,10 +35,7 @@ describe('AuthController', () => {
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: [
-            // `${process.env.NODE_ENV}.env`,
-            `secret.env`,
-          ],
+          envFilePath: [`${process.env.NODE_ENV}.env`],
           load: [configuration],
         }),
       ],
@@ -63,8 +60,6 @@ describe('AuthController', () => {
       controllers: [AuthController],
     }).compile();
     require('dotenv').config();
-    console.log(process.env);
-
     controller = module.get<AuthController>(AuthController);
   });
 
