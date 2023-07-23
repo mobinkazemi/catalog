@@ -9,6 +9,7 @@ import {
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { FilterRequestUserDto } from './dto/request/filter-user.dto';
 import { FindUserDto } from './dto/request/findone-user.dto';
+import { UpdateUserDto } from './dto/request/update-user.dto';
 import { User, UserDocument } from './schema/users.schema';
 
 @Injectable()
@@ -70,5 +71,27 @@ export class UsersRepository extends BaseRepository {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     return await this.userModel.create(createUserDto);
+  }
+
+  async updateOne<User>(
+    data: FindUserDto,
+    updateData: UpdateUserDto,
+  ): Promise<User> {
+    let query = {};
+
+    if (data.id) {
+      query['_id'] = this.convertToObjectId(data.id);
+      delete data.id;
+    }
+
+    query = {
+      ...query,
+      ...data,
+      isDeleted: null,
+    };
+
+    return await this.userModel.findOneAndUpdate(query, updateData, {
+      new: true,
+    });
   }
 }

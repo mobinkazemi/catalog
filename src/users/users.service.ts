@@ -4,22 +4,26 @@ import {
   NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { FindUserDto } from './dto/request/findone-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { User } from './schema/users.schema';
-import { UserDocument } from './schema/users.schema';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import {
   UserResponseListDto,
   FilterRequestUserDto,
 } from './dto/request/filter-user.dto';
 import { UsersRepository } from './users.repository';
+import { CreateUserRoleDto } from '../roles/dto/request/create-user-role.dto';
+import { RolesService } from '../roles/roles.service';
+import { RemoveUserRoleDto } from '../roles/dto/request/remove-user-role.dto';
+import { Role } from 'src/roles/schema/roles.schema';
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UsersRepository) {}
+  constructor(
+    private readonly userRepository: UsersRepository,
+    private readonly roleService: RolesService,
+  ) {}
   async create(
     createUserDto: CreateUserDto,
     error?: boolean,
@@ -58,5 +62,46 @@ export class UsersService {
 
   async remove(id: number) {
     throw new NotImplementedException();
+  }
+
+  async addRole(data: CreateUserRoleDto, error?: boolean): Promise<User> {
+    const user = await this.userRepository.findOne<User>({ id: data.userId });
+    const role = await this.roleService.findOne({ id: data.roleId });
+
+    if (error && !user) throw new NotFoundException();
+    if (!user) return;
+    if (error && !role) throw new NotFoundException();
+    if (!role) return;
+
+    const rolesList = [...new Set([role.name, ...user.roles])];
+    const result = await this.userRepository.updateOne<User>(
+      {
+        id: data.userId,
+      },
+      { role: rolesList },
+    );
+
+    return result;
+  }
+
+  async removeRole(data: RemoveUserRoleDto, error?: boolean) {
+    const user = await this.userRepository.findOne<User>({ id: data.userId });
+    const role = await this.roleService.findOne({ id: data.roleId });
+
+    if (error && !user) throw new NotFoundException();
+    if (!user) return;
+    if (error && !role) throw new NotFoundException();
+    if (!role) return;
+
+    const rolesList = user.roles.filter((r) => r != role.name);
+
+    const result = await this.userRepository.updateOne<User>(
+      {
+        id: data.userId,
+      },
+      { role: rolesList },
+    );
+
+    return result;
   }
 }

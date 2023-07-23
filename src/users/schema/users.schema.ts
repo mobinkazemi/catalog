@@ -15,8 +15,8 @@ export class User extends Base {
   @Prop({ type: String, required: true })
   password: string;
 
-  @Prop({ type: Array<RolesEnum>, default: [], required: false })
-  roles: Array<RolesEnum>;
+  @Prop({ type: Array<string>, default: [], required: false })
+  roles: Array<string>;
 }
 
 let UserSchemaBase = SchemaFactory.createForClass(User);
