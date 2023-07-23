@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '../users/schema/users.schema';
 import { FindUserResponseDto } from '../users/dto/response/findOne-user.dto';
 import { RedisProxyService } from '../redis/redis.service';
+import { defaults } from '../../config/configuration';
 @Injectable()
 export class AuthService {
   constructor(
@@ -73,16 +74,17 @@ export class AuthService {
     const result = {
       ...user,
       accessToken: this.jwt.sign(payload, {
-        secret: this.configService.get('jwtSecret'),
-        expiresIn: this.configService.get('accessJwtExpire'),
+        secret: this.configService.get('jwtSecret') || process.env.SECRET,
+        expiresIn:
+          this.configService.get('accessJwtExpire') || defaults.accessJwtExpire,
       }),
       refreshToken: this.jwt.sign(payload, {
-        secret: this.configService.get('jwtSecret'),
-        expiresIn: this.configService.get('refreshJwtExpire'),
+        secret: this.configService.get('jwtSecret') || process.env.SECRET,
+        expiresIn:
+          this.configService.get('refreshJwtExpire') ||
+          defaults.refreshJwtExpire,
       }),
     };
-
-    // console.log('me', result.accessToken, result.refreshToken);
 
     await this.redisService.setSession(
       user.id,
