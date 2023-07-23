@@ -39,7 +39,7 @@ export class RolesController {
 
   @Get('list')
   findAll() {
-    return this.rolesService.findAll();
+    return this.rolesService.findAll({});
   }
 
   @Get('info')
@@ -57,13 +57,13 @@ export class RolesController {
     return this.rolesService.remove(+id);
   }
 
-  @Post('user/create')
-  async createUserRole(@Body() data: CreateUserRoleDto) {
-    return await this.rolesService.createUserRole(data, true);
-  }
+  // @Post('user/create')
+  // async createUserRole(@Body() data: CreateUserRoleDto) {
+  //   return await this.rolesService.createUserRole(data, true);
+  // }
 
-  @Delete('user/remove')
-  async removeUserRole(@Body() data: RemoveUserRoleDto) {
-    return await this.rolesService.createUserRole(data, true);
-  }
+  // @Delete('user/remove')
+  // async removeUserRole(@Body() data: RemoveUserRoleDto) {
+  //   return await this.rolesService.createUserRole(data, true);
+  // }
 }

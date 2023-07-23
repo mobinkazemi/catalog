@@ -8,6 +8,7 @@ import { UsersAdminController } from './controller/admin.users.controller';
 import { UsersRepository } from './users.repository';
 import { RolesService } from '../roles/roles.service';
 import { Role, RoleSchema } from '../roles/schema/roles.schema';
+import { RolesRepository } from '../roles/roles.repository';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { Role, RoleSchema } from '../roles/schema/roles.schema';
     ]),
   ],
   controllers: [UsersController, UsersAdminController],
-  providers: [UsersService, UsersRepository, RolesService],
+  providers: [UsersService, UsersRepository, RolesService, RolesRepository],
   exports: [UsersService],
 })
 export class UsersModule {}

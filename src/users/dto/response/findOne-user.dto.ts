@@ -6,7 +6,7 @@ export class FindUserResponseDto {
   username: string;
   createdAt: Date;
   updatedAt: Date;
-  roles: RolesEnum[];
+  roles: string[];
 
   constructor(data: Partial<User>) {
     this.id = data['_id'].toString();
