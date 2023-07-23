@@ -19,10 +19,7 @@ import {
 import { UsersRepository } from './users.repository';
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    private readonly userRepository: UsersRepository,
-  ) {}
+  constructor(private readonly userRepository: UsersRepository) {}
   async create(
     createUserDto: CreateUserDto,
     error?: boolean,
