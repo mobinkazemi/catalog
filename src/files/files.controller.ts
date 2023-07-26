@@ -9,17 +9,13 @@ import {
   NotImplementedException,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
-import { CreateFileDto } from './dto/request/create-file.dto';
-import { UpdateFileDto } from './dto/request/update-file.dto';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
-import { ConfigService } from '@nestjs/config';
 import { defaults } from 'config/configuration';
+import type { Response } from 'express';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -35,7 +31,8 @@ export class FilesController {
   async create(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseAfterCreateDto> {
-    return await this.filesService.create(file);
+    const savedFile = await this.filesService.create(file);
+    return new ResponseAfterCreateDto(savedFile);
   }
 
   @Get()
@@ -44,13 +41,15 @@ export class FilesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    throw new NotImplementedException();
-  }
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    const { fileInfo, stream } = await this.filesService.findOne(id, true);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    throw new NotImplementedException();
+    res.set({
+      'Content-Type': fileInfo.mime,
+      'Content-Disposition': `attachment; filename="${fileInfo.name}"`,
+    });
+
+    stream.pipe(res);
   }
 
   @Delete(':id')

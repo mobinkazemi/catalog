@@ -1,43 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { MinioClientService } from '../minio/minio.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
-import { UpdateFileDto } from './dto/request/update-file.dto';
+import { FilesRepository } from './files.repository';
 import { File, FileDocument } from './schema/files.schema';
 
 @Injectable()
 export class FilesService {
   constructor(
-    @InjectModel(File.name) private readonly fileModel: Model<FileDocument>,
-    private readonly fileUpload: MinioClientService,
+    private readonly fileRepository: FilesRepository,
+    private readonly minioService: MinioClientService,
   ) {}
 
   async create(file: Express.Multer.File): Promise<ResponseAfterCreateDto> {
-    const { size, originalname, mimetype } = file;
-    const result = await this.fileModel.create({
-      size,
-      name: originalname,
-      mime: mimetype,
-    });
+    await this.minioService.createBucketIfNotExists();
 
-    await this.fileUpload.createBucketIfNotExists();
-    await this.fileUpload.uploadFile(file, result.id);
+    const savedFile = await this.fileRepository.create(file);
 
-    return new ResponseAfterCreateDto(result);
+    await this.minioService.uploadFile(file, savedFile.id);
+
+    return savedFile;
   }
 
   findAll() {
     return `This action returns all files`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
+  async findOne(id: string, error?: boolean) {
+    const file = await this.fileRepository.findOne<File>(id);
+    if (!file && error) throw new NotFoundException();
+    if (!file) return;
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
+    const objectStream = await this.minioService.getFile(file.id, file.name);
+
+    return {
+      fileInfo: file,
+      stream: objectStream,
+    };
   }
 
   remove(id: number) {
