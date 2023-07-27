@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
@@ -25,7 +29,7 @@ export class FilesService {
   }
 
   findAll() {
-    return `This action returns all files`;
+    throw new NotImplementedException();
   }
 
   async findOne(id: string, error?: boolean) {
@@ -42,6 +46,6 @@ export class FilesService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} file`;
+    throw new NotImplementedException();
   }
 }
