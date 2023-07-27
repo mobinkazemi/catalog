@@ -36,7 +36,14 @@ export class FilesService {
   async findOne(id: string, error?: boolean) {
     const file = await this.fileRepository.findOne<File>(id);
     if (!file && error) throw new NotFoundException();
-    if (!file) return;
+
+    return file;
+  }
+
+  async findOneWithStoredObject(id: string, error?: boolean) {
+    const file = await this.findOne(id, error);
+
+    if (!file && !error) return;
 
     const objectStream = await this.minioService.getFile(file.id, file.name);
 

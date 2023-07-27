@@ -42,7 +42,8 @@ export class FilesController {
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
-    const { fileInfo, stream } = await this.filesService.findOne(id, true);
+    const { fileInfo, stream } =
+      await this.filesService.findOneWithStoredObject(id, true);
 
     res.set({
       'Content-Type': fileInfo.mime,
