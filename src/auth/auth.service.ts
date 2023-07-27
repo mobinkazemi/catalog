@@ -7,6 +7,7 @@ import { User } from '../users/schema/users.schema';
 import { FindUserResponseDto } from '../users/dto/response/findOne-user.dto';
 import { RedisProxyService } from '../redis/redis.service';
 import { defaults } from '../../config/configuration';
+import { AUTH_ERROR_MESSAGE_ENUMS } from './eunms/auth-error-response.enums';
 @Injectable()
 export class AuthService {
   constructor(
@@ -47,6 +48,10 @@ export class AuthService {
       id: userId,
     });
 
+    if (!user) {
+      throw new BadRequestException(AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION);
+    }
+
     const result = await this.loginWithCredentials(user);
 
     const sessionId = Math.ceil(Date.now() * Math.random());
@@ -60,7 +65,7 @@ export class AuthService {
         sessionId,
       );
     } catch (error) {
-      throw new BadRequestException('اطلاعات لاگین پیدا نشد');
+      throw new BadRequestException(AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION);
     }
 
     return result;
