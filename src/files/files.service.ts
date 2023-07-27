@@ -19,6 +19,7 @@ export class FilesService {
   ) {}
 
   async create(file: Express.Multer.File): Promise<ResponseAfterCreateDto> {
+    // should be first to also check if minio service is running in background, before inserting anything to mongo
     await this.minioService.createBucketIfNotExists();
 
     const savedFile = await this.fileRepository.create(file);
