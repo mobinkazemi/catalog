@@ -18,6 +18,7 @@ const loginStubs = {
   user: {
     _id: 'mock id',
     username: 'mock username',
+    password: '$2a$08$UEGaMkjWMxhX2gpHEHnG5uu604gLlzNwZcQRZhRw/0G8Hu6BHR9Yu', // 12345678
     createdAt: new Date(),
     updatedAt: new Date(),
     roles: [],
@@ -41,10 +42,17 @@ const wrongRefreshStubs = {
   rawHeaders: ['Athorization', 'mock token'],
 };
 
+const validateUserStubs = {
+  validUsername: 'mock username',
+  validPassword: '12345678',
+  invalidUsername: "I'm false username",
+  invalidPassword: "I'm false password",
+};
+
 // ----------- MOCK SERVICES ------------
 const mockUserService = () => ({
-  findOne({ id }) {
-    if (id == 'mock id') {
+  findOne({ id, username }) {
+    if (id == 'mock id' || username == 'mock username') {
       return loginStubs.user;
     } else {
       return undefined;
@@ -147,5 +155,40 @@ describe('AuthService', () => {
         AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION,
       );
     });
+  });
+
+  describe('validate user', () => {
+    it("should return user's info", async () => {
+      const result = await service.validateUser(
+        validateUserStubs.validUsername,
+        validateUserStubs.validPassword,
+      );
+
+      expect(result.username).toBeDefined();
+    });
+
+    it('should return undefined with wrong username', async () => {
+      const result = await service.validateUser(
+        validateUserStubs.invalidUsername,
+        validateUserStubs.validPassword,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('should return undefined with wrong password', async () => {
+      const result = await service.validateUser(
+        validateUserStubs.validUsername,
+        validateUserStubs.invalidPassword,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    // it('should return error with wrong user', async () => {
+    //   await expect(service.refreshToken(wrongRefreshStubs)).rejects.toThrow(
+    //     AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION,
+    //   );
+    // });
   });
 });
