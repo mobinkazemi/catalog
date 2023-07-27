@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/schema/users.schema';
@@ -23,11 +23,8 @@ export class AuthService {
     const user = await this.userService.findOne({ username });
     if (!user) return undefined;
 
-    try {
-      await bcrypt.compare(password, user.password);
-    } catch (error) {
-      return undefined;
-    }
+    const paired = await bcrypt.compare(password, user.password);
+    if (!paired) return undefined;
 
     return user;
   }

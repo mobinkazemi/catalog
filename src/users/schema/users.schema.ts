@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 import { Base } from '../../database/schema/base.schema';
-import * as bcrypt from 'bcryptjs';
-import { RolesEnum } from '../../common/enums/roles.enum';
 import { addUserHooks } from '../hook/users.hook';
 
 export type UserDocument = Document & User;

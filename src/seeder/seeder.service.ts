@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { RolesEnum } from '../common/enums/roles.enum';
 import { Role, RoleDocument } from '../roles/schema/roles.schema';
 import { User, UserDocument } from '../users/schema/users.schema';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class SeederService {
@@ -28,8 +27,6 @@ export class SeederService {
   }
 
   async seedAdminUser() {
-    console.log('here');
-
     const admin_role = RolesEnum.ADMIN;
     const username = 'super_admin';
 
