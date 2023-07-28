@@ -47,23 +47,8 @@ export class RolesController {
     return await this.rolesService.findOne(data, true);
   }
 
-  @Patch('update')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.rolesService.update(+id, updateRoleDto);
-  }
-
   @Delete('remove')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
   }
-
-  // @Post('user/create')
-  // async createUserRole(@Body() data: CreateUserRoleDto) {
-  //   return await this.rolesService.createUserRole(data, true);
-  // }
-
-  // @Delete('user/remove')
-  // async removeUserRole(@Body() data: RemoveUserRoleDto) {
-  //   return await this.rolesService.createUserRole(data, true);
-  // }
 }

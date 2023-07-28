@@ -43,7 +43,7 @@ export class RolesService {
   async findOne(data: FindRoleDto, error?: boolean): Promise<Role> {
     const role = await this.roleRepository.findOne<Role>(data);
     if (!role && error) throw new NotFoundException();
-    if (!role) return null;
+    // if (!role) return null;/
 
     return role;
   }
