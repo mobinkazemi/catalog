@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  BaseRepository,
+  addListOptionsDto,
   OptionsDto,
-} from 'src/database/repository/base.repository';
+} from '../common/dto/base-repository-dtos.dto';
+import { BaseRepository } from 'src/database/repository/base.repository';
 import { File, FileDocument } from './schema/files.schema';
 @Injectable()
 export class FilesRepository extends BaseRepository {
@@ -27,7 +28,15 @@ export class FilesRepository extends BaseRepository {
     return await this.fileModel.findOne(query);
   }
 
-  async findAll<T>(data: any, options?: OptionsDto): Promise<T[]> {
+  async findAll<T>(
+    data?: any,
+    listOptions?: addListOptionsDto,
+    options?: OptionsDto,
+  ): Promise<T[]> {
+    let query = {};
+    if (!data) data = {};
+    if (!listOptions) listOptions = {};
+
     return await this.fileModel.find();
   }
   async create(file: Express.Multer.File): Promise<File> {
