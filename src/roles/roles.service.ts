@@ -29,7 +29,11 @@ export class RolesService {
     if (duplicate && error) throw new ConflictException();
     if (duplicate) return;
 
-    const result = await this.roleRepository.create(createRoleDto);
+    const result = await this.roleRepository.create({
+      ...createRoleDto,
+      name: createRoleDto.name.toUpperCase(),
+    });
+
     return new ResponseAfterCreateDto(result);
   }
 

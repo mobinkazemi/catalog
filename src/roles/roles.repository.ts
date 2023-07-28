@@ -66,9 +66,6 @@ export class RolesRepository extends BaseRepository {
   }
 
   async create(data: CreateRoleDto) {
-    return await this.roleModel.create({
-      ...data,
-      name: data.name.toUpperCase(),
-    });
+    return await this.roleModel.create(data);
   }
 }
