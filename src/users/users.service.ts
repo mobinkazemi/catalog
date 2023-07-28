@@ -18,6 +18,7 @@ import { CreateUserRoleDto } from '../roles/dto/request/create-user-role.dto';
 import { RolesService } from '../roles/roles.service';
 import { RemoveUserRoleDto } from '../roles/dto/request/remove-user-role.dto';
 import { Role } from 'src/roles/schema/roles.schema';
+import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -45,9 +46,10 @@ export class UsersService {
 
   async findAll(
     data?: FilterRequestUserDto,
-  ): Promise<Array<UserResponseListDto>> {
-    const result: User[] = await this.userRepository.findAll(data);
-    return result.map((item) => new UserResponseListDto(item));
+    listOptions?: addListOptionsDto,
+  ): Promise<Array<User>> {
+    const result: User[] = await this.userRepository.findAll(data, listOptions);
+    return result;
   }
 
   async findOne(data: FindUserDto, error?: boolean): Promise<User> {

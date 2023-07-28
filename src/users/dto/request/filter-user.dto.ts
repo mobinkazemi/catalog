@@ -1,8 +1,16 @@
+import { Type } from 'class-transformer';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { FilterBaseRequestDto } from '../../../common/dto/request-filter-base.dto';
 import { BaseResponseFilterDto } from '../../../common/dto/response-filter-base.dto';
 
 export class FilterRequestUserDto extends FilterBaseRequestDto {
+  @IsString()
+  @IsOptional()
   username?: string;
+
+  @IsOptional()
+  @IsArray({ each: true })
+  @Type(() => String)
   roles?: Array<string>;
 
   constructor(data) {

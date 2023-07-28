@@ -10,6 +10,7 @@ import {
   BadRequestException,
   UseGuards,
   ConflictException,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
 import { CreateUserDto } from '../dto/request/create-user.dto';
@@ -26,6 +27,7 @@ import {
   FilterRequestUserDto,
   UserResponseListDto,
 } from '../dto/request/filter-user.dto';
+import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -49,8 +51,11 @@ export class UsersAdminController {
 
   @Get('list')
   async findAll(
+    @Query() listOptions: addListOptionsDto,
     @Query() data: FilterRequestUserDto,
   ): Promise<Array<UserResponseListDto>> {
-    return await this.usersService.findAll(data);
+    return (await this.usersService.findAll(data, listOptions)).map(
+      (item) => new UserResponseListDto(item),
+    );
   }
 }
