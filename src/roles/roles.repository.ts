@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  BaseRepository,
+  addListOptionsDto,
   OptionsDto,
-} from '../database/repository/base.repository';
+} from '../common/dto/base-repository-dtos.dto';
+import { BaseRepository } from '../database/repository/base.repository';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { FindRoleDto } from './dto/request/find-role.dto';
 import { FindRolesListDto } from './dto/request/find-roles.dto';
@@ -42,10 +43,12 @@ export class RolesRepository extends BaseRepository {
 
   async findAll<Role>(
     data?: FindRolesListDto,
+    listOptions?: addListOptionsDto,
     options?: OptionsDto,
   ): Promise<Role[]> {
     let query = {};
     if (!data) data = {};
+    if (!listOptions) listOptions = {};
 
     query = {
       ...query,
@@ -57,7 +60,9 @@ export class RolesRepository extends BaseRepository {
       query = this.addOptions(query, options);
     }
 
-    return await this.roleModel.find(query);
+    const { sort, limit, skip } = this.addListOptions(listOptions);
+
+    return await this.roleModel.find(query, {}, { sort, limit, skip });
   }
 
   async create(data: CreateRoleDto) {

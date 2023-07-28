@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { addListOptionsDto } from '../common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { User, UserDocument } from '../users/schema/users.schema';
 import { CreateRoleDto } from './dto/request/create-role.dto';
@@ -17,17 +18,13 @@ import { Role, RoleDocument } from './schema/roles.schema';
 
 @Injectable()
 export class RolesService {
-  constructor(
-    @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    private readonly roleRepository: RolesRepository,
-  ) {}
+  constructor(private readonly roleRepository: RolesRepository) {}
   async create(
     createRoleDto: CreateRoleDto,
     error?: boolean,
   ): Promise<ResponseAfterCreateDto> {
     const duplicate = await this.roleRepository.findOne({
-      name: createRoleDto.name,
+      name: createRoleDto.name.toUpperCase(),
     });
     if (duplicate && error) throw new ConflictException();
     if (duplicate) return;
@@ -36,8 +33,11 @@ export class RolesService {
     return new ResponseAfterCreateDto(result);
   }
 
-  async findAll(data: FindRolesListDto): Promise<Role[]> {
-    return await this.roleRepository.findAll(data);
+  async findAll(
+    data?: FindRolesListDto,
+    listOptions?: addListOptionsDto,
+  ): Promise<Role[]> {
+    return await this.roleRepository.findAll(data, listOptions);
   }
 
   async findOne(data: FindRoleDto, error?: boolean): Promise<Role> {
@@ -46,10 +46,6 @@ export class RolesService {
     // if (!role) return null;/
 
     return role;
-  }
-
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    throw new NotImplementedException();
   }
 
   remove(id: number) {
