@@ -21,7 +21,14 @@ export class RolesGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
 
-    if (!request.isAuthenticated()) return false;
+    if (!request.isAuthenticated) {
+      // in unwanted situations where request.isAuthenticated function is undefined,
+      // to pass this condition, you should add jwt auth decorator for that controller first
+      throw new ForbiddenException(AUTH_ERROR_MESSAGE_ENUMS.AUTH_ERROR);
+    }
+    if (!request.isAuthenticated()) {
+      return false;
+    }
 
     const userRoles: string[] | undefined = request?.user?.payload?.roles;
 
