@@ -11,77 +11,69 @@ export class RedisProxyService {
     this.redis = redisService.getClient();
   }
 
+  private getAccessKey(userId: string, accessToken: string) {
+    return RedisKeyEnums.SESSION.concat(
+      RedisKeyEnums.SEPARATOR,
+      userId,
+      RedisKeyEnums.SEPARATOR,
+      accessToken.slice(-4),
+    );
+  }
+  private getRefreshKey(userId: string, refreshToken: string) {
+    return RedisKeyEnums.SESSION.concat(
+      RedisKeyEnums.SEPARATOR,
+      userId,
+      RedisKeyEnums.SEPARATOR,
+      refreshToken.slice(-4),
+    );
+  }
+  private getSessionKey(userId: string, sessionId: number) {
+    return RedisKeyEnums.SESSION.concat(
+      RedisKeyEnums.SEPARATOR,
+      userId,
+      RedisKeyEnums.SEPARATOR,
+      sessionId.toString(),
+    );
+  }
+
   async setSession(
     userId: string,
     accessToken: string,
     refreshToken: string,
-    sessionId?: number,
+    sessionId: number,
   ) {
-    const key1 = RedisKeyEnums.SESSION.concat(
-      RedisKeyEnums.SEPARATOR,
-      userId,
-      RedisKeyEnums.SEPARATOR,
-      accessToken.slice(-4),
-    );
-    const key2 = RedisKeyEnums.SESSION.concat(
-      RedisKeyEnums.SEPARATOR,
-      userId,
-      RedisKeyEnums.SEPARATOR,
-      refreshToken.slice(-4),
-    );
+    const keyAcc = this.getAccessKey(userId, accessToken);
+    const keyRef = this.getRefreshKey(userId, refreshToken);
+    const keySes = this.getSessionKey(userId, sessionId);
 
-    const value1 = refreshToken;
-    const value2 = accessToken;
+    const valueAcc = refreshToken;
+    const valueRef = accessToken;
+    const valueSes = 'true';
 
-    await this.redis.set(key1, value1);
-    await this.redis.set(key2, value2);
-
-    if (sessionId) {
-      const thisKey = RedisKeyEnums.SESSION.concat(
-        RedisKeyEnums.SEPARATOR,
-        userId,
-        RedisKeyEnums.SEPARATOR,
-        sessionId.toString(),
-      );
-
-      await this.redis.lpush(thisKey, accessToken, refreshToken);
-    }
+    await this.redis.set(keyAcc, valueAcc);
+    await this.redis.set(keyRef, valueRef);
+    await this.redis.set(keySes, valueSes);
   }
 
   async hasSession(userId: string, { accessToken, sessionId }: HasSessionDto) {
-    const key = RedisKeyEnums.SESSION.concat(
-      RedisKeyEnums.SEPARATOR,
-      userId,
-      RedisKeyEnums.SEPARATOR,
-      accessToken.slice(-4) || sessionId.toString(),
-    );
+    const key = accessToken
+      ? this.getAccessKey(userId, accessToken)
+      : this.getSessionKey(userId, sessionId);
 
-    if (accessToken) {
-      return await this.redis.get(key);
-    }
-
-    return await this.redis.lrange(key, 0, -1);
+    return await this.redis.get(key);
   }
 
-  async delSession(userId: string, accessToken: string) {
-    const key1 = RedisKeyEnums.SESSION.concat(
-      RedisKeyEnums.SEPARATOR,
-      userId,
-      RedisKeyEnums.SEPARATOR,
-      accessToken.slice(-4),
-    );
+  async delSession(userId: string, accessToken: string, sessionId: number) {
+    const keyAcc = this.getAccessKey(userId, accessToken);
+    const keySes = this.getSessionKey(userId, sessionId);
 
-    const refreshToken = await this.redis.get(key1);
+    const refreshToken = await this.redis.get(keyAcc);
 
-    const key2 = RedisKeyEnums.SESSION.concat(
-      RedisKeyEnums.SEPARATOR,
-      userId,
-      RedisKeyEnums.SEPARATOR,
-      refreshToken.slice(-4),
-    );
+    const keyRef = this.getRefreshKey(userId, refreshToken);
 
-    await this.redis.del(key1);
-    await this.redis.del(key2);
+    await this.redis.del(keyAcc);
+    await this.redis.del(keyRef);
+    await this.redis.del(keySes);
   }
 
   async refSession(
@@ -89,11 +81,11 @@ export class RedisProxyService {
     refreshToken: string,
     newAcc: string,
     newRef: string,
-    sessionId?: number,
+    oldSessionId: number,
+    newSessionId: number,
   ) {
-    await this.delSession(userId, refreshToken);
-
-    await this.setSession(userId, newAcc, newRef, sessionId);
+    await this.delSession(userId, refreshToken, oldSessionId);
+    await this.setSession(userId, newAcc, newRef, newSessionId);
   }
 
   async getHello() {

@@ -39,6 +39,9 @@ export class AuthService {
 
   async refreshToken(req) {
     const userId = req.user.payload.userId;
+    const oldSessionId = req.user.payload.sessionId;
+    const newSessionId = Math.ceil(Date.now() * Math.random());
+
     const refreshToken = this.getTokenFromHeader(req);
 
     const user = await this.userService.findOne({
@@ -51,15 +54,14 @@ export class AuthService {
 
     const result = await this.loginWithCredentials(user);
 
-    const sessionId = Math.ceil(Date.now() * Math.random());
-
     try {
       await this.redisService.refSession(
         userId,
         refreshToken,
         result.accessToken,
         result.refreshToken,
-        sessionId,
+        oldSessionId,
+        newSessionId,
       );
     } catch (error) {
       throw new BadRequestException(AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION);
