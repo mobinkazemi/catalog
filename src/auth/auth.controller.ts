@@ -15,11 +15,7 @@ import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private readonly userService: UsersService,
-    private readonly redisService: RedisProxyService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   @UseGuards(AuthGuard('local'))
@@ -31,5 +27,11 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   async refresh(@Request() req) {
     return await this.authService.refreshToken(req);
+  }
+
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  async logout(@Request() req) {
+    return await this.authService.logout(req);
   }
 }

@@ -70,6 +70,23 @@ export class AuthService {
     return result;
   }
 
+  async logout(
+    req: Express.Request & {
+      user: { payload: { userId: string; sessionId: number } };
+    },
+  ) {
+    const userId = req.user.payload.userId;
+    const sessionId = req.user.payload.sessionId;
+
+    const accessToken = this.getTokenFromHeader(req);
+
+    try {
+      await this.redisService.delSession(userId, accessToken, sessionId);
+    } catch (error) {
+      throw new BadRequestException(AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION);
+    }
+  }
+
   async loginWithCredentials(user: any) {
     user = new FindUserResponseDto(user);
     const sessionId = Math.ceil(Date.now() * Math.random());
