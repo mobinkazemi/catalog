@@ -25,9 +25,10 @@ import {
   UserResponseListDto,
 } from '../dto/request/filter-user.dto';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
-import { UpdateUserPaswordDto } from '../dto/request/update-user.dto';
+import { UpdateUserDto } from '../dto/request/update-user.dto';
 import { userWithoutPasswordDto } from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
+import { BaseSchemaDto } from 'src/database/dto/base.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -62,7 +63,7 @@ export class UsersAdminController {
   @Patch('update/:id')
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserPaswordDto,
+    @Body() updateUserDto: UpdateUserDto & BaseSchemaDto,
   ) {
     const user = await this.usersService.update(id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
