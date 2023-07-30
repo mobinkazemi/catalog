@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-export class getUserDecoratorDto {
+export class getPayloadDecoratorDto {
   _id: mongoose.Types.ObjectId;
   id: string;
   roles: Array<string>;

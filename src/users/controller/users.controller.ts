@@ -20,8 +20,8 @@ import {
   userWithoutPasswordDto,
 } from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
-import { GetUser } from 'src/common/decorators/getUser.decorator';
-import { getUserDecoratorDto } from '../dto/response/get-user-decorator.dto';
+import { GetPayload } from 'src/common/decorators/getUser.decorator';
+import { getPayloadDecoratorDto } from '../dto/response/get-user-decorator.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -41,9 +41,9 @@ export class UsersController {
   @Patch('update')
   async update(
     @Body() updateUserDto: UpdateUserPaswordDto,
-    @GetUser() requester: getUserDecoratorDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
   ) {
-    const user = await this.usersService.update(requester.id, updateUserDto);
+    const user = await this.usersService.update(payload.id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
   }
 }
