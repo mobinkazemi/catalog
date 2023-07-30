@@ -13,6 +13,7 @@ import { FindUserDto } from './dto/request/findone-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { User, UserDocument } from './schema/users.schema';
 import * as _ from 'lodash';
+import { UpdateRoleDto } from '../roles/dto/request/update-role.dto';
 
 @Injectable()
 export class UsersRepository extends BaseRepository {
@@ -89,7 +90,7 @@ export class UsersRepository extends BaseRepository {
 
   async updateOne<User>(
     data: FindUserDto,
-    updateData: UpdateUserDto,
+    updateData: UpdateUserDto | UpdateRoleDto,
   ): Promise<User> {
     let query = {};
 

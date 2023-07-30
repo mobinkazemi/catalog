@@ -19,6 +19,8 @@ import { RolesService } from '../roles/roles.service';
 import { RemoveUserRoleDto } from '../roles/dto/request/remove-user-role.dto';
 import { Role } from 'src/roles/schema/roles.schema';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
+import * as bcrypt from 'bcrypt';
+import { UpdateRoleDto } from 'src/roles/dto/request/update-role.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -58,8 +60,11 @@ export class UsersService {
     return result;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    throw new NotImplementedException();
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 8);
+    }
+    return await this.userRepository.updateOne({ id }, updateUserDto);
   }
 
   async remove(id: number) {
@@ -80,7 +85,7 @@ export class UsersService {
       {
         id: data.userId,
       },
-      { role: rolesList },
+      { role: rolesList } as UpdateRoleDto,
     );
 
     return result;
@@ -101,7 +106,7 @@ export class UsersService {
       {
         id: data.userId,
       },
-      { role: rolesList },
+      { role: rolesList } as UpdateRoleDto,
     );
 
     return result;
