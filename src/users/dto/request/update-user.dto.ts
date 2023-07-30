@@ -1,10 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { Type } from 'class-transformer';
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { RolesEnum } from '../../../common/enums/roles.enum';
-import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto {
+export class UpdateUserPaswordDto {
   @IsString()
   @IsOptional()
   password?: string;

@@ -10,7 +10,7 @@ import { BaseRepository } from '../database/repository/base.repository';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { FilterRequestUserDto } from './dto/request/filter-user.dto';
 import { FindUserDto } from './dto/request/findone-user.dto';
-import { UpdateUserDto } from './dto/request/update-user.dto';
+import { UpdateUserPaswordDto } from './dto/request/update-user.dto';
 import { User, UserDocument } from './schema/users.schema';
 import * as _ from 'lodash';
 import { UpdateRoleDto } from '../roles/dto/request/update-role.dto';
@@ -90,7 +90,7 @@ export class UsersRepository extends BaseRepository {
 
   async updateOne<User>(
     data: FindUserDto,
-    updateData: UpdateUserDto | UpdateRoleDto,
+    updateData: UpdateUserPaswordDto | UpdateRoleDto,
   ): Promise<User> {
     let query = {};
 

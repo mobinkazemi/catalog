@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { FindUserDto } from './dto/request/findone-user.dto';
-import { UpdateUserDto } from './dto/request/update-user.dto';
+import { UpdateUserPaswordDto } from './dto/request/update-user.dto';
 import { User } from './schema/users.schema';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import {
@@ -60,7 +60,7 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserPaswordDto) {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 8);
     }

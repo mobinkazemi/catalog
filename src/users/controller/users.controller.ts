@@ -12,7 +12,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
-import { UpdateUserDto } from '../dto/request/update-user.dto';
+import { UpdateUserPaswordDto } from '../dto/request/update-user.dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -37,7 +37,10 @@ export class UsersController {
   }
 
   @Patch('update/:id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserPaswordDto,
+  ) {
     const user = await this.usersService.update(id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
   }
