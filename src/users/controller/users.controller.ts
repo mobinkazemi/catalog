@@ -20,6 +20,8 @@ import {
   userWithoutPasswordDto,
 } from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
+import { GetUser } from 'src/common/decorators/getUser.decorator';
+import { getUserDecoratorDto } from '../dto/response/get-user-decorator.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -36,17 +38,12 @@ export class UsersController {
     return new FindUserResponseDto(result);
   }
 
-  @Patch('update/:id')
+  @Patch('update')
   async update(
-    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserPaswordDto,
+    @GetUser() requester: getUserDecoratorDto,
   ) {
-    const user = await this.usersService.update(id, updateUserDto);
+    const user = await this.usersService.update(requester.id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
-  }
-
-  @Delete('remove')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
   }
 }
