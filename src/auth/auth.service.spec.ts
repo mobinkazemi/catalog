@@ -13,12 +13,24 @@ import { UsersService } from '../users/users.service';
 import configuration from '../../config/configuration';
 import { AUTH_ERROR_MESSAGE_ENUMS } from './eunms/auth-error-response.enums';
 
+// ---------- CONSTANTS ----------
+const USER_ID = 'mock id';
+const USER_ID_WRONG = 'mock id wrong';
+const USERNAME = 'mock username';
+const USERNAME_WRONG = "I'm false username";
+const PASSWORD_WRONG = "I'm false password";
+const SESSION_ID = 12345678;
+const SESSION_ID_WRONG = 99999999;
+const TOKEN = 'mock token';
+const PASSWORD = '12345678';
+const PASSWORD_HASHED =
+  '$2a$08$UEGaMkjWMxhX2gpHEHnG5uu604gLlzNwZcQRZhRw/0G8Hu6BHR9Yu'; // 12345678
 // ---------- STUBS ----------
 const loginStubs = {
   user: {
-    _id: 'mock id',
-    username: 'mock username',
-    password: '$2a$08$UEGaMkjWMxhX2gpHEHnG5uu604gLlzNwZcQRZhRw/0G8Hu6BHR9Yu', // 12345678
+    _id: USER_ID,
+    username: USERNAME,
+    password: PASSWORD_HASHED,
     createdAt: new Date(),
     updatedAt: new Date(),
     roles: [],
@@ -28,31 +40,52 @@ const loginStubs = {
 const correctRefreshStubs = {
   user: {
     payload: {
-      userId: 'mock id',
+      userId: USER_ID,
+      sessionId: SESSION_ID,
     },
   },
-  rawHeaders: ['Athorization', 'mock token'],
+  rawHeaders: ['Athorization', TOKEN],
 };
+
 const wrongRefreshStubs = {
   user: {
     payload: {
-      userId: 'mock id wrong',
+      userId: USER_ID_WRONG,
     },
   },
-  rawHeaders: ['Athorization', 'mock token'],
+  rawHeaders: ['Athorization', TOKEN],
+};
+
+const correctRequest = {
+  user: {
+    payload: {
+      userId: USER_ID,
+      sessionId: SESSION_ID,
+    },
+  },
+  rawHeaders: ['Athorization', TOKEN],
+};
+const wrongtRequest = {
+  user: {
+    payload: {
+      userId: USER_ID,
+      sessionId: SESSION_ID_WRONG,
+    },
+  },
+  rawHeaders: ['Athorization', TOKEN],
 };
 
 const validateUserStubs = {
-  validUsername: 'mock username',
-  validPassword: '12345678',
-  invalidUsername: "I'm false username",
-  invalidPassword: "I'm false password",
+  validUsername: USERNAME,
+  validPassword: PASSWORD,
+  invalidUsername: USERNAME_WRONG,
+  invalidPassword: PASSWORD_WRONG,
 };
 
 // ----------- MOCK SERVICES ------------
 const mockUserService = () => ({
   findOne({ id, username }) {
-    if (id == 'mock id' || username == 'mock username') {
+    if (id == USER_ID || username == USERNAME) {
       return loginStubs.user;
     } else {
       return undefined;
@@ -63,6 +96,19 @@ const mockUserService = () => ({
 const mockRedisProxy = () => ({
   setSession: async () => {},
   refSession: async () => {},
+  delSession: async (
+    userId: string,
+    accessToken: string,
+    sessionId: number,
+  ) => {
+    const key = userId + sessionId;
+
+    if (key == USER_ID + SESSION_ID) {
+      return;
+    } else {
+      throw Error();
+    }
+  },
 });
 
 // ----------- TESTS --------------------
@@ -190,5 +236,19 @@ describe('AuthService', () => {
     //     AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION,
     //   );
     // });
+  });
+
+  describe('logout', () => {
+    it('should not return error with correct data', async () => {
+      const result = await service.logout(correctRequest);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('should return Bad-Request error with wrong data', async () => {
+      await expect(service.logout(wrongtRequest)).rejects.toThrow(
+        AUTH_ERROR_MESSAGE_ENUMS.NO_SESSION,
+      );
+    });
   });
 });

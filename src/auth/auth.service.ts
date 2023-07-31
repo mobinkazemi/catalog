@@ -70,11 +70,7 @@ export class AuthService {
     return result;
   }
 
-  async logout(
-    req: Express.Request & {
-      user: { payload: { userId: string; sessionId: number } };
-    },
-  ) {
+  async logout(req: any) {
     const userId = req.user.payload.userId;
     const sessionId = req.user.payload.sessionId;
 
