@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document, ObjectId } from 'mongoose';
+import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
 import { Base } from '../../database/schema/base.schema';
 import { addTemplateHooks } from '../hook/templates.hooks';
 
@@ -35,16 +36,20 @@ export class Part extends Base {
 
   @ApiProperty({ type: String })
   @Prop({
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'File',
-    autoPopulate: { maxlength: 1 },
+    autoPopulate: true,
     required: true,
   })
-  fileId: ObjectId;
+  fileId: ObjectIdOrString;
 }
 
 @Schema({ id: true, timestamps: true })
 export class Template extends Base {
+  @ApiProperty({ type: String })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Template' })
+  pid: ObjectIdOrString;
+
   @ApiProperty({ type: String })
   @Prop({
     type: String,
@@ -58,11 +63,11 @@ export class Template extends Base {
 
   @ApiProperty({ type: String })
   @Prop({
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'File',
-    autoPopulate: { maxlength: 1 },
+    autoPopulate: true,
   })
-  backgroundFileId?: string;
+  backgroundFileId?: ObjectIdOrString;
 
   @ApiProperty({ type: String })
   @Prop({
@@ -78,4 +83,5 @@ export class Template extends Base {
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);
+// TemplateSchemaBase.plugin(require('mongoose-autopopulate'));
 export const TemplateSchema = addTemplateHooks(TemplateSchemaBase);

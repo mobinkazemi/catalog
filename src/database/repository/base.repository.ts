@@ -7,6 +7,7 @@ import {
   OptionsDto,
 } from '../../common/dto/base-repository-dtos.dto';
 import * as _ from 'lodash';
+import { ObjectIdType } from 'src/common/types/types';
 export abstract class BaseRepository {
   abstract findOne<T>(data: any, options?: OptionsDto): Promise<T>;
   abstract findAll<T>(
@@ -31,7 +32,7 @@ export abstract class BaseRepository {
     return data;
   }
 
-  protected convertToObjectId(data: string) {
+  protected convertToObjectId(data: string): ObjectIdType {
     return new mongoose.Types.ObjectId(data);
   }
 

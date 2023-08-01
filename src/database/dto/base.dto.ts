@@ -3,6 +3,7 @@ import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 import mongoose, { ObjectId } from 'mongoose';
+import { ObjectIdOrString } from 'src/common/types/types';
 import { Base } from '../schema/base.schema';
 
 export class BaseSchemaDto {
@@ -12,7 +13,7 @@ export class BaseSchemaDto {
   @IsOptional()
   @IsString()
   @Transform((param) => new mongoose.Types.ObjectId(param.value))
-  pid?: string;
+  pid?: ObjectIdOrString;
   @IsOptional()
   @IsDate()
   @Transform((param) => new Date(param.value))

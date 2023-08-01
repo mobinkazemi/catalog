@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import {
   OptionsDto,
   addListOptionsDto,
@@ -24,10 +24,10 @@ export class TemplatesRepository extends BaseRepository {
     super();
   }
 
-  async findOne<User>(
+  async findOne<Template>(
     data?: FindOneTemplateRepositoryDto,
     options?: OptionsDto,
-  ): Promise<User> {
+  ): Promise<Template> {
     let query = {};
     if (!data) data = {};
 
@@ -46,14 +46,55 @@ export class TemplatesRepository extends BaseRepository {
       query = this.addOptions(query, options);
     }
 
-    return await this.templateModel.findOne(query);
+    const result = await this.templateModel.findOne<Template>(query);
+
+    return result;
   }
 
-  async findAll<User>(
+  async findOneWithFiles<Template>(
+    data?: FindOneTemplateRepositoryDto,
+    options?: OptionsDto,
+  ) {
+    let query = {};
+    if (!data) data = {};
+
+    if (data.id) {
+      query['_id'] = this.convertToObjectId(data.id);
+      delete data.id;
+    }
+
+    query = {
+      ...query,
+      ...data,
+      isDeleted: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    const result = await this.templateModel
+      .findOne<Template>(query, {}, { lean: true })
+      //
+      .populate('backgroundFileId')
+      .populate('pid')
+      .populate({
+        path: 'parts.fileId',
+        foreignField: '_id',
+        localField: 'parts.fileId',
+        model: 'File',
+      });
+
+    console.log(result);
+
+    return result;
+  }
+
+  async findAll<Template>(
     data?: FindTemplateRepositoryDto,
     listOptions?: addListOptionsDto,
     options?: OptionsDto,
-  ): Promise<User[]> {
+  ): Promise<Template[]> {
     let query = {};
     if (!data) data = {};
     if (!listOptions) listOptions = {};
@@ -87,6 +128,26 @@ export class TemplatesRepository extends BaseRepository {
   }
 
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
+    if (createTemplateDto.backgroundFileId) {
+      createTemplateDto.backgroundFileId = this.convertToObjectId(
+        createTemplateDto.backgroundFileId as string,
+      );
+    }
+    if (createTemplateDto.pid) {
+      createTemplateDto.pid = this.convertToObjectId(
+        createTemplateDto.pid as string,
+      );
+    }
+    if (createTemplateDto?.parts?.length) {
+      createTemplateDto.parts.forEach((part) => {
+        if (part.pid) {
+          part.pid = this.convertToObjectId(part.pid as string);
+        }
+        part.fileId = this.convertToObjectId(part.fileId as string);
+        part._id = new mongoose.Types.ObjectId();
+      });
+    }
+
     return await this.templateModel.create(createTemplateDto);
   }
 

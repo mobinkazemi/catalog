@@ -1,8 +1,15 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import mongoose, { ObjectId, Schema } from 'mongoose';
+import { ObjectIdOrString } from 'src/common/types/types';
 import { Part, Template } from '../schema/templates.schema';
 
 export class CreateTemplateDto extends OmitType(Template, [
@@ -20,8 +27,7 @@ export class CreateTemplateDto extends OmitType(Template, [
   @ApiProperty({ type: String })
   @IsOptional()
   @IsString()
-  @Transform((param) => new mongoose.Types.ObjectId(param.value))
-  pid: string;
+  pid: ObjectIdOrString;
 
   @IsString()
   @ApiProperty({ type: String })
@@ -29,34 +35,16 @@ export class CreateTemplateDto extends OmitType(Template, [
 
   @IsString()
   @ApiProperty({ type: String })
-  backgroundFileId?: string;
+  backgroundFileId?: ObjectIdOrString;
 
-  @IsString()
   @ApiProperty({ type: String })
+  @IsString()
   backgroundColor?: string;
 
-  @IsObject()
+  @IsArray()
+  @Type(() => Part)
   @ApiProperty({
     type: [Part],
   })
   parts: Part[];
-
-  constructor(data: any) {
-    super();
-    this.backgroundColor = data.backgroundColor;
-    this.backgroundFileId = data.backgroundFileId;
-    this.name = data.name;
-    this.ord = data.ord;
-    this.parts = data.parts;
-    this.pid = data.pid;
-  }
 }
-
-export const CreateTemplateDtoExample: CreateTemplateDto = {
-  name: 'sample',
-  ord: 1,
-  parts: [],
-  pid: new mongoose.Types.ObjectId().toString(),
-  backgroundColor: 'blue',
-  backgroundFileId: new mongoose.Types.ObjectId().toString(),
-};

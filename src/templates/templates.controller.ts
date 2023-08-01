@@ -8,18 +8,17 @@ import {
   Delete,
   UseGuards,
   NotImplementedException,
+  Req,
 } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
-import {
-  CreateTemplateDto,
-  CreateTemplateDtoExample,
-} from './dto/create-template.dto';
+import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { RolesGuard } from 'src/auth/strategy/role.strategy';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiProperty, refs } from '@nestjs/swagger';
+import { FindTemplateWithFilesDto } from './dto/response/find-one-with-file.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -35,13 +34,14 @@ export class TemplatesController {
   }
 
   @Get('list')
-  findAll() {
-    return new NotImplementedException();
+  async findAll() {
+    return await this.templatesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return new NotImplementedException();
+  async findOne(@Param('id') id: string) {
+    const result = await this.templatesService.fineOneWithFiles(id);
+    return new FindTemplateWithFilesDto(result);
   }
 
   @Patch(':id')
