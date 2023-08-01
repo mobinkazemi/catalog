@@ -12,7 +12,7 @@ export class BaseSchemaDto {
   @IsOptional()
   @IsString()
   @Transform((param) => new mongoose.Types.ObjectId(param.value))
-  pid?: ObjectId;
+  pid?: string;
   @IsOptional()
   @IsDate()
   @Transform((param) => new Date(param.value))
