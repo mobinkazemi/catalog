@@ -7,8 +7,10 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Matches,
 } from 'class-validator';
 import mongoose, { ObjectId, Schema } from 'mongoose';
+import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { Part, Template } from '../schema/templates.schema';
 
@@ -35,6 +37,7 @@ export class CreateTemplateDto extends OmitType(Template, [
 
   @IsString()
   @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
   backgroundFileId?: ObjectIdOrString;
 
   @ApiProperty({ type: String })

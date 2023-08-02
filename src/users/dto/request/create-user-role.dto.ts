@@ -1,16 +1,11 @@
 import { IsString, Matches } from 'class-validator';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 
-export class FindOneTemplateRepositoryDto {
-  @IsString()
+export class CreateUserRoleDto {
   @Matches(ObjectIdRegex)
-  id?: string;
-}
-
-export class FindTemplateRepositoryDto {
   @IsString()
+  userId: string;
   @Matches(ObjectIdRegex)
-  id?: string;
   @IsString()
-  name?: string;
+  roleId: string;
 }

@@ -16,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { defaults } from 'config/configuration';
 import type { Response } from 'express';
+import { FindFileByIdDto } from './dto/request/find-file.dto';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -41,9 +42,9 @@ export class FilesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Res() res: Response) {
+  async findOne(@Param('id') data: FindFileByIdDto, @Res() res: Response) {
     const { fileInfo, stream } =
-      await this.filesService.findOneWithStoredObject(id, true);
+      await this.filesService.findOneWithStoredObject(data.id, true);
 
     res.set({
       'Content-Type': fileInfo.mime,

@@ -14,7 +14,7 @@ import {
   FilterRequestUserDto,
 } from './dto/request/filter-user.dto';
 import { UsersRepository } from './users.repository';
-import { CreateUserRoleDto } from '../roles/dto/request/create-user-role.dto';
+import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
 import { RolesService } from '../roles/roles.service';
 import { RemoveUserRoleDto } from '../roles/dto/request/remove-user-role.dto';
 import { Role } from 'src/roles/schema/roles.schema';
