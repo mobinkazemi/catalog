@@ -22,6 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { addListOptionsDto } from '../../common/dto/base-repository-dtos.dto';
 import { FindRolesListDto } from '../dto/request/find-roles.dto';
 import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { findRoleResponseDto } from '../dto/response/find-role.dto';
 
 @UseGuards(RolesGuard)
 @Roles(RolesEnum.ADMIN)
@@ -45,7 +46,9 @@ export class RolesController {
     @Query() listOptions: addListOptionsDto,
     @Query() data: FindRolesListDto,
   ) {
-    return await this.rolesService.findAll(data, listOptions);
+    return (await this.rolesService.findAll(data, listOptions)).map(
+      (item) => new findRoleResponseDto(item),
+    );
   }
 
   @ApiOperation({ summary: 'Get role info' })
