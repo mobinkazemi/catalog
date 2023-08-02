@@ -73,13 +73,12 @@ export class UsersAdminController {
   }
 
   @ApiOperation({ summary: 'Get user info' })
-  @ApiQuery({ type: FindUserDto })
-  @Get('info')
-  async findOne(@Query() data: FindUserDto) {
-    const { id, username } = data;
-    if (!id && !username) throw new BadRequestException();
+  @ApiParam(findByIdDto)
+  @Get('info/:id')
+  async findOne(@Param() data: findByIdDto) {
+    const { id } = data;
 
-    const result = await this.usersService.findOne({ id, username });
+    const result = await this.usersService.findOne({ id });
 
     return new FindUserResponseDto(result);
   }
