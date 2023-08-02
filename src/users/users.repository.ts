@@ -113,15 +113,11 @@ export class UsersRepository extends BaseRepository {
   }
 
   async remove(id: ObjectIdOrString) {
-    console.log(id);
-
-    console.log(
-      await this.userModel.updateOne(
-        {
-          _id: this.convertToObjectId(id as string),
-        },
-        { $set: { deletedAt: Date.now() } },
-      ),
+    await this.userModel.updateOne(
+      {
+        _id: this.convertToObjectId(id as string),
+      },
+      { $set: { deletedAt: Date.now() } },
     );
   }
 }
