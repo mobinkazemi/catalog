@@ -22,6 +22,7 @@ import {
   ApiExcludeEndpoint,
   ApiOperation,
   ApiProperty,
+  ApiQuery,
   refs,
 } from '@nestjs/swagger';
 import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
@@ -48,6 +49,7 @@ export class TemplatesController {
     throw new NotImplementedException();
   }
 
+  @ApiQuery({ type: FindOneTemplateRepositoryDto })
   @ApiOperation({ summary: 'Get template info (with files info)' })
   @Get(':id')
   async findOne(@Param('id') data: FindOneTemplateRepositoryDto) {

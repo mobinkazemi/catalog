@@ -22,7 +22,8 @@ import {
 import { User } from '../schema/users.schema';
 import { GetPayload } from 'src/common/decorators/getUser.decorator';
 import { getPayloadDecoratorDto } from '../dto/response/get-user-decorator.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { PickType } from '@nestjs/mapped-types';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -30,6 +31,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Get user (self) info' })
+  @ApiQuery({ type: FindUserDto })
   @Get('info')
   async findOne(@Query() data: FindUserDto) {
     const { id, username } = data;
@@ -40,6 +42,7 @@ export class UsersController {
     return new FindUserResponseDto(result);
   }
 
+  @ApiBody({ type: PickType(UpdateUserDto, ['password']) })
   @ApiOperation({ summary: 'Update user' })
   @Patch('update')
   async update(

@@ -8,7 +8,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { RedisProxyService } from '../redis/redis.service';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -18,6 +18,7 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiBody({ type: LoginDto })
   @ApiOperation({ summary: 'Login' })
   @Post('login')
   @UseGuards(AuthGuard('local'))

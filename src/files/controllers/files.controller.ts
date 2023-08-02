@@ -17,7 +17,7 @@ import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.d
 import { defaults } from 'config/configuration';
 import type { Response } from 'express';
 import { FindFileByIdDto } from '../dto/request/find-file.dto';
-import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation, ApiParam } from '@nestjs/swagger';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -46,6 +46,7 @@ export class FilesController {
   }
 
   @ApiOperation({ summary: 'Get file info' })
+  @ApiParam(FindFileByIdDto)
   @Get(':id')
   async findOne(@Param('id') data: FindFileByIdDto, @Res() res: Response) {
     const { fileInfo, stream } =

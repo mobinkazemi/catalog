@@ -21,7 +21,7 @@ import { Roles } from '../../auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { addListOptionsDto } from '../../common/dto/base-repository-dtos.dto';
 import { FindRolesListDto } from '../dto/request/find-roles.dto';
-import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 
 @UseGuards(RolesGuard)
 @Roles(RolesEnum.ADMIN)
@@ -30,6 +30,7 @@ import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  @ApiBody({ type: CreateRoleDto })
   @ApiOperation({ summary: 'Create role' })
   @Post('create')
   async create(

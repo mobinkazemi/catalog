@@ -19,7 +19,14 @@ import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.d
 import { RolesGuard } from '../../auth/strategy/role.strategy';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { RolesEnum } from '../../common/enums/roles.enum';
-import { ApiExcludeEndpoint, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiQuery,
+} from '@nestjs/swagger';
 import {
   FilterRequestUserDto,
   UserResponseListDto,
@@ -40,7 +47,7 @@ export class UsersAdminController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Create user' })
-  @ApiProperty({ type: CreateUserDto })
+  @ApiBody({ type: CreateUserDto })
   @Post('create')
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -53,6 +60,8 @@ export class UsersAdminController {
     return await this.usersService.create(createUserDto, true);
   }
 
+  @ApiQuery({ type: addListOptionsDto })
+  @ApiQuery({ type: FilterRequestUserDto })
   @ApiOperation({ summary: 'Get user list' })
   @Get('list')
   async findAll(
@@ -64,6 +73,8 @@ export class UsersAdminController {
     );
   }
 
+  @ApiBody({ type: UpdateUserDto })
+  @ApiBody({ type: BaseSchemaDto })
   @ApiOperation({ summary: 'Update user' })
   @Patch('update/:id')
   async update(
@@ -74,6 +85,7 @@ export class UsersAdminController {
     return new userWithoutPasswordDto(user as User);
   }
 
+  @ApiBody({ type: RemoveUserDto })
   @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
   remove(@Param('id') data: RemoveUserDto) {

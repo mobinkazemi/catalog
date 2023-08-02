@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -56,10 +57,12 @@ export class addPaginationDto {
 }
 
 export class addListOptionsDto {
+  @ApiProperty({ type: String })
   @IsOptional()
   @IsString()
   sort?: string;
 
+  @ApiProperty({ type: Boolean })
   @IsOptional()
   @IsBoolean()
   @Transform((param) => {
@@ -68,6 +71,7 @@ export class addListOptionsDto {
   })
   asc?: boolean;
 
+  @ApiProperty({ type: Number })
   @IsOptional()
   @Max(100, { message: 'حداکثر تعداد نمایش ۱۰۰ می باشد' })
   @Min(1, { message: 'حداقل تعداد نمایش ۱ می باشد' })
@@ -79,6 +83,7 @@ export class addListOptionsDto {
   })
   limit?: number;
 
+  @ApiProperty({ type: Number })
   @IsOptional()
   @Min(1, { message: 'حداقل تعداد نمایش ۱ می باشد' })
   @IsNumber({}, { message: 'تعداد باید عدد ارسال شود' })
