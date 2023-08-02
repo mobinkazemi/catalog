@@ -7,6 +7,12 @@ export class FindOneTemplateRepositoryDto {
   id?: string;
 }
 
+export class FindTemplateByIdDto {
+  @IsString()
+  @Matches(ObjectIdRegex)
+  id: string;
+}
+
 export class FindTemplateRepositoryDto {
   @IsString()
   @Matches(ObjectIdRegex)

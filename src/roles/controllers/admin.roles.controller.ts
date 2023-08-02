@@ -20,6 +20,7 @@ import { Roles } from '../../auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { addListOptionsDto } from '../../common/dto/base-repository-dtos.dto';
 import { FindRolesListDto } from '../dto/request/find-roles.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @UseGuards(RolesGuard)
 @Roles(RolesEnum.ADMIN)
@@ -28,6 +29,7 @@ import { FindRolesListDto } from '../dto/request/find-roles.dto';
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  @ApiOperation({ summary: 'create new role' })
   @Post('create')
   async create(
     @Body() createRoleDto: CreateRoleDto,
@@ -35,6 +37,7 @@ export class RolesController {
     return await this.rolesService.create(createRoleDto, true);
   }
 
+  @ApiOperation({ summary: 'find role list' })
   @Get('list')
   async findAll(
     @Query() listOptions: addListOptionsDto,
@@ -43,11 +46,12 @@ export class RolesController {
     return await this.rolesService.findAll(data, listOptions);
   }
 
-  @Get('info')
+  @Get('find one role')
   async findOne(@Query() data: FindRoleDto) {
     return await this.rolesService.findOne(data, true);
   }
 
+  @ApiOperation({ summary: 'remove one role' })
   @Delete('remove')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
