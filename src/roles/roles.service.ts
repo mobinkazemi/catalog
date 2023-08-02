@@ -24,14 +24,13 @@ export class RolesService {
     error?: boolean,
   ): Promise<ResponseAfterCreateDto> {
     const duplicate = await this.roleRepository.findOne({
-      name: createRoleDto.name.toUpperCase(),
+      name: createRoleDto.name,
     });
     if (duplicate && error) throw new ConflictException();
     if (duplicate) return;
 
     const result = await this.roleRepository.create({
       ...createRoleDto,
-      name: createRoleDto.name.toUpperCase(),
     });
 
     return new ResponseAfterCreateDto(result);
