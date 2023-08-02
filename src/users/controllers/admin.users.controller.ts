@@ -48,6 +48,8 @@ import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { RemoveUserDto } from '../dto/request/remove-user-dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
+import mongoose from 'mongoose';
+import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -109,7 +111,13 @@ export class UsersAdminController {
   @ApiBody({ type: RemoveUserDto })
   @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
-  remove(@Param('id') data: RemoveUserDto) {
+  remove(@Body() data: RemoveUserDto) {
     return this.usersService.remove(data.id, true);
   }
+}
+
+for (let i = 0; i < 5; i++) {
+  const id = new mongoose.Types.ObjectId();
+
+  console.log(id.toString().search(ObjectIdRegex));
 }

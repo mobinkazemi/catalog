@@ -37,12 +37,13 @@ export class UsersRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
       query = this.addOptions(query, options);
     }
+    console.log({ query });
 
     return await this.userModel.findOne(query);
   }
@@ -66,7 +67,7 @@ export class UsersRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
@@ -104,7 +105,7 @@ export class UsersRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     return await this.userModel.findOneAndUpdate(query, updateData, {
@@ -113,11 +114,15 @@ export class UsersRepository extends BaseRepository {
   }
 
   async remove(id: ObjectIdOrString) {
-    await this.userModel.updateOne(
-      {
-        _id: this.convertToObjectId(id as string),
-      },
-      { $set: { deletedAt: new Date() } },
+    console.log(id);
+
+    console.log(
+      await this.userModel.updateOne(
+        {
+          _id: this.convertToObjectId(id as string),
+        },
+        { $set: { deletedAt: Date.now() } },
+      ),
     );
   }
 }

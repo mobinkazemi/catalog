@@ -39,7 +39,7 @@ export class TemplatesRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
@@ -66,7 +66,7 @@ export class TemplatesRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
@@ -104,7 +104,7 @@ export class TemplatesRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
@@ -162,7 +162,7 @@ export class TemplatesRepository extends BaseRepository {
   //     query = {
   //       ...query,
   //       ...data,
-  //       isDeleted: null,
+  //       deletedAt: null,
   //     };
 
   //     return await this.templateModel.findOneAndUpdate(query, updateData, {

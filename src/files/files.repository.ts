@@ -18,7 +18,7 @@ export class FilesRepository extends BaseRepository {
   async findOne<File>(id: string, options?: OptionsDto): Promise<File> {
     let query = {
       _id: this.convertToObjectId(id),
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {

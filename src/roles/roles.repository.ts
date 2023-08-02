@@ -31,7 +31,7 @@ export class RolesRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {
@@ -53,7 +53,7 @@ export class RolesRepository extends BaseRepository {
     query = {
       ...query,
       ...data,
-      isDeleted: null,
+      deletedAt: null,
     };
 
     if (options) {

@@ -10,13 +10,18 @@ export abstract class Base {
   @ApiProperty({ type: String })
   id: string;
   @ApiProperty({ type: String })
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
   pid: ObjectIdOrString;
   @ApiProperty({ type: Number })
+  @Prop({ type: Number })
   ord: number;
   @ApiProperty({ type: Date })
+  @Prop({ type: Date })
   createdAt: Date;
   @ApiProperty({ type: Date })
+  @Prop({ type: Date })
   updatedAt: Date;
   @ApiProperty({ type: Date })
+  @Prop({ type: Date })
   deletedAt: Date;
 }
