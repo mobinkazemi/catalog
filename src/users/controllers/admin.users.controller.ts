@@ -97,11 +97,12 @@ export class UsersAdminController {
     );
   }
 
+  @ApiParam(findByIdDto)
   @ApiBody({ type: UpdateUserByAdminDto })
   @ApiOperation({ summary: 'Update user' })
   @Patch('update/:id')
   async update(
-    @Param('id') idData: findByIdDto,
+    @Param() idData: findByIdDto,
     @Body() updateUserDto: UpdateUserByAdminDto,
   ) {
     const user = await this.usersService.update(idData.id, updateUserDto);

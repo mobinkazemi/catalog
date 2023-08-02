@@ -52,7 +52,7 @@ export class TemplatesController {
   @ApiQuery({ type: FindOneTemplateRepositoryDto })
   @ApiOperation({ summary: 'Get template info (with files info)' })
   @Get(':id')
-  async findOne(@Param('id') data: FindOneTemplateRepositoryDto) {
+  async findOne(@Param() data: FindOneTemplateRepositoryDto) {
     const result = await this.templatesService.fineOneWithFiles(data.id);
     return new FindTemplateWithFilesDto(result);
   }
@@ -60,10 +60,7 @@ export class TemplatesController {
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Update template' })
   @Patch('update/:id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTemplateDto: UpdateTemplateDto,
-  ) {
+  update(@Param() id: string, @Body() updateTemplateDto: UpdateTemplateDto) {
     return new NotImplementedException();
   }
 
@@ -71,7 +68,7 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Update part' })
   @Patch('update/part/:id')
   updatePart(
-    @Param('id') id: string,
+    @Param() id: string,
     @Body() updateTemplateDto: UpdateTemplateDto,
   ) {
     return new NotImplementedException();
@@ -80,7 +77,7 @@ export class TemplatesController {
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Delete template' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() id: string) {
     return new NotImplementedException();
   }
 }

@@ -48,7 +48,7 @@ export class FilesController {
   @ApiOperation({ summary: 'Get file info' })
   @ApiParam(FindFileByIdDto)
   @Get(':id')
-  async findOne(@Param('id') data: FindFileByIdDto, @Res() res: Response) {
+  async findOne(@Param() data: FindFileByIdDto, @Res() res: Response) {
     const { fileInfo, stream } =
       await this.filesService.findOneWithStoredObject(data.id, true);
 
@@ -63,7 +63,7 @@ export class FilesController {
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Remove file' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() id: string) {
     throw new NotImplementedException();
   }
 }

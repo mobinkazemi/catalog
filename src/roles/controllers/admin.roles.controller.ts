@@ -61,7 +61,7 @@ export class RolesController {
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Delete role' })
   @Delete('remove/:id')
-  remove(@Param('id') id: string) {
+  remove(@Param() id: string) {
     throw new NotImplementedException();
   }
 }

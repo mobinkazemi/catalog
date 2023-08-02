@@ -22,7 +22,7 @@ export class AppController {
   @ApiOperation({ summary: 'Get template info' })
   @ApiParam(FindTemplateByIdDto)
   @Get(':id')
-  async findOne(@Param('id') data: FindTemplateByIdDto) {
+  async findOne(@Param() data: FindTemplateByIdDto) {
     const result = await this.templatesService.fineOneWithFiles(data.id);
     return new FindTemplateWithFilesDto(result);
   }
