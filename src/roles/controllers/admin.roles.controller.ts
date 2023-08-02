@@ -10,16 +10,16 @@ import {
   ConflictException,
   UseGuards,
 } from '@nestjs/common';
-import { RolesService } from './roles.service';
-import { CreateRoleDto } from './dto/request/create-role.dto';
-import { FindRoleDto } from './dto/request/find-role.dto';
-import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
-import { RolesGuard } from '../auth/strategy/role.strategy';
-import { RolesEnum } from '../common/enums/roles.enum';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesService } from '../roles.service';
+import { CreateRoleDto } from '../dto/request/create-role.dto';
+import { FindRoleDto } from '../dto/request/find-role.dto';
+import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
+import { RolesGuard } from '../../auth/strategy/role.strategy';
+import { RolesEnum } from '../../common/enums/roles.enum';
+import { Roles } from '../../auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { addListOptionsDto } from '../common/dto/base-repository-dtos.dto';
-import { FindRolesListDto } from './dto/request/find-roles.dto';
+import { addListOptionsDto } from '../../common/dto/base-repository-dtos.dto';
+import { FindRolesListDto } from '../dto/request/find-roles.dto';
 
 @UseGuards(RolesGuard)
 @Roles(RolesEnum.ADMIN)
