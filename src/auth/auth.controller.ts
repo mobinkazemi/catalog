@@ -18,21 +18,21 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'login' })
+  @ApiOperation({ summary: 'Login' })
   @Post('login')
   @UseGuards(AuthGuard('local'))
   async login(@Request() req) {
     return await this.authService.loginWithCredentials(req.user);
   }
 
-  @ApiOperation({ summary: 'refresh token' })
+  @ApiOperation({ summary: 'Refresh token' })
   @Post('refresh')
   @UseGuards(AuthGuard('jwt'))
   async refresh(@Request() req) {
     return await this.authService.refreshToken(req);
   }
 
-  @ApiOperation({ summary: 'logout' })
+  @ApiOperation({ summary: 'Logout' })
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   async logout(@Request() req) {

@@ -19,7 +19,7 @@ export class AppController {
     private readonly templatesService: TemplatesService,
   ) {}
 
-  @ApiOperation({ summary: 'find one template by id' })
+  @ApiOperation({ summary: 'Get template info' })
   @ApiParam(FindTemplateByIdDto)
   @Get(':id')
   async findOne(@Param('id') data: FindTemplateByIdDto) {

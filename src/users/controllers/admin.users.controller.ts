@@ -19,7 +19,7 @@ import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.d
 import { RolesGuard } from '../../auth/strategy/role.strategy';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { RolesEnum } from '../../common/enums/roles.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation, ApiProperty } from '@nestjs/swagger';
 import {
   FilterRequestUserDto,
   UserResponseListDto,
@@ -39,6 +39,7 @@ import { RemoveUserDto } from '../dto/request/remove-user-dto';
 export class UsersAdminController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Create user' })
   @ApiProperty({ type: CreateUserDto })
   @Post('create')
   async create(
@@ -52,6 +53,7 @@ export class UsersAdminController {
     return await this.usersService.create(createUserDto, true);
   }
 
+  @ApiOperation({ summary: 'Get user list' })
   @Get('list')
   async findAll(
     @Query() listOptions: addListOptionsDto,
@@ -62,6 +64,7 @@ export class UsersAdminController {
     );
   }
 
+  @ApiOperation({ summary: 'Update user' })
   @Patch('update/:id')
   async update(
     @Param('id') id: string,
@@ -71,6 +74,7 @@ export class UsersAdminController {
     return new userWithoutPasswordDto(user as User);
   }
 
+  @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
   remove(@Param('id') data: RemoveUserDto) {
     return this.usersService.remove(data.id, true);

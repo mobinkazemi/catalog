@@ -22,12 +22,14 @@ import {
 import { User } from '../schema/users.schema';
 import { GetPayload } from 'src/common/decorators/getUser.decorator';
 import { getPayloadDecoratorDto } from '../dto/response/get-user-decorator.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Get user (self) info' })
   @Get('info')
   async findOne(@Query() data: FindUserDto) {
     const { id, username } = data;
@@ -38,6 +40,7 @@ export class UsersController {
     return new FindUserResponseDto(result);
   }
 
+  @ApiOperation({ summary: 'Update user' })
   @Patch('update')
   async update(
     @Body() updateUserDto: Pick<UpdateUserDto, 'password'>,
