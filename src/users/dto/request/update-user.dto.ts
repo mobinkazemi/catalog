@@ -42,3 +42,11 @@ export class UpdateUserDto extends PartialType(OmitType(User, ['_id', 'id'])) {
     this.roles = data.roles;
   }
 }
+
+export class UpdateNotAdminUserDto extends PickType(UpdateUserDto, [
+  'password',
+]) {
+  constructor() {
+    super();
+  }
+}

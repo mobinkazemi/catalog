@@ -12,7 +12,10 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
-import { UpdateUserDto } from '../dto/request/update-user.dto';
+import {
+  UpdateNotAdminUserDto,
+  UpdateUserDto,
+} from '../dto/request/update-user.dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -43,11 +46,11 @@ export class UsersController {
     return new FindUserResponseDto(result);
   }
 
-  @ApiBody({ type: PickType(UpdateUserDto, ['password']) })
+  @ApiBody({ type: UpdateNotAdminUserDto })
   @ApiOperation({ summary: 'Update user' })
   @Patch('update')
   async update(
-    @Body() updateUserDto: Pick<UpdateUserDto, 'password'>,
+    @Body() updateUserDto: UpdateNotAdminUserDto,
     @GetPayload() payload: getPayloadDecoratorDto,
   ) {
     const user = await this.usersService.update(payload.id, updateUserDto);
