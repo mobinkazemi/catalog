@@ -29,6 +29,8 @@ import { UpdateUserDto } from '../dto/request/update-user.dto';
 import { userWithoutPasswordDto } from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
+import { ObjectIdOrString } from 'src/common/types/types';
+import { RemoveUserDto } from '../dto/request/remove-user-dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -70,7 +72,7 @@ export class UsersAdminController {
   }
 
   @Delete('remove')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id') data: RemoveUserDto) {
+    return this.usersService.remove(data.id, true);
   }
 }

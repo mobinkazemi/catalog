@@ -15,6 +15,7 @@ import { User, UserDocument } from './schema/users.schema';
 import * as _ from 'lodash';
 import { UpdateRoleDto } from '../roles/dto/request/update-role.dto';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
+import { ObjectIdOrString } from 'src/common/types/types';
 
 @Injectable()
 export class UsersRepository extends BaseRepository {
@@ -109,5 +110,14 @@ export class UsersRepository extends BaseRepository {
     return await this.userModel.findOneAndUpdate(query, updateData, {
       new: true,
     });
+  }
+
+  async remove(id: ObjectIdOrString) {
+    await this.userModel.updateOne(
+      {
+        _id: this.convertToObjectId(id as string),
+      },
+      { $set: { deletedAt: new Date() } },
+    );
   }
 }

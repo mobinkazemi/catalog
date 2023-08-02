@@ -22,6 +22,7 @@ import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateRoleDto } from 'src/roles/dto/request/update-role.dto';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
+import { ObjectIdOrString } from 'src/common/types/types';
 @Injectable()
 export class UsersService {
   constructor(
@@ -68,8 +69,10 @@ export class UsersService {
     return await this.userRepository.updateOne({ id }, updateUserDto);
   }
 
-  async remove(id: number) {
-    throw new NotImplementedException();
+  async remove(id: ObjectIdOrString, error?: boolean) {
+    await this.findOne({ id: id.toString() }, error);
+
+    await this.userRepository.remove(id);
   }
 
   async addRole(data: CreateUserRoleDto, error?: boolean): Promise<User> {

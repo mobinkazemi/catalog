@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { isValidObjectId } from 'mongoose';
 import {
   addLimitDto,
   addListOptionsDto,
@@ -33,6 +33,9 @@ export abstract class BaseRepository {
   }
 
   protected convertToObjectId(data: string): ObjectIdType {
+    if (typeof data == 'object' && isValidObjectId(data))
+      return data as ObjectIdType;
+
     return new mongoose.Types.ObjectId(data);
   }
 
