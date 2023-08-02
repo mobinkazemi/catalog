@@ -20,9 +20,19 @@ import { SeederModule } from '../seeder/seeder.module';
 import { sampleMiddleware } from './middlewares/test.middleware';
 import { RedisProxyService } from '../redis/redis.service';
 import { TemplatesModule } from 'src/templates/templates.module';
+import { TemplatesService } from 'src/templates/templates.service';
+import { TemplatesRepository } from 'src/templates/templates.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Template,
+  TemplateSchema,
+} from 'src/templates/schema/templates.schema';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([
+      { name: Template.name, schema: TemplateSchema },
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`${process.env.NODE_ENV}.env`, `secret.env`],
@@ -39,7 +49,13 @@ import { TemplatesModule } from 'src/templates/templates.module';
     TemplatesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MinioClientService, RedisProxyService],
+  providers: [
+    AppService,
+    MinioClientService,
+    RedisProxyService,
+    TemplatesService,
+    TemplatesRepository,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

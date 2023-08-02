@@ -75,17 +75,14 @@ export class TemplatesRepository extends BaseRepository {
 
     const result = await this.templateModel
       .findOne<Template>(query, {}, { lean: true })
-      //
       .populate('backgroundFileId')
-      .populate('pid')
+      // .populate('pid')
       .populate({
         path: 'parts.fileId',
         foreignField: '_id',
         localField: 'parts.fileId',
         model: 'File',
       });
-
-    console.log(result);
 
     return result;
   }
