@@ -4,7 +4,7 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 export class CreateUserDto {
   @ApiProperty({ type: String })
   @IsString()
-  @MinLength(8, { message: 'min username length is 8' })
+  @MinLength(4, { message: 'min username length is 4' })
   @MaxLength(12, { message: 'max username length is 24' })
   username: string;
 
