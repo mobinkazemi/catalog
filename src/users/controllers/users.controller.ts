@@ -31,13 +31,14 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Get user (self) info' })
-  @ApiQuery({ type: FindUserDto })
   @Get('info')
-  async findOne(@Query() data: FindUserDto) {
-    const { id, username } = data;
-    if (!id && !username) throw new BadRequestException();
+  async findOne(
+    // @Query() data: FindUserDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
+    const { id } = payload;
 
-    const result = await this.usersService.findOne({ id, username });
+    const result = await this.usersService.findOne({ id });
 
     return new FindUserResponseDto(result);
   }

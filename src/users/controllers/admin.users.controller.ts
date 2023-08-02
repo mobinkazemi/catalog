@@ -33,11 +33,15 @@ import {
 } from '../dto/request/filter-user.dto';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import { UpdateUserDto } from '../dto/request/update-user.dto';
-import { userWithoutPasswordDto } from '../dto/response/findOne-user.dto';
+import {
+  FindUserResponseDto,
+  userWithoutPasswordDto,
+} from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { RemoveUserDto } from '../dto/request/remove-user-dto';
+import { FindUserDto } from '../dto/request/findone-user.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -58,6 +62,18 @@ export class UsersAdminController {
     if (exist) throw new ConflictException();
 
     return await this.usersService.create(createUserDto, true);
+  }
+
+  @ApiOperation({ summary: 'Get user info' })
+  @ApiQuery({ type: FindUserDto })
+  @Get('info')
+  async findOne(@Query() data: FindUserDto) {
+    const { id, username } = data;
+    if (!id && !username) throw new BadRequestException();
+
+    const result = await this.usersService.findOne({ id, username });
+
+    return new FindUserResponseDto(result);
   }
 
   @ApiQuery({ type: addListOptionsDto })
