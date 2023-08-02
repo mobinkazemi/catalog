@@ -43,7 +43,6 @@ export class UsersRepository extends BaseRepository {
     if (options) {
       query = this.addOptions(query, options);
     }
-    console.log({ query });
 
     return await this.userModel.findOne(query);
   }

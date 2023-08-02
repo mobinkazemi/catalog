@@ -70,7 +70,7 @@ export class UsersService {
   }
 
   async remove(id: ObjectIdOrString, error?: boolean) {
-    console.log(await this.findOne({ id: id.toString() }, error));
+    await this.findOne({ id: id.toString() }, error);
 
     await this.userRepository.remove(id);
   }
