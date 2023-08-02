@@ -54,7 +54,8 @@ export class RolesController {
   @ApiOperation({ summary: 'Get role info' })
   @Get('info')
   async findOne(@Query() data: FindRoleDto) {
-    return await this.rolesService.findOne(data, true);
+    const result = await this.rolesService.findOne(data, true);
+    return new findRoleResponseDto(result);
   }
 
   @ApiExcludeEndpoint()
