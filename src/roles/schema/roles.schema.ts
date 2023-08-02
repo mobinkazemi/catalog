@@ -17,6 +17,7 @@ export class Role extends Base {
     required: true,
     minlength: 2,
     maxlength: 64,
+    uppercase: true,
   })
   name: string;
 }
