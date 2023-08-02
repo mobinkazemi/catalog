@@ -5,11 +5,15 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   Max,
   Min,
 } from 'class-validator';
+import { ObjectIdRegex } from '../constants/objectId-regex.constant';
 
 export class findByIdDto {
+  @IsString()
+  @Matches(ObjectIdRegex)
   id: string;
 }
 

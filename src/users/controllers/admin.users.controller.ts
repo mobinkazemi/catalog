@@ -31,8 +31,14 @@ import {
   FilterRequestUserDto,
   UserResponseListDto,
 } from '../dto/request/filter-user.dto';
-import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
-import { UpdateUserDto } from '../dto/request/update-user.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from 'src/common/dto/base-repository-dtos.dto';
+import {
+  UpdateUserDto,
+  UpdateUserByAdminDto,
+} from '../dto/request/update-user.dto';
 import {
   FindUserResponseDto,
   userWithoutPasswordDto,
@@ -89,15 +95,14 @@ export class UsersAdminController {
     );
   }
 
-  @ApiBody({ type: UpdateUserDto })
-  @ApiBody({ type: BaseSchemaDto })
+  @ApiBody({ type: UpdateUserByAdminDto })
   @ApiOperation({ summary: 'Update user' })
   @Patch('update/:id')
   async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto & BaseSchemaDto,
+    @Param('id') idData: findByIdDto,
+    @Body() updateUserDto: UpdateUserByAdminDto,
   ) {
-    const user = await this.usersService.update(id, updateUserDto);
+    const user = await this.usersService.update(idData.id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
   }
 
