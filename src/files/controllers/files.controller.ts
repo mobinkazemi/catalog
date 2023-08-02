@@ -11,12 +11,12 @@ import {
   UploadedFile,
   Res,
 } from '@nestjs/common';
-import { FilesService } from './files.service';
+import { FilesService } from '../files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
+import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
 import { defaults } from 'config/configuration';
 import type { Response } from 'express';
-import { FindFileByIdDto } from './dto/request/find-file.dto';
+import { FindFileByIdDto } from '../dto/request/find-file.dto';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}

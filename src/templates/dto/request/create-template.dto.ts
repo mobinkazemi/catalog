@@ -12,7 +12,7 @@ import {
 import mongoose, { ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString } from 'src/common/types/types';
-import { Part, Template } from '../schema/templates.schema';
+import { Part, Template } from '../../schema/templates.schema';
 
 export class CreateTemplateDto extends OmitType(Template, [
   'id',

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectIdOrString } from 'src/common/types/types';
-import { CreateTemplateDto } from './dto/create-template.dto';
-import { UpdateTemplateDto } from './dto/update-template.dto';
+import { CreateTemplateDto } from './dto/request/create-template.dto';
+import { UpdateTemplateDto } from './dto/request/update-template.dto';
 import { Template } from './schema/templates.schema';
 import { TemplatesRepository } from './templates.repository';
 

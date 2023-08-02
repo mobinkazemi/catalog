@@ -12,8 +12,8 @@ import { Template, TemplateDocument } from './schema/templates.schema';
 import {
   FindOneTemplateRepositoryDto,
   FindTemplateRepositoryDto,
-} from './dto/find-template.dto';
-import { CreateTemplateDto } from './dto/create-template.dto';
+} from './dto/request/find-template.dto';
+import { CreateTemplateDto } from './dto/request/create-template.dto';
 
 @Injectable()
 export class TemplatesRepository extends BaseRepository {

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
-import { TemplatesController } from './templates.controller';
+import { TemplatesController } from './controllers/admin.templates.controller';
 import { TemplatesRepository } from './templates.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Template, TemplateSchema } from './schema/templates.schema';
