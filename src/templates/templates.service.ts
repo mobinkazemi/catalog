@@ -4,6 +4,7 @@ import {
   CreatePartOfTemplateDto,
   CreateTemplateDto,
 } from './dto/request/create-template.dto';
+import { RemovePartOfTemplateDto } from './dto/request/remove-template.dto';
 import { UpdateTemplateDto } from './dto/request/update-template.dto';
 import { Template } from './schema/templates.schema';
 import { TemplatesRepository } from './templates.repository';
@@ -17,6 +18,7 @@ export class TemplatesService {
 
   async createPart(
     createPartOfTemplateDto: CreatePartOfTemplateDto,
+    error?: boolean,
   ): Promise<Template> {
     return await this.templateRepository.createPart(createPartOfTemplateDto);
   }
@@ -39,5 +41,12 @@ export class TemplatesService {
 
   remove(id: number) {
     return `This action removes a #${id} template`;
+  }
+
+  async removePart(
+    data: RemovePartOfTemplateDto,
+    error?: boolean,
+  ): Promise<Template> {
+    return await this.templateRepository.removePart(data);
   }
 }

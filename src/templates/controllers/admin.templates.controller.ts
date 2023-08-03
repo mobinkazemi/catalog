@@ -30,6 +30,7 @@ import {
 } from '@nestjs/swagger';
 import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
 import { FindOneTemplateRepositoryDto } from '../dto/request/find-template.dto';
+import { RemovePartOfTemplateDto } from '../dto/request/remove-template.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -47,7 +48,7 @@ export class TemplatesController {
 
   @ApiOperation({ summary: 'Create Part of template' })
   @ApiBody({ type: CreatePartOfTemplateDto })
-  @Post('create/part')
+  @Post('part/create')
   async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
     return this.templatesService.createPart(createPartOfTemplateDto);
   }
@@ -76,7 +77,7 @@ export class TemplatesController {
 
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Update part' })
-  @Patch('update/part/:id')
+  @Patch('part/update/:id')
   updatePart(
     @Param() id: string,
     @Body() updateTemplateDto: UpdateTemplateDto,
@@ -86,8 +87,14 @@ export class TemplatesController {
 
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Delete template' })
-  @Delete(':id')
-  remove(@Param() id: string) {
+  @Delete('remove/:id')
+  remove(@Body() id: string) {
     return new NotImplementedException();
+  }
+
+  @ApiOperation({ summary: 'Delete template Part' })
+  @Delete('part/remove/:id')
+  async removePart(@Body() data: RemovePartOfTemplateDto) {
+    return await this.templatesService.removePart(data);
   }
 }

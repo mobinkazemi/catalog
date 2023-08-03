@@ -163,7 +163,12 @@ export class TemplatesRepository extends BaseRepository {
         _id: this.convertToObjectId(templateId as string),
       },
       {
-        $push: { parts: createPartOfTemplateDto },
+        $push: {
+          parts: {
+            ...createPartOfTemplateDto,
+            _id: new mongoose.Types.ObjectId(),
+          },
+        },
       },
       { new: true, lean: true },
     );
@@ -181,10 +186,10 @@ export class TemplatesRepository extends BaseRepository {
     );
 
     template.parts = template.parts.filter(
-      (part) => part.id != partId.toString(),
+      (part) => part._id.toString() != partId.toString(),
     );
 
-    template.save();
+    await template.save();
 
     return await this.templateModel.findById(
       this.convertToObjectId(templateId as string),

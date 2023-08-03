@@ -105,7 +105,7 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
 
   constructor(data: Partial<Part>) {
     super();
-
+    if (!data) data = {};
     this.title = data.title;
     this.text = data.text;
     this.fileId = data.fileId;
