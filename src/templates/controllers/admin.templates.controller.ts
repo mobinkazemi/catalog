@@ -11,7 +11,10 @@ import {
   Req,
 } from '@nestjs/common';
 import { TemplatesService } from '../templates.service';
-import { CreateTemplateDto } from '../dto/request/create-template.dto';
+import {
+  CreatePartOfTemplateDto,
+  CreateTemplateDto,
+} from '../dto/request/create-template.dto';
 import { UpdateTemplateDto } from '../dto/request/update-template.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
@@ -40,6 +43,13 @@ export class TemplatesController {
   @Post('create')
   async create(@Body() createTemplateDto: CreateTemplateDto) {
     return this.templatesService.create(createTemplateDto);
+  }
+
+  @ApiOperation({ summary: 'Create Part of template' })
+  @ApiBody({ type: CreatePartOfTemplateDto })
+  @Post('create/part')
+  async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
+    return this.templatesService.createPart(createPartOfTemplateDto);
   }
 
   @ApiExcludeEndpoint()

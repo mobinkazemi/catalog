@@ -13,7 +13,11 @@ import {
   FindOneTemplateRepositoryDto,
   FindTemplateRepositoryDto,
 } from './dto/request/find-template.dto';
-import { CreateTemplateDto } from './dto/request/create-template.dto';
+import {
+  CreatePartOfTemplateDto,
+  CreateTemplateDto,
+} from './dto/request/create-template.dto';
+import { RemovePartOfTemplateDto } from './dto/request/remove-template.dto';
 
 @Injectable()
 export class TemplatesRepository extends BaseRepository {
@@ -146,6 +150,45 @@ export class TemplatesRepository extends BaseRepository {
     }
 
     return await this.templateModel.create(createTemplateDto);
+  }
+
+  async createPart(
+    createPartOfTemplateDto: CreatePartOfTemplateDto,
+  ): Promise<Template> {
+    const { templateId } = createPartOfTemplateDto;
+    delete createPartOfTemplateDto.templateId;
+
+    const result = await this.templateModel.findOneAndUpdate(
+      {
+        _id: this.convertToObjectId(templateId as string),
+      },
+      {
+        $push: { parts: createPartOfTemplateDto },
+      },
+      { new: true, lean: true },
+    );
+
+    return result;
+  }
+
+  async removePart(
+    removePartOfTemplateDto: RemovePartOfTemplateDto,
+  ): Promise<Template> {
+    const { templateId, partId } = removePartOfTemplateDto;
+
+    let template = await this.templateModel.findById(
+      this.convertToObjectId(templateId as string),
+    );
+
+    template.parts = template.parts.filter(
+      (part) => part.id != partId.toString(),
+    );
+
+    template.save();
+
+    return await this.templateModel.findById(
+      this.convertToObjectId(templateId as string),
+    );
   }
 
   //   async updateOne<User>(

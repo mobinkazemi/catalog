@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectIdOrString } from 'src/common/types/types';
-import { CreateTemplateDto } from './dto/request/create-template.dto';
+import {
+  CreatePartOfTemplateDto,
+  CreateTemplateDto,
+} from './dto/request/create-template.dto';
 import { UpdateTemplateDto } from './dto/request/update-template.dto';
 import { Template } from './schema/templates.schema';
 import { TemplatesRepository } from './templates.repository';
@@ -10,6 +13,12 @@ export class TemplatesService {
   constructor(private readonly templateRepository: TemplatesRepository) {}
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
     return await this.templateRepository.create(createTemplateDto);
+  }
+
+  async createPart(
+    createPartOfTemplateDto: CreatePartOfTemplateDto,
+  ): Promise<Template> {
+    return await this.templateRepository.createPart(createPartOfTemplateDto);
   }
 
   findAll() {

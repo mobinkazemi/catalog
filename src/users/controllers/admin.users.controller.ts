@@ -115,9 +115,3 @@ export class UsersAdminController {
     return this.usersService.remove(data.id, true);
   }
 }
-
-for (let i = 0; i < 5; i++) {
-  const id = new mongoose.Types.ObjectId();
-
-  console.log(id.toString().search(ObjectIdRegex));
-}

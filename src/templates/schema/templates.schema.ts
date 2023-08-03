@@ -79,7 +79,7 @@ export class Template extends Base {
   @Prop({
     type: Array<Part>,
   })
-  parts: Array<Part>;
+  parts?: Array<Part>;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);
