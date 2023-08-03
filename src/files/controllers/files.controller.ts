@@ -70,6 +70,6 @@ export class FilesController {
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.filesService.remove(data);
+    return await this.filesService.remove(data, true);
   }
 }

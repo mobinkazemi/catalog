@@ -19,7 +19,10 @@ import { RolesGuard } from '../../auth/strategy/role.strategy';
 import { RolesEnum } from '../../common/enums/roles.enum';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { addListOptionsDto } from '../../common/dto/base-repository-dtos.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from '../../common/dto/base-repository-dtos.dto';
 import { FindRolesListDto } from '../dto/request/find-roles.dto';
 import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { findRoleResponseDto } from '../dto/response/find-role.dto';
@@ -58,10 +61,10 @@ export class RolesController {
     return new findRoleResponseDto(result);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiBody({ type: findByIdDto })
   @ApiOperation({ summary: 'Delete role' })
-  @Delete('remove/:id')
-  remove(@Param() id: string) {
-    throw new NotImplementedException();
+  @Delete('remove')
+  async remove(@Body() data: findByIdDto) {
+    return await this.rolesService.remove(data, true);
   }
 }

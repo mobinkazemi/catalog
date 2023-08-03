@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   addListOptionsDto,
+  findByIdDto,
   OptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from '../database/repository/base.repository';
@@ -67,5 +68,15 @@ export class RolesRepository extends BaseRepository {
 
   async create(data: CreateRoleDto) {
     return await this.roleModel.create(data);
+  }
+  async remove(data: findByIdDto): Promise<void> {
+    await this.roleModel.updateOne(
+      {
+        _id: this.convertToObjectId(data.id),
+      },
+      {
+        $set: { deletedAt: Date.now() },
+      },
+    );
   }
 }

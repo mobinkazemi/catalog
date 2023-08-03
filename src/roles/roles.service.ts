@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { addListOptionsDto } from '../common/dto/base-repository-dtos.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from '../common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { User, UserDocument } from '../users/schema/users.schema';
 import { CreateRoleDto } from './dto/request/create-role.dto';
@@ -51,7 +54,9 @@ export class RolesService {
     return role;
   }
 
-  remove(id: number) {
-    throw new NotImplementedException();
+  async remove(data: findByIdDto, error?: boolean) {
+    await this.findOne({ id: data.id }, error);
+
+    await this.roleRepository.remove(data);
   }
 }
