@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
   CreatePartOfTemplateDto,
@@ -27,16 +27,22 @@ export class TemplatesService {
     return `This action returns all templates`;
   }
 
-  async findOne(id: ObjectIdOrString) {
-    return await this.templateRepository.findOne({ id: id as string });
+  async findOne(id: ObjectIdOrString, error?: boolean) {
+    const result = await this.templateRepository.findOne({ id: id as string });
+
+    if (!result && error) throw new NotFoundException();
+
+    return result;
   }
 
-  async fineOneWithFiles(id: ObjectIdOrString) {
+  async fineOneWithFiles(id: ObjectIdOrString, error?: boolean) {
     return await this.templateRepository.findOneWithFiles({ id: id as string });
   }
 
-  update(id: number, updateTemplateDto: UpdateTemplateDto) {
-    return `This action updates a #${id} template`;
+  async update(updateTemplateDto: UpdateTemplateDto, error?: boolean) {
+    await this.findOne(updateTemplateDto.templateId, error);
+
+    return await this.templateRepository.update(updateTemplateDto);
   }
 
   remove(id: number) {

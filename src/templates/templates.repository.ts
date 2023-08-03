@@ -18,6 +18,7 @@ import {
   CreateTemplateDto,
 } from './dto/request/create-template.dto';
 import { RemovePartOfTemplateDto } from './dto/request/remove-template.dto';
+import { UpdateTemplateDto } from './dto/request/update-template.dto';
 
 @Injectable()
 export class TemplatesRepository extends BaseRepository {
@@ -28,6 +29,18 @@ export class TemplatesRepository extends BaseRepository {
     super();
   }
 
+  async update(data: UpdateTemplateDto): Promise<Template> {
+    const { templateId } = data;
+    delete data.templateId;
+
+    return await this.templateModel.findOneAndUpdate(
+      {
+        _id: this.convertToObjectId(templateId as string),
+      },
+      { $set: data },
+      { new: true },
+    );
+  }
   async findOne<Template>(
     data?: FindOneTemplateRepositoryDto,
     options?: OptionsDto,
