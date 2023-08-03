@@ -18,7 +18,10 @@ import {
   CreateTemplateDto,
 } from './dto/request/create-template.dto';
 import { RemovePartOfTemplateDto } from './dto/request/remove-template.dto';
-import { UpdateTemplateDto } from './dto/request/update-template.dto';
+import {
+  UpdatePartOfTemplateDto,
+  UpdateTemplateDto,
+} from './dto/request/update-template.dto';
 
 @Injectable()
 export class TemplatesRepository extends BaseRepository {
@@ -41,6 +44,7 @@ export class TemplatesRepository extends BaseRepository {
       { new: true },
     );
   }
+
   async findOne<Template>(
     data?: FindOneTemplateRepositoryDto,
     options?: OptionsDto,
@@ -209,25 +213,20 @@ export class TemplatesRepository extends BaseRepository {
     );
   }
 
-  //   async updateOne<User>(
-  //     data: FindUserDto,
-  //     updateData: UpdateUserDto & BaseSchemaDto,
-  //   ): Promise<User> {
-  //     let query = {};
+  async updatePart(data: UpdatePartOfTemplateDto): Promise<Template> {
+    const { templateId, partId } = data;
+    delete data.templateId;
+    delete data.partId;
 
-  //     if (data.id) {
-  //       query['_id'] = this.convertToObjectId(data.id);
-  //       delete data.id;
-  //     }
-
-  //     query = {
-  //       ...query,
-  //       ...data,
-  //       deletedAt: null,
-  //     };
-
-  //     return await this.templateModel.findOneAndUpdate(query, updateData, {
-  //       new: true,
-  //     });
-  //   }
+    return await this.templateModel.findOneAndUpdate(
+      {
+        _id: this.convertToObjectId(templateId as string),
+        'parts._id': this.convertToObjectId(partId as string),
+      },
+      {
+        $set: data,
+      },
+      { new: true },
+    );
+  }
 }

@@ -15,7 +15,10 @@ import {
   CreatePartOfTemplateDto,
   CreateTemplateDto,
 } from '../dto/request/create-template.dto';
-import { UpdateTemplateDto } from '../dto/request/update-template.dto';
+import {
+  UpdatePartOfTemplateDto,
+  UpdateTemplateDto,
+} from '../dto/request/update-template.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { RolesGuard } from 'src/auth/strategy/role.strategy';
@@ -45,12 +48,11 @@ export class TemplatesController {
   async create(@Body() createTemplateDto: CreateTemplateDto) {
     return this.templatesService.create(createTemplateDto);
   }
-
-  @ApiOperation({ summary: 'Create Part of template' })
-  @ApiBody({ type: CreatePartOfTemplateDto })
-  @Post('part/create')
-  async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
-    return this.templatesService.createPart(createPartOfTemplateDto);
+  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Delete template' })
+  @Delete('remove/:id')
+  remove(@Body() id: string) {
+    return new NotImplementedException();
   }
 
   @ApiExcludeEndpoint()
@@ -69,29 +71,24 @@ export class TemplatesController {
   }
 
   @ApiOperation({ summary: 'Update template' })
+  @ApiBody({ type: UpdateTemplateDto })
   @Patch('update')
-  async update(
-    @Param() id: string,
-    @Body() updateTemplateDto: UpdateTemplateDto,
-  ) {
+  async update(@Body() updateTemplateDto: UpdateTemplateDto) {
     return await this.templatesService.update(updateTemplateDto, true);
   }
 
-  @ApiExcludeEndpoint()
-  @ApiOperation({ summary: 'Update part' })
-  @Patch('part/update/:id')
-  updatePart(
-    @Param() id: string,
-    @Body() updateTemplateDto: UpdateTemplateDto,
-  ) {
-    return new NotImplementedException();
+  // ----- PART -----
+  @ApiOperation({ summary: 'Create Part of template' })
+  @ApiBody({ type: CreatePartOfTemplateDto })
+  @Post('part/create')
+  async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
+    return this.templatesService.createPart(createPartOfTemplateDto);
   }
 
-  @ApiExcludeEndpoint()
-  @ApiOperation({ summary: 'Delete template' })
-  @Delete('remove/:id')
-  remove(@Body() id: string) {
-    return new NotImplementedException();
+  @ApiOperation({ summary: 'Update part' })
+  @Patch('part/update')
+  async updatePart(@Body() data: UpdatePartOfTemplateDto) {
+    return await this.templatesService.updatePart(data);
   }
 
   @ApiOperation({ summary: 'Delete template Part' })

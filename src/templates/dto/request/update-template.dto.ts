@@ -57,6 +57,11 @@ export class UpdatePartOfTemplateDto extends PartialType(
   templateId: ObjectIdOrString;
 
   @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
+  @IsString()
+  partId: ObjectIdOrString;
+
+  @ApiProperty({ type: String })
   @IsOptional()
   @IsString()
   title: string;
