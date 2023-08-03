@@ -7,7 +7,9 @@ import {
 export function addTemplateHooks(schema: mongoose.Schema): mongoose.Schema {
   schema.pre('updateOne', function (next) {
     let updateData = this.getUpdate();
-    if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
+    if (isSoftDelete(updateData)) {
+      handleSoftDeleteConcerns(updateData);
+    }
     return next();
   });
   schema.pre('updateMany', function (next) {
