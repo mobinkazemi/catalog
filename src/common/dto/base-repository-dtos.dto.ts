@@ -12,6 +12,7 @@ import {
 import { ObjectIdRegex } from '../constants/objectId-regex.constant';
 
 export class findByIdDto {
+  @ApiProperty({ type: String })
   @IsString()
   @Matches(ObjectIdRegex)
   id: string;

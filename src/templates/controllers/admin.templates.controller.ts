@@ -34,6 +34,7 @@ import {
 import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
 import { FindOneTemplateRepositoryDto } from '../dto/request/find-template.dto';
 import { RemovePartOfTemplateDto } from '../dto/request/remove-template.dto';
+import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -48,11 +49,12 @@ export class TemplatesController {
   async create(@Body() createTemplateDto: CreateTemplateDto) {
     return this.templatesService.create(createTemplateDto);
   }
-  @ApiExcludeEndpoint()
+
   @ApiOperation({ summary: 'Delete template' })
-  @Delete('remove/:id')
-  remove(@Body() id: string) {
-    return new NotImplementedException();
+  @ApiBody({ type: findByIdDto })
+  @Delete('remove')
+  async remove(@Body() data: findByIdDto) {
+    return await this.templatesService.remove(data);
   }
 
   @ApiExcludeEndpoint()

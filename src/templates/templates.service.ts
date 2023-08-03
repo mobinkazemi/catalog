@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
   CreatePartOfTemplateDto,
@@ -41,8 +42,8 @@ export class TemplatesService {
     return await this.templateRepository.update(updateTemplateDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} template`;
+  async remove(data: findByIdDto): Promise<void> {
+    return await this.templateRepository.remove(data);
   }
 
   // ----- PARTS -----

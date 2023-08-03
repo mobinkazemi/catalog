@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import {
   OptionsDto,
   addListOptionsDto,
+  findByIdDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from '../database/repository/base.repository';
 import * as _ from 'lodash';
@@ -168,6 +169,19 @@ export class TemplatesRepository extends BaseRepository {
 
     return await this.templateModel.create(createTemplateDto);
   }
+
+  async remove(data: findByIdDto): Promise<void> {
+    await this.templateModel.updateOne(
+      {
+        _id: this.convertToObjectId(data.id),
+      },
+      {
+        $set: { deletedAt: Date.now() },
+      },
+    );
+  }
+
+  // ----- PART -----
 
   async createPart(
     createPartOfTemplateDto: CreatePartOfTemplateDto,
