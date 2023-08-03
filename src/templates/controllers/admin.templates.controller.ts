@@ -80,7 +80,7 @@ export class TemplatesController {
   }
 
   // ----- PART -----
-  @ApiOperation({ summary: 'Create Part of template' })
+  @ApiOperation({ summary: 'Create Part' })
   @ApiBody({ type: CreatePartOfTemplateDto })
   @Post('part/create')
   async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
@@ -93,7 +93,7 @@ export class TemplatesController {
     return await this.templatesService.updatePart(data);
   }
 
-  @ApiOperation({ summary: 'Delete template Part' })
+  @ApiOperation({ summary: 'Delete Part' })
   @Delete('part/remove')
   async removePart(@Body() data: RemovePartOfTemplateDto) {
     return await this.templatesService.removePart(data);

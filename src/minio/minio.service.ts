@@ -25,12 +25,12 @@ export class MinioClientService {
 
       return true;
     } catch (error) {
-      return false;
+      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
     }
   }
   async createBucketIfNotExists() {
-    if (!(await this.ping()))
-      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
+    await this.ping();
+
     const bucketExists = await this.minioClient.bucketExists(this.bucketName);
     if (!bucketExists) {
       await this.minioClient.makeBucket(this.bucketName);
@@ -38,8 +38,7 @@ export class MinioClientService {
   }
 
   async uploadFile(file: Express.Multer.File, fileName: string) {
-    if (!(await this.ping()))
-      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
+    await this.ping();
 
     await this.minioClient.putObject(
       this.bucketName,
@@ -51,8 +50,7 @@ export class MinioClientService {
   }
 
   async getFileUrl(fileName: string) {
-    if (!(await this.ping()))
-      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
+    await this.ping();
 
     return await this.minioClient.presignedUrl(
       'GET',
@@ -61,9 +59,8 @@ export class MinioClientService {
     );
   }
 
-  async getFile(objectName: string, realFileName: string) {
-    if (!(await this.ping()))
-      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
+  async getFile(objectName: string) {
+    await this.ping();
 
     try {
       return await this.minioClient.getObject(this.bucketName, objectName);
@@ -73,8 +70,7 @@ export class MinioClientService {
   }
 
   async deleteFile(fileName: string) {
-    if (!(await this.ping()))
-      throw new InternalServerErrorException(minioErrorEnums.NO_CONNECTION);
+    await this.ping();
 
     await this.minioClient.removeObject(this.bucketName, fileName);
   }

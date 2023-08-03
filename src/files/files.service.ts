@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { MinioClientService } from '../minio/minio.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
@@ -45,7 +46,7 @@ export class FilesService {
 
     if (!file && !error) return;
 
-    const objectStream = await this.minioService.getFile(file.id, file.name);
+    const objectStream = await this.minioService.getFile(file.id);
 
     return {
       fileInfo: file,
@@ -53,7 +54,12 @@ export class FilesService {
     };
   }
 
-  remove(id: number) {
-    throw new NotImplementedException();
+  async remove(data: findByIdDto, error?: boolean): Promise<void> {
+    const file = await this.findOne(data.id, error);
+
+    if (!file) return;
+
+    await this.fileRepository.remove(data);
+    await this.minioService.deleteFile(data.id);
   }
 }

@@ -17,7 +17,13 @@ import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.d
 import { defaults } from 'config/configuration';
 import type { Response } from 'express';
 import { FindFileByIdDto } from '../dto/request/find-file.dto';
-import { ApiExcludeEndpoint, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
+import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -60,10 +66,10 @@ export class FilesController {
     stream.pipe(res);
   }
 
-  @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Remove file' })
-  @Delete(':id')
-  remove(@Param() id: string) {
-    throw new NotImplementedException();
+  @ApiBody({ type: findByIdDto })
+  @Delete('remove')
+  async remove(@Body() data: findByIdDto) {
+    return await this.filesService.remove(data);
   }
 }

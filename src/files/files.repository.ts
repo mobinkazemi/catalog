@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   addListOptionsDto,
+  findByIdDto,
   OptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from 'src/database/repository/base.repository';
@@ -46,5 +47,16 @@ export class FilesRepository extends BaseRepository {
       name: originalname,
       mime: mimetype,
     });
+  }
+
+  async remove(data: findByIdDto): Promise<void> {
+    await this.fileModel.updateOne(
+      {
+        _id: this.convertToObjectId(data.id),
+      },
+      {
+        $set: { deletedAt: Date.now() },
+      },
+    );
   }
 }
