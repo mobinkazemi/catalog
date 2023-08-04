@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam } from '@nestjs/swagger';
-import { FindTemplateByIdDto } from 'src/templates/dto/request/find-template.dto';
+import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { FindTemplateWithFilesDto } from 'src/templates/dto/response/find-one-with-file.dto';
 import { TemplatesService } from 'src/templates/templates.service';
 import { AppService } from './app.service';
@@ -20,10 +20,13 @@ export class AppController {
   ) {}
 
   @ApiOperation({ summary: 'Get template info' })
-  @ApiParam(FindTemplateByIdDto)
+  @ApiParam(findByIdDto)
   @Get(':id')
-  async findOne(@Param() data: FindTemplateByIdDto) {
-    const result = await this.templatesService.fineOneWithFiles(data.id, true);
+  async findOne(@Param() data: findByIdDto) {
+    const result = await this.templatesService.fineOneWithFiles(
+      { id: data.id, expired: false },
+      true,
+    );
     return new FindTemplateWithFilesDto(result);
   }
 }

@@ -10,10 +10,7 @@ import { BaseRepository } from '../database/repository/base.repository';
 import * as _ from 'lodash';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { Template, TemplateDocument } from './schema/templates.schema';
-import {
-  FindOneTemplateRepositoryDto,
-  FindTemplateRepositoryDto,
-} from './dto/request/find-template.dto';
+import { FindTemplateDto } from './dto/request/find-template.dto';
 import {
   CreatePartOfTemplateDto,
   CreateTemplateDto,
@@ -33,6 +30,16 @@ export class TemplatesRepository extends BaseRepository {
     super();
   }
 
+  private expirationHandler(expired: boolean, query: object) {
+    const key = 'expiredAt';
+    if (expired) {
+      query[key] = { $lt: Date.now() };
+    } else {
+      query[key] = { $gte: Date.now() };
+    }
+
+    return query;
+  }
   async update(data: UpdateTemplateDto): Promise<Template> {
     const { templateId } = data;
     delete data.templateId;
@@ -47,7 +54,7 @@ export class TemplatesRepository extends BaseRepository {
   }
 
   async findOne<Template>(
-    data?: FindOneTemplateRepositoryDto,
+    data?: FindTemplateDto,
     options?: OptionsDto,
   ): Promise<Template> {
     let query = {};
@@ -64,6 +71,10 @@ export class TemplatesRepository extends BaseRepository {
       deletedAt: null,
     };
 
+    if (typeof data.expired == 'boolean') {
+      query = this.expirationHandler(data.expired, query);
+    }
+
     if (options) {
       query = this.addOptions(query, options);
     }
@@ -74,7 +85,7 @@ export class TemplatesRepository extends BaseRepository {
   }
 
   async findOneWithFiles<Template>(
-    data?: FindOneTemplateRepositoryDto,
+    data?: FindTemplateDto,
     options?: OptionsDto,
   ) {
     let query = {};
@@ -90,6 +101,10 @@ export class TemplatesRepository extends BaseRepository {
       ...data,
       deletedAt: null,
     };
+
+    if (typeof data.expired == 'boolean') {
+      query = this.expirationHandler(data.expired, query);
+    }
 
     if (options) {
       query = this.addOptions(query, options);
@@ -110,7 +125,7 @@ export class TemplatesRepository extends BaseRepository {
   }
 
   async findAll<Template>(
-    data?: FindTemplateRepositoryDto,
+    data?: FindTemplateDto,
     listOptions?: addListOptionsDto,
     options?: OptionsDto,
   ): Promise<Template[]> {

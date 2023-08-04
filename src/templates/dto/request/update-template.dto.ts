@@ -1,6 +1,13 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  MinDate,
+} from 'class-validator';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { Part, Template } from 'src/templates/schema/templates.schema';
@@ -46,6 +53,12 @@ export class UpdateTemplateDto extends PartialType(
   @IsOptional()
   @IsString()
   backgroundColor?: string;
+
+  @ApiProperty({ type: Date })
+  @IsDate()
+  @MinDate(new Date())
+  @IsOptional()
+  expiredAt?: Date;
 }
 
 export class UpdatePartOfTemplateDto extends PartialType(

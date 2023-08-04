@@ -5,6 +5,7 @@ import {
   CreatePartOfTemplateDto,
   CreateTemplateDto,
 } from './dto/request/create-template.dto';
+import { FindTemplateDto } from './dto/request/find-template.dto';
 import { RemovePartOfTemplateDto } from './dto/request/remove-template.dto';
 import {
   UpdatePartOfTemplateDto,
@@ -32,9 +33,9 @@ export class TemplatesService {
     return result;
   }
 
-  async fineOneWithFiles(id: ObjectIdOrString, error?: boolean) {
+  async fineOneWithFiles(data: FindTemplateDto, error?: boolean) {
     const result = await this.templateRepository.findOneWithFiles({
-      id: id as string,
+      id: data.id as string,
     });
 
     if (!result && error) throw new NotFoundException();

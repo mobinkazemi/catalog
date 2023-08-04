@@ -32,7 +32,6 @@ import {
   refs,
 } from '@nestjs/swagger';
 import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
-import { FindOneTemplateRepositoryDto } from '../dto/request/find-template.dto';
 import { RemovePartOfTemplateDto } from '../dto/request/remove-template.dto';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 
@@ -64,11 +63,13 @@ export class TemplatesController {
     throw new NotImplementedException();
   }
 
-  @ApiQuery({ type: FindOneTemplateRepositoryDto })
   @ApiOperation({ summary: 'Get template info (with files info)' })
   @Get(':id')
-  async findOne(@Param() data: FindOneTemplateRepositoryDto) {
-    const result = await this.templatesService.fineOneWithFiles(data.id, true);
+  async findOne(@Param() data: findByIdDto) {
+    const result = await this.templatesService.fineOneWithFiles(
+      { id: data.id },
+      true,
+    );
     return new FindTemplateWithFilesDto(result);
   }
 

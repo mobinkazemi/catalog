@@ -80,6 +80,12 @@ export class Template extends Base {
     type: Array<Part>,
   })
   parts?: Array<Part>;
+
+  @ApiProperty({ type: Date })
+  @Prop({
+    type: Date,
+  })
+  expiredAt?: Date;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);

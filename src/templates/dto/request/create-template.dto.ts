@@ -3,11 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
+  IsDate,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
   Matches,
+  MinDate,
 } from 'class-validator';
 import mongoose, { ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
@@ -53,6 +55,12 @@ export class CreateTemplateDto extends OmitType(Template, [
     type: [Part],
   })
   parts?: Part[];
+
+  @ApiProperty({ type: Date })
+  @IsDate()
+  @MinDate(new Date())
+  @IsOptional()
+  expiredAt?: Date;
 }
 
 export class CreatePartOfTemplateDto extends OmitType(Part, [
