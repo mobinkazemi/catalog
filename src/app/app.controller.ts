@@ -23,7 +23,7 @@ export class AppController {
   @ApiParam(findByIdDto)
   @Get(':id')
   async findOne(@Param() data: findByIdDto) {
-    const result = await this.templatesService.fineOneWithFiles(
+    const result = await this.templatesService.findOneWithFilesAndExpiration(
       { id: data.id, expired: false },
       true,
     );

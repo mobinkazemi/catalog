@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
@@ -39,6 +39,17 @@ export class TemplatesService {
     });
 
     if (!result && error) throw new NotFoundException();
+
+    return result;
+  }
+
+  async findOneWithFilesAndExpiration(data: FindTemplateDto, error?: boolean) {
+    delete data.expired;
+    const result = await this.fineOneWithFiles(data, error);
+
+    if (result['expiredAt'] && result['expiredAt'] < new Date()) {
+      throw new GoneException();
+    }
 
     return result;
   }

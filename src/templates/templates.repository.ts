@@ -73,6 +73,7 @@ export class TemplatesRepository extends BaseRepository {
 
     if (typeof data.expired == 'boolean') {
       query = this.expirationHandler(data.expired, query);
+      delete data.expired;
     }
 
     if (options) {
@@ -104,6 +105,7 @@ export class TemplatesRepository extends BaseRepository {
 
     if (typeof data.expired == 'boolean') {
       query = this.expirationHandler(data.expired, query);
+      delete data.expired;
     }
 
     if (options) {
