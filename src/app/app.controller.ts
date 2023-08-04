@@ -23,7 +23,7 @@ export class AppController {
   @ApiParam(FindTemplateByIdDto)
   @Get(':id')
   async findOne(@Param() data: FindTemplateByIdDto) {
-    const result = await this.templatesService.fineOneWithFiles(data.id);
+    const result = await this.templatesService.fineOneWithFiles(data.id, true);
     return new FindTemplateWithFilesDto(result);
   }
 }

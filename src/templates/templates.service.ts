@@ -33,7 +33,13 @@ export class TemplatesService {
   }
 
   async fineOneWithFiles(id: ObjectIdOrString, error?: boolean) {
-    return await this.templateRepository.findOneWithFiles({ id: id as string });
+    const result = await this.templateRepository.findOneWithFiles({
+      id: id as string,
+    });
+
+    if (!result && error) throw new NotFoundException();
+
+    return result;
   }
 
   async update(updateTemplateDto: UpdateTemplateDto, error?: boolean) {
@@ -42,7 +48,11 @@ export class TemplatesService {
     return await this.templateRepository.update(updateTemplateDto);
   }
 
-  async remove(data: findByIdDto): Promise<void> {
+  async remove(data: findByIdDto, error?: boolean): Promise<void> {
+    const template = await this.findOne(data.id, error);
+
+    if (!template) return;
+
     return await this.templateRepository.remove(data);
   }
 

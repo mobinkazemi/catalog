@@ -54,7 +54,7 @@ export class TemplatesController {
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.templatesService.remove(data);
+    return await this.templatesService.remove(data, true);
   }
 
   @ApiExcludeEndpoint()
