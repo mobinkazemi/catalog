@@ -39,6 +39,8 @@ export class RolesRepository extends BaseRepository {
       query = this.addOptions(query, options);
     }
 
+    if (query['name']) query['name'] = query['name'].toUpperCase();
+
     return await this.roleModel.findOne(query);
   }
 

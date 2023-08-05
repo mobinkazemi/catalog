@@ -26,9 +26,12 @@ export class RolesService {
     createRoleDto: CreateRoleDto,
     error?: boolean,
   ): Promise<ResponseAfterCreateDto> {
-    const duplicate = await this.roleRepository.findOne({
-      name: createRoleDto.name,
-    });
+    const duplicate = await this.roleRepository.findOne(
+      {
+        name: createRoleDto.name,
+      },
+      { show: 'all' },
+    );
     if (duplicate && error) throw new ConflictException();
     if (duplicate) return;
 
