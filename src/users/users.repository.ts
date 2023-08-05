@@ -100,6 +100,8 @@ export class UsersRepository extends BaseRepository {
       query['_id'] = this.convertToObjectId(data.id);
       delete data.id;
     }
+    console.log(query);
+    console.log(updateData);
 
     query = {
       ...query,

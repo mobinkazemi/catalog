@@ -104,6 +104,10 @@ export class UsersAdminController {
     @Param() idData: findByIdDto,
     @Body() updateUserDto: UpdateUserByAdminDto,
   ) {
+    console.log('--------------');
+    console.log({ updateUserDto });
+    console.log('--------------');
+
     const user = await this.usersService.update(idData.id, updateUserDto);
     return new userWithoutPasswordDto(user as User);
   }

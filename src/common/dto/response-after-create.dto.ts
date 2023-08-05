@@ -1,7 +1,9 @@
-export class ResponseAfterCreateDto {
-    id?:string;
+import { ObjectIdType } from '../types/types';
 
-    constructor(data:any){
-        this.id = data.id || data?._id?.toString() || null;
-    }
+export class ResponseAfterCreateDto {
+  _id?: ObjectIdType;
+
+  constructor(data: any) {
+    this._id = data?._id;
+  }
 }

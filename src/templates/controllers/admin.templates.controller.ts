@@ -46,7 +46,10 @@ export class TemplatesController {
   @ApiBody({ type: CreateTemplateDto })
   @Post('create')
   async create(@Body() createTemplateDto: CreateTemplateDto) {
-    return this.templatesService.create(createTemplateDto);
+    const result = await this.templatesService.create(createTemplateDto);
+
+    // return new FindTemplateWithFilesDto(result);
+    return result;
   }
 
   @ApiOperation({ summary: 'Delete template' })

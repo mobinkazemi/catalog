@@ -6,7 +6,7 @@ export class findRoleResponseDto extends PartialType(Role) {
     super();
     if (!data) data = {};
 
-    this.id = data._id.toString();
+    this._id = data._id
     this.name = data.name;
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;

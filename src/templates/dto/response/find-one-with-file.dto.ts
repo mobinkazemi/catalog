@@ -20,14 +20,10 @@ class populatedPart extends OmitType(Part, ['_id', 'fileId']) {
     this.text = data.text;
     this.title = data.title;
     this.updatedAt = data.updatedAt;
-    if (data.fileId) {
-      this.fileId.id = data.fileId._id.toString();
-
-      delete this.fileId._id;
-    }
+    this.fileId = data.fileId;
     if (data.categoryIds) {
       this.categoryIds = data.categoryIds.map((item: Category) => {
-        return { id: item._id, name: item.name };
+        return _.pick(item, ['_id', 'name']);
       });
     }
   }
@@ -59,9 +55,6 @@ export class FindTemplateWithFilesDto extends OmitType(Template, [
     }
     if (data.backgroundFileId) {
       this.backgroundFileId = data.backgroundFileId;
-      this.backgroundFileId.id = this.backgroundFileId._id.toString();
-
-      delete this.backgroundFileId._id;
     }
   }
 }
@@ -83,11 +76,6 @@ class PartResponseDto extends OmitType(Part, ['_id', 'fileId']) {
     this.text = data.text;
     this.title = data.title;
     this.updatedAt = data.updatedAt;
-
-    if (this.fileId) {
-      this.fileId.id = this.fileId._id.toString();
-
-      delete this.fileId._id;
-    }
+    this.fileId = data.fileId;
   }
 }

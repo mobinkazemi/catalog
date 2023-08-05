@@ -66,6 +66,9 @@ export class UsersService {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 8);
     }
+    console.log({ id });
+    console.log({ updateUserDto });
+
     return await this.userRepository.updateOne({ id }, updateUserDto);
   }
 

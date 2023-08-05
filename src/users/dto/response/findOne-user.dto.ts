@@ -1,15 +1,16 @@
+import { ObjectIdType } from 'src/common/types/types';
 import { RolesEnum } from '../../../common/enums/roles.enum';
 import { User } from '../../../users/schema/users.schema';
 
 export class FindUserResponseDto {
-  id: string;
+  _id: ObjectIdType;
   username: string;
   createdAt: Date;
   updatedAt: Date;
   roles: string[];
 
   constructor(data: Partial<User>) {
-    this.id = data['_id']?.toString();
+    this._id = data._id;
     this.username = data.username;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
@@ -21,7 +22,7 @@ export class userWithoutPasswordDto extends User {
   constructor(thisUser: User) {
     super();
 
-    this.id = thisUser['_id']?.toString() || thisUser.id;
+    this._id = thisUser['_id'];
     this.username = thisUser.username;
     this.createdAt = thisUser.createdAt;
     this.updatedAt = thisUser.updatedAt;

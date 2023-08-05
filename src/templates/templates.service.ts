@@ -14,12 +14,16 @@ import {
 } from './dto/request/update-template.dto';
 import { Template } from './schema/templates.schema';
 import { TemplatesRepository } from './templates.repository';
-
+import * as _ from 'lodash';
 @Injectable()
 export class TemplatesService {
   constructor(private readonly templateRepository: TemplatesRepository) {}
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
-    return await this.templateRepository.create(createTemplateDto);
+    const result = await this.templateRepository.create(createTemplateDto);
+
+    return (await this.fineOneWithFiles({
+      id: result._id.toString(),
+    })) as Template;
   }
 
   findAll() {
@@ -57,10 +61,10 @@ export class TemplatesService {
     result?.parts?.forEach((item) => {
       if (item?.categoryIds?.length) {
         item.categoryIds.forEach((category: any) => {
-          allCategories.set(category.id || category._id.toString(), {
-            id: category._id.toString(),
-            name: category.name,
-          });
+          allCategories.set(
+            category._id.toString(),
+            _.pick(category, ['_id', 'name']),
+          );
         });
       }
     });
