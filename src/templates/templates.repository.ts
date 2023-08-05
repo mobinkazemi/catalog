@@ -9,7 +9,7 @@ import {
 import { BaseRepository } from '../database/repository/base.repository';
 import * as _ from 'lodash';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
-import { Template, TemplateDocument } from './schema/templates.schema';
+import { Part, Template, TemplateDocument } from './schema/templates.schema';
 import { FindTemplateDto } from './dto/request/find-template.dto';
 import {
   CreatePartOfTemplateDto,
@@ -40,15 +40,59 @@ export class TemplatesRepository extends BaseRepository {
 
     return query;
   }
+
+  private partItemsToObjectId(part: Partial<Part>): Partial<Part> {
+    // convert fileId to ObjectId
+    part.fileId = this.convertToObjectId(part.fileId as string);
+
+    // convert pid to ObjectId
+    if (part.pid) {
+      part.pid = this.convertToObjectId(part.pid as string);
+    }
+
+    // convert categoryIds to ObjectId
+    if (part.categoryIds?.length) {
+      part.categoryIds = part.categoryIds.map((id) =>
+        this.convertToObjectId(id as string),
+      );
+    }
+
+    return part;
+  }
+
+  private templateItemsToObjectId(
+    template: Partial<Template>,
+  ): Partial<Template> {
+    if (template.backgroundFileId) {
+      template.backgroundFileId = this.convertToObjectId(
+        template.backgroundFileId as string,
+      );
+    }
+
+    if (template.pid) {
+      template.pid = this.convertToObjectId(template.pid as string);
+    }
+
+    if (template?.parts?.length) {
+      template.parts.forEach((part) => {
+        // generate an ObjecId for this part
+        part._id = new mongoose.Types.ObjectId();
+        part = this.partItemsToObjectId(part) as Part;
+      });
+    }
+    return template;
+  }
+
   async update(data: UpdateTemplateDto): Promise<Template> {
     const { templateId } = data;
     delete data.templateId;
 
+    const template = this.templateItemsToObjectId(data);
     return await this.templateModel.findOneAndUpdate(
       {
         _id: this.convertToObjectId(templateId as string),
       },
-      { $set: data },
+      { $set: template },
       { new: true },
     );
   }
@@ -115,12 +159,17 @@ export class TemplatesRepository extends BaseRepository {
     const result = await this.templateModel
       .findOne<Template>(query, {}, { lean: true })
       .populate('backgroundFileId')
-      // .populate('pid')
       .populate({
         path: 'parts.fileId',
         foreignField: '_id',
         localField: 'parts.fileId',
         model: 'File',
+      })
+      .populate({
+        path: 'parts.categoryIds',
+        foreignField: '_id',
+        localField: 'parts.categoryIds',
+        model: 'Category',
       });
 
     return result;
@@ -164,27 +213,8 @@ export class TemplatesRepository extends BaseRepository {
   }
 
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
-    if (createTemplateDto.backgroundFileId) {
-      createTemplateDto.backgroundFileId = this.convertToObjectId(
-        createTemplateDto.backgroundFileId as string,
-      );
-    }
-    if (createTemplateDto.pid) {
-      createTemplateDto.pid = this.convertToObjectId(
-        createTemplateDto.pid as string,
-      );
-    }
-    if (createTemplateDto?.parts?.length) {
-      createTemplateDto.parts.forEach((part) => {
-        if (part.pid) {
-          part.pid = this.convertToObjectId(part.pid as string);
-        }
-        part.fileId = this.convertToObjectId(part.fileId as string);
-        part._id = new mongoose.Types.ObjectId();
-      });
-    }
-
-    return await this.templateModel.create(createTemplateDto);
+    const template = this.templateItemsToObjectId(createTemplateDto);
+    return await this.templateModel.create(template);
   }
 
   async remove(data: findByIdDto): Promise<void> {
@@ -206,6 +236,8 @@ export class TemplatesRepository extends BaseRepository {
     const { templateId } = createPartOfTemplateDto;
     delete createPartOfTemplateDto.templateId;
 
+    const part = this.partItemsToObjectId(createPartOfTemplateDto);
+
     const result = await this.templateModel.findOneAndUpdate(
       {
         _id: this.convertToObjectId(templateId as string),
@@ -213,8 +245,8 @@ export class TemplatesRepository extends BaseRepository {
       {
         $push: {
           parts: {
-            ...createPartOfTemplateDto,
             _id: new mongoose.Types.ObjectId(),
+            ...part,
           },
         },
       },
@@ -249,15 +281,26 @@ export class TemplatesRepository extends BaseRepository {
     delete data.templateId;
     delete data.partId;
 
-    return await this.templateModel.findOneAndUpdate(
-      {
-        _id: this.convertToObjectId(templateId as string),
-        'parts._id': this.convertToObjectId(partId as string),
-      },
-      {
-        $set: data,
-      },
-      { new: true },
-    );
+    let template = await this.templateModel.findOne({
+      _id: this.convertToObjectId(templateId as string),
+      'parts._id': this.convertToObjectId(partId as string),
+    });
+
+    if (!template) return;
+
+    let thisPart = this.partItemsToObjectId(data);
+    template.parts = template.parts.map((part) => {
+      if (part._id.toString() == partId.toString()) {
+        part = {
+          ...part,
+          ...thisPart,
+        };
+      }
+      return part;
+    });
+
+    await template.save();
+
+    return template.toJSON();
   }
 }

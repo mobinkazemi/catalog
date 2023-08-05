@@ -1,6 +1,8 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDate,
   IsNumber,
   IsOptional,
@@ -8,8 +10,9 @@ import {
   Matches,
   MinDate,
 } from 'class-validator';
+import mongoose from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
-import { ObjectIdOrString } from 'src/common/types/types';
+import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
 import { Part, Template } from 'src/templates/schema/templates.schema';
 import { CreateTemplateDto } from './create-template.dto';
 
@@ -110,4 +113,10 @@ export class UpdatePartOfTemplateDto extends PartialType(
   @IsOptional()
   @IsString()
   link: string;
+
+  @ApiProperty({ type: Array<String> })
+  @IsOptional()
+  @IsArray()
+  @Type(() => String)
+  categoryIds?: Array<ObjectIdOrString>;
 }

@@ -42,6 +42,13 @@ export class Part extends Base {
     required: true,
   })
   fileId: ObjectIdOrString;
+
+  @ApiProperty({ type: Array<String> })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+    autoPopulate: true,
+  })
+  categoryIds?: Array<ObjectIdOrString>;
 }
 
 @Schema({ id: true, timestamps: true })
@@ -86,6 +93,14 @@ export class Template extends Base {
     type: Date,
   })
   expiredAt?: Date;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    autoPopulate: true,
+  })
+  categoryId?: ObjectIdOrString;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);

@@ -1,4 +1,5 @@
 import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
+import { Category } from 'src/category/schema/category.schema';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
@@ -45,11 +46,26 @@ export class TemplatesService {
 
   async findOneWithFilesAndExpiration(data: FindTemplateDto, error?: boolean) {
     delete data.expired;
-    const result = await this.fineOneWithFiles(data, error);
+
+    const result = (await this.fineOneWithFiles(data, error)) as Template;
 
     if (result['expiredAt'] && result['expiredAt'] < new Date()) {
       throw new GoneException();
     }
+
+    let allCategories = new Map();
+    result?.parts?.forEach((item) => {
+      if (item?.categoryIds?.length) {
+        item.categoryIds.forEach((category: any) => {
+          allCategories.set(category.id || category._id.toString(), {
+            id: category._id.toString(),
+            name: category.name,
+          });
+        });
+      }
+    });
+
+    result['allPartCategories'] = [...allCategories.values()];
 
     return result;
   }

@@ -13,9 +13,9 @@ import {
   MinDate,
   validateSync,
 } from 'class-validator';
-import mongoose, { ObjectId, Schema } from 'mongoose';
+import mongoose, { isObjectIdOrHexString, ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
-import { ObjectIdOrString } from 'src/common/types/types';
+import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
 import { Part, Template } from '../../schema/templates.schema';
 
 export class CreateTemplateDto extends OmitType(Template, [
@@ -112,6 +112,12 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
   @IsString()
   link: string;
 
+  @ApiProperty({ type: Array<String> })
+  @IsOptional()
+  @IsArray()
+  @Type(() => String)
+  categoryIds?: Array<ObjectIdOrString>;
+
   constructor(data: Partial<Part>) {
     super();
     if (!data) data = {};
@@ -122,7 +128,6 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
     this.ord = data.ord;
     this.pid = data.pid;
     this.link = data.link;
+    this.categoryIds = data.categoryIds;
   }
 }
-
-console.log(new Date().toISOString());

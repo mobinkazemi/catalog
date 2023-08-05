@@ -6,6 +6,7 @@ import {
   Request,
   Req,
   BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
@@ -34,6 +35,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Logout' })
+  @HttpCode(200)
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   async logout(@Request() req) {
