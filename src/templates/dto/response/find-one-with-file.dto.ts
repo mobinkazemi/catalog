@@ -3,7 +3,7 @@ import { Category } from 'src/category/schema/category.schema';
 import { Part, Template } from 'src/templates/schema/templates.schema';
 import { File } from '../../../files/schema/files.schema';
 import * as _ from 'lodash';
-class populatedPart extends OmitType(Part, ['_id', 'fileId']) {
+class populatedPart extends OmitType(Part, ['fileId']) {
   fileId: File & { id: string };
   constructor(data: any) {
     super();
@@ -12,7 +12,7 @@ class populatedPart extends OmitType(Part, ['_id', 'fileId']) {
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;
     this.fileId = data.fileId;
-    this.id = data.id;
+    this._id = data._id;
     this.link = data.link;
     this.ord = data.ord;
     this.pid = data.pid;
@@ -29,7 +29,6 @@ class populatedPart extends OmitType(Part, ['_id', 'fileId']) {
   }
 }
 export class FindTemplateWithFilesDto extends OmitType(Template, [
-  '_id',
   'backgroundFileId',
   'parts',
 ]) {
@@ -40,7 +39,7 @@ export class FindTemplateWithFilesDto extends OmitType(Template, [
     super();
     if (!data) data = {};
 
-    this.id = data._id;
+    this._id = data._id;
     this.name = data.name;
     this.pid = data.pid;
     this.ord = data.ord;
@@ -59,7 +58,7 @@ export class FindTemplateWithFilesDto extends OmitType(Template, [
   }
 }
 
-class PartResponseDto extends OmitType(Part, ['_id', 'fileId']) {
+class PartResponseDto extends OmitType(Part, ['fileId']) {
   fileId: File & { id: string };
   constructor(data: any) {
     super();
@@ -68,7 +67,7 @@ class PartResponseDto extends OmitType(Part, ['_id', 'fileId']) {
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;
     this.fileId = data.fileId;
-    this.id = data.id;
+    this._id = data._id;
     this.link = data.link;
     this.ord = data.ord;
     this.pid = data.pid;

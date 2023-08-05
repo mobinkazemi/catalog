@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
+  IsDateString,
   IsNumber,
   IsOptional,
   IsString,
@@ -58,8 +59,7 @@ export class UpdateTemplateDto extends PartialType(
   backgroundColor?: string;
 
   @ApiProperty({ type: Date })
-  @IsDate()
-  @MinDate(new Date())
+  @IsDateString()
   @IsOptional()
   expiredAt?: Date;
 }
