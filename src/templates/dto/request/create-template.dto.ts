@@ -4,12 +4,14 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
+  IsDateString,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
   Matches,
   MinDate,
+  validateSync,
 } from 'class-validator';
 import mongoose, { ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
@@ -57,9 +59,8 @@ export class CreateTemplateDto extends OmitType(Template, [
   parts?: Part[];
 
   @ApiProperty({ type: Date })
-  @IsDate()
-  @MinDate(new Date())
   @IsOptional()
+  @IsDateString()
   expiredAt?: Date;
 }
 
@@ -123,3 +124,5 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
     this.link = data.link;
   }
 }
+
+console.log(new Date().toISOString());
