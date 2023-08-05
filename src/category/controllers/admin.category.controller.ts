@@ -8,23 +8,31 @@ import {
   Delete,
   NotImplementedException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBody,
   ApiExcludeEndpoint,
   ApiOperation,
   ApiQuery,
 } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/strategy/role.strategy';
 import {
   addListOptionsDto,
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
+import { RolesEnum } from 'src/common/enums/roles.enum';
 import { CategoryService } from '../category.service';
 import { CreateCategoryDto } from '../dto/request/create-category.dto';
 import { FindCategoryListRequestDto } from '../dto/request/fnd-category.dto';
 import { FindCategoryResponseDto } from '../dto/response/find-category.dto';
 
-@Controller('category')
+@Roles(RolesEnum.ADMIN)
+@UseGuards(RolesGuard)
+@UseGuards(AuthGuard('jwt'))
+@Controller('category/admin')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
