@@ -27,6 +27,7 @@ import {
   Template,
   TemplateSchema,
 } from 'src/templates/schema/templates.schema';
+import { CategoryModule } from 'src/category/category.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import {
     ScheduleModule.forRoot(),
     SeederModule,
     TemplatesModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [
