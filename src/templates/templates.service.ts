@@ -1,6 +1,9 @@
 import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from 'src/category/schema/category.schema';
-import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from 'src/common/dto/base-repository-dtos.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
   CreatePartOfTemplateDto,
@@ -26,8 +29,11 @@ export class TemplatesService {
     })) as Template;
   }
 
-  findAll() {
-    return `This action returns all templates`;
+  async findAll(
+    data: Partial<Template>,
+    options?: addListOptionsDto,
+  ): Promise<Partial<Template[]>> {
+    return await this.templateRepository.findAll(data, options);
   }
 
   async findOne(id: ObjectIdOrString, error?: boolean) {

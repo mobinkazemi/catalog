@@ -1,7 +1,15 @@
 import { OmitType, PickType } from '@nestjs/mapped-types';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsDate, IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
+import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
+import { ObjectIdOrString } from 'src/common/types/types';
 import { Template } from 'src/templates/schema/templates.schema';
 
 export class FindTemplateDto extends PartialType(Template) {
@@ -15,3 +23,61 @@ export class FindTemplateDto extends PartialType(Template) {
   // expiredAt?: Date;
   expired?: boolean;
 }
+
+// -------------------------------------------
+// -------------------------------------------
+export class FindTemplateListRequestDto {
+  @ApiProperty({ type: String })
+  @IsString()
+  @Matches(ObjectIdRegex)
+  @IsOptional()
+  categoryId: ObjectIdOrString;
+  @ApiProperty({ type: Date })
+  @IsDateString()
+  @IsOptional()
+  createdAt: Date;
+  @ApiProperty({ type: Date })
+  @IsDateString()
+  @IsOptional()
+  expiredAt: Date;
+  @ApiProperty({ type: Date })
+  @IsDateString()
+  @IsOptional()
+  deletedAt: Date;
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsOptional()
+  name: string;
+}
+
+export class SWAGGER_FindTemplateListRequestDto {
+  @ApiProperty()
+  categoryId: ObjectIdOrString;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  expiredAt: Date;
+
+  @ApiProperty()
+  deletedAt: Date;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  sort?: string;
+
+  @ApiProperty()
+  asc?: boolean;
+
+  @ApiProperty()
+  limit?: number;
+
+  @ApiProperty()
+  page?: number;
+}
+
+// -------------------------------------------
+// -------------------------------------------

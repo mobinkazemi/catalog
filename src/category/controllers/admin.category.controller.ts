@@ -45,8 +45,6 @@ export class CategoryController {
     return new FindCategoryResponseDto(result);
   }
 
-  @ApiQuery({ type: addListOptionsDto })
-  @ApiQuery({ type: FindCategoryListRequestDto })
   @ApiOperation({ summary: 'Get category list' })
   @Get('list')
   async findAll(

@@ -109,16 +109,16 @@ export class TemplatesRepository extends BaseRepository {
       delete data.id;
     }
 
+    if (typeof data.expired == 'boolean') {
+      query = this.expirationHandler(data.expired, query);
+      delete data.expired;
+    }
+
     query = {
       ...query,
       ...data,
       deletedAt: null,
     };
-
-    if (typeof data.expired == 'boolean') {
-      query = this.expirationHandler(data.expired, query);
-      delete data.expired;
-    }
 
     if (options) {
       query = this.addOptions(query, options);
@@ -141,16 +141,16 @@ export class TemplatesRepository extends BaseRepository {
       delete data.id;
     }
 
+    if (typeof data.expired == 'boolean') {
+      query = this.expirationHandler(data.expired, query);
+      delete data.expired;
+    }
+
     query = {
       ...query,
       ...data,
       deletedAt: null,
     };
-
-    if (typeof data.expired == 'boolean') {
-      query = this.expirationHandler(data.expired, query);
-      delete data.expired;
-    }
 
     if (options) {
       query = this.addOptions(query, options);
@@ -187,6 +187,11 @@ export class TemplatesRepository extends BaseRepository {
     if (data.id) {
       query['_id'] = this.convertToObjectId(data.id);
       delete data.id;
+    }
+
+    if (typeof data.expired == 'boolean') {
+      query = this.expirationHandler(data.expired, query);
+      delete data.expired;
     }
 
     query = {

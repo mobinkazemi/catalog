@@ -35,10 +35,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get user (self) info' })
   @Get('info')
-  async findOne(
-    // @Query() data: FindUserDto,
-    @GetPayload() payload: getPayloadDecoratorDto,
-  ) {
+  async findOne(@GetPayload() payload: getPayloadDecoratorDto) {
     const { id } = payload;
 
     const result = await this.usersService.findOne({ id });

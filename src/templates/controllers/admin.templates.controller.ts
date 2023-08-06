@@ -9,6 +9,7 @@ import {
   UseGuards,
   NotImplementedException,
   Req,
+  Query,
 } from '@nestjs/common';
 import { TemplatesService } from '../templates.service';
 import {
@@ -33,7 +34,15 @@ import {
 } from '@nestjs/swagger';
 import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
 import { RemovePartOfTemplateDto } from '../dto/request/remove-template.dto';
-import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from 'src/common/dto/base-repository-dtos.dto';
+import {
+  FindTemplateListRequestDto,
+  SWAGGER_FindTemplateListRequestDto,
+} from '../dto/request/find-template.dto';
+import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 
 @Roles(RolesEnum.ADMIN)
 @UseGuards(RolesGuard)
@@ -59,11 +68,14 @@ export class TemplatesController {
     return await this.templatesService.remove(data, true);
   }
 
-  @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Get template list' })
   @Get('list')
-  async findAll() {
-    throw new NotImplementedException();
+  async findAll(
+    @Query() listOptions: addListOptionsDto,
+    @Query() data: FindTemplateListRequestDto,
+  ): Promise<Array<FindTemplateListResponseDto>> {
+    const result = await this.templatesService.findAll(data, listOptions);
+    return result.map((item) => new FindTemplateListResponseDto(item));
   }
 
   @ApiOperation({ summary: 'Get template info (with files info)' })

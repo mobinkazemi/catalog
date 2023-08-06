@@ -54,6 +54,7 @@ export class RolesController {
     );
   }
 
+  //TODO change to param
   @ApiOperation({ summary: 'Get role info' })
   @Get('info')
   async findOne(@Query() data: FindRoleDto) {

@@ -83,8 +83,6 @@ export class UsersAdminController {
     return new FindUserResponseDto(result);
   }
 
-  @ApiQuery({ type: addListOptionsDto })
-  @ApiQuery({ type: FilterRequestUserDto })
   @ApiOperation({ summary: 'Get user list' })
   @Get('list')
   async findAll(
