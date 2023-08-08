@@ -9,13 +9,13 @@ export class MinioClientService {
   private bucketName: string;
   constructor(private readonly configService: ConfigService) {
     this.minioClient = new Minio.Client({
-      endPoint: this.configService.get('minio.host'),
-      port: Number(this.configService.get('minio.port')),
+      endPoint: this.configService.getOrThrow('minio.host'),
+      port: Number(this.configService.getOrThrow('minio.port')),
       accessKey: 'minioadmin',
       secretKey: 'minioadmin',
       useSSL: false,
     });
-    this.bucketName = this.configService.get('minio.bucket');
+    this.bucketName = this.configService.getOrThrow('minio.bucket');
   }
 
   async ping() {

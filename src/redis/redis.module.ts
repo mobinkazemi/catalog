@@ -9,9 +9,9 @@ import { RedisProxyService } from './redis.service';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         config: {
-          host: configService.get('redis.host'),
-          port: configService.get('redis.port'),
-          name: configService.get('redis.name'),
+          host: configService.getOrThrow('redis.host'),
+          port: configService.getOrThrow('redis.port'),
+          name: configService.getOrThrow('redis.name'),
         },
       }),
     }),

@@ -9,8 +9,8 @@ import mongoose from 'mongoose';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         return {
-          uri: configService.get('database.uri'),
-          connectTimeoutMS: configService.get('database.timeout'),
+          uri: configService.getOrThrow('database.uri'),
+          connectTimeoutMS: configService.getOrThrow('database.timeout'),
         };
       },
     }),

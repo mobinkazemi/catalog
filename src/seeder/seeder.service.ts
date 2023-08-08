@@ -30,8 +30,8 @@ export class SeederService {
 
   async seedAdminUser() {
     const admin_role = RolesEnum.ADMIN;
-    const username = this.configService.get('superAdminDefaultUsername');
-    const password = this.configService.get('superAdminDefaultPassword');
+    const username = this.configService.getOrThrow('superAdminDefaultUsername');
+    const password = this.configService.getOrThrow('superAdminDefaultPassword');
 
     const exist = await this.userModel.findOne({
       username,
