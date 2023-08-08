@@ -14,23 +14,23 @@ export function addUserHooks(schema: mongoose.Schema): mongoose.Schema {
     next();
   });
 
-  // schema.pre('updateOne', function (next) {
-  //   let updateData = this.getUpdate();
-  //   if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
-  //   return next();
-  // });
+  schema.pre('updateOne', function (next) {
+    let updateData = this.getUpdate();
+    if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
+    return next();
+  });
 
-  // schema.pre('updateMany', function (next) {
-  //   let updateData = this.getUpdate();
-  //   if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
-  //   next();
-  // });
+  schema.pre('updateMany', function (next) {
+    let updateData = this.getUpdate();
+    if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
+    next();
+  });
 
-  // schema.pre('findOneAndUpdate', function (next) {
-  //   let updateData = this.getUpdate();
-  //   if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
-  //   next();
-  // });
+  schema.pre('findOneAndUpdate', function (next) {
+    let updateData = this.getUpdate();
+    if (isSoftDelete(updateData)) handleSoftDeleteConcerns(updateData);
+    next();
+  });
 
   return schema;
 }
