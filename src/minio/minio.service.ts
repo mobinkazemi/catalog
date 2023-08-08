@@ -11,8 +11,8 @@ export class MinioClientService {
     this.minioClient = new Minio.Client({
       endPoint: this.configService.getOrThrow('minio.host'),
       port: Number(this.configService.getOrThrow('minio.port')),
-      accessKey: 'minioadmin',
-      secretKey: 'minioadmin',
+      accessKey: this.configService.getOrThrow('minio.accessKey'),
+      secretKey: this.configService.getOrThrow('minio.secretKey'),
       useSSL: false,
     });
     this.bucketName = this.configService.getOrThrow('minio.bucket');

@@ -39,5 +39,7 @@ export default () => ({
     port: env.MINIO_PORT || defaults.minio.port,
     host: env.MINIO_HOST || defaults.minio.host,
     bucket: env.MINIO_NAME || defaults.minio.bucket,
+    accessKey: env.MINIO_ACCESSKEY || defaults.minio.accessKey,
+    secretKey: env.MINIO_SECRETKEY || defaults.minio.secretKey,
   },
 });

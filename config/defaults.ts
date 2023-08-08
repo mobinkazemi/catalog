@@ -33,5 +33,7 @@ export const defaults = {
     port: 9000,
     host: 'localhost',
     bucket: 'minio-default-bucket',
+    accessKey: 'minioadmin',
+    secretKey: 'minioadmin',
   },
 };
