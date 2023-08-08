@@ -8,7 +8,10 @@ import { ResponseFormatterInterceptor } from './common/interceptors/response-for
 async function bootstrap() {
   const configs = configuration();
 
-  const app = await NestFactory.create(AppModule, { logger: false });
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+    cors: true,
+  });
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
