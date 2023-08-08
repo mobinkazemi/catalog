@@ -91,15 +91,12 @@ export class AuthService {
     const result = {
       ...user,
       accessToken: this.jwt.sign(payload, {
-        secret: this.configService.get('jwtSecret') || process.env.SECRET,
-        expiresIn:
-          this.configService.get('accessJwtExpire') || defaults.accessJwtExpire,
+        secret: this.configService.get('jwtSecret'),
+        expiresIn: this.configService.get('accessJwtExpire'),
       }),
       refreshToken: this.jwt.sign(payload, {
-        secret: this.configService.get('jwtSecret') || process.env.SECRET,
-        expiresIn:
-          this.configService.get('refreshJwtExpire') ||
-          defaults.refreshJwtExpire,
+        secret: this.configService.get('jwtSecret'),
+        expiresIn: this.configService.get('refreshJwtExpire'),
       }),
     };
 

@@ -13,8 +13,12 @@ import configuration from 'config/configuration';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secretOrPrivateKey: process.env.SECRET,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secretOrPrivateKey: configService.getOrThrow('jwtSecret'),
+      }),
     }),
     ConfigModule,
     UsersModule,

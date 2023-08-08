@@ -36,7 +36,7 @@ import { CategoryModule } from 'src/category/category.module';
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`${process.env.NODE_ENV}.env`, `secret.env`],
+      envFilePath: [`${process.env.NODE_ENV}.env`],
       load: [configuration],
     }),
     DatabaseModule,

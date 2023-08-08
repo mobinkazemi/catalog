@@ -1,14 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import configuration from 'config/configuration';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { RedisProxyService } from '../../redis/redis.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly redisService: RedisProxyService) {
+  constructor(
+    private readonly redisService: RedisProxyService,
+    configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.SECRET,
+      secretOrKey: configService.get('jwtSecret'),
       ignoreExpiration: false,
       // passReqToCallback: true,
     });

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RolesEnum } from '../common/enums/roles.enum';
@@ -10,6 +11,7 @@ export class SeederService {
   constructor(
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly configService: ConfigService,
   ) {
     this.seedRole();
     this.seedAdminUser();
@@ -28,7 +30,8 @@ export class SeederService {
 
   async seedAdminUser() {
     const admin_role = RolesEnum.ADMIN;
-    const username = 'super_admin';
+    const username = this.configService.get('superAdminDefaultUsername');
+    const password = this.configService.get('superAdminDefaultPassword');
 
     const exist = await this.userModel.findOne({
       username,
@@ -39,8 +42,8 @@ export class SeederService {
     if (!exist) {
       await this.userModel.create({
         username,
+        password,
         roles: [admin_role],
-        password: process.env.ADMIN_PASSWORD,
       });
     }
   }
