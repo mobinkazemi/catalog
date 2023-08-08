@@ -10,9 +10,15 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
     logger: false,
-    cors: true,
   });
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
+  const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with the URL of your React app
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  };
+
+  app.enableCors(corsOptions);
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
