@@ -35,4 +35,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # secret environment variables
-secret.env
+*.env

@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '../users/schema/users.schema';
 import { FindUserResponseDto } from '../users/dto/response/findOne-user.dto';
 import { RedisProxyService } from '../redis/redis.service';
-import { defaults } from '../../config/configuration';
+import { defaults } from '../../config/defaults';
 import { AUTH_ERROR_MESSAGE_ENUMS } from './eunms/auth-error-response.enums';
 @Injectable()
 export class AuthService {

@@ -14,7 +14,7 @@ import {
 import { FilesService } from '../files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
-import { defaults } from 'config/configuration';
+import { defaults } from 'config/defaults';
 import type { Response } from 'express';
 import { FindFileByIdDto } from '../dto/request/find-file.dto';
 import {
@@ -24,6 +24,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
+import configuration from 'config/configuration';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -33,7 +34,7 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
-        fileSize: defaults.maxFileUploadSize,
+        fileSize: configuration().maxFileUploadSize,
       },
     }),
   )
