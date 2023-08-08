@@ -10,7 +10,6 @@ export function addUserHooks(schema: mongoose.Schema): mongoose.Schema {
     if (this.password && this.isModified('password')) {
       this.password = await bcrypt.hash(this.password, 8);
     }
-    console.log('here in hoook');
 
     next();
   });
