@@ -7,7 +7,6 @@ import { ResponseFormatterInterceptor } from './common/interceptors/response-for
 
 async function bootstrap() {
   const configs = configuration();
-  console.log(configs);
 
   const app = await NestFactory.create(AppModule, { logger: false });
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
