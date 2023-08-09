@@ -36,4 +36,9 @@ export const defaults = {
     accessKey: 'minioadmin',
     secretKey: 'minioadmin',
   },
+
+  client: {
+    uri: '*',
+    methods: 'GET,PUT,PATCH,POST,DELETE',
+  },
 };

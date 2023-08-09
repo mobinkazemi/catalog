@@ -42,4 +42,9 @@ export default () => ({
     accessKey: env.MINIO_ACCESSKEY || defaults.minio.accessKey,
     secretKey: env.MINIO_SECRETKEY || defaults.minio.secretKey,
   },
+
+  client: {
+    uri: env.CLIENT_URI || defaults.client.uri,
+    methods: defaults.client.methods,
+  },
 });

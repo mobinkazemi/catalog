@@ -13,8 +13,8 @@ async function bootstrap() {
   });
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
   const corsOptions = {
-    origin: 'http://localhost:3000', // Replace with the URL of your React app
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: configs.client.uri, // Replace with the URL of your React app
+    methods: configs.client.methods,
     credentials: true,
   };
 
