@@ -37,6 +37,7 @@ export const defaults = {
     secretKey: 'minioadmin',
   },
 
+  // Client target (CORS)
   client: {
     uri: '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',

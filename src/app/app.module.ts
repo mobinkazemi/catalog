@@ -28,6 +28,7 @@ import {
   TemplateSchema,
 } from 'src/templates/schema/templates.schema';
 import { CategoryModule } from 'src/category/category.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -38,6 +39,10 @@ import { CategoryModule } from 'src/category/category.module';
       isGlobal: true,
       envFilePath: [`${process.env.NODE_ENV}.env`],
       load: [configuration],
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
     }),
     DatabaseModule,
     UsersModule,

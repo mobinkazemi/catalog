@@ -57,7 +57,6 @@ export class TemplatesController {
   async create(@Body() createTemplateDto: CreateTemplateDto) {
     const result = await this.templatesService.create(createTemplateDto);
 
-    // return new FindTemplateWithFilesDto(result);
     return result;
   }
 

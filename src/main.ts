@@ -6,32 +6,32 @@ import configuration from 'config/configuration';
 import { ResponseFormatterInterceptor } from './common/interceptors/response-formatter.interceptor';
 
 async function bootstrap() {
-  const configs = configuration();
+  const applicationConfigs = configuration();
 
   const app = await NestFactory.create(AppModule, {
     logger: false,
   });
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
   const corsOptions = {
-    origin: configs.client.uri, // Replace with the URL of your React app
-    methods: configs.client.methods,
+    origin: applicationConfigs.client.uri, // Replace with the URL of your React app
+    methods: applicationConfigs.client.methods,
     credentials: true,
   };
 
   app.enableCors(corsOptions);
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  const config = new DocumentBuilder()
-    .setTitle(configs.appName)
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle(applicationConfigs.appName)
     .setVersion('1.0')
-    .addServer(`http://localhost:${configs.port}`)
+    .addServer(`http://localhost:${applicationConfigs.port}`)
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
-  const PORT = configs.port;
+  const PORT = applicationConfigs.port;
   await app.listen(PORT, () => {
-    const { minio, redis, database } = configs;
+    const { minio, redis, database } = applicationConfigs;
     console.log(`✅ Environment is: ${process.env.NODE_ENV}`);
     console.log(`✅ App is running on port ${PORT}`);
     console.log(
