@@ -7,6 +7,7 @@ export default () => ({
   appName: env.APP_NAME || defaults.appName,
   port: env.PORT || defaults.port,
   maxFileUploadSize: defaults.maxFileUploadSize,
+  logger: defaults.logger,
 
   // Application super admin
   superAdminDefaultUsername:

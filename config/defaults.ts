@@ -3,6 +3,7 @@ export const defaults = {
   appName: 'app-name',
   port: 3000,
   maxFileUploadSize: 1024 * 1024 * 10, // 10MB
+  logger: true,
 
   // Application super admin
   superAdminDefaultUsername: 'super_admin',

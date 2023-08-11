@@ -29,11 +29,16 @@ import {
 } from 'src/templates/schema/templates.schema';
 import { CategoryModule } from 'src/category/category.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { LogModule } from 'src/log/log.module';
+import { LogService } from 'src/log/log.service';
+import { LogRepository } from 'src/log/log.repository.ts';
+import { Log, LogSchema } from 'src/log/schema/log.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Template.name, schema: TemplateSchema },
+      { name: Log.name, schema: LogSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -44,6 +49,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       ttl: 60,
       limit: 10,
     }),
+    LogModule,
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -62,6 +68,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     RedisProxyService,
     TemplatesService,
     TemplatesRepository,
+    LogService,
+    LogRepository,
   ],
 })
 export class AppModule implements NestModule {

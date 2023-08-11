@@ -87,7 +87,11 @@ export class AuthService {
     user = new FindUserResponseDto(user);
     const sessionId = Math.ceil(Date.now() * Math.random());
 
-    const payload = { sub: user.id, roles: user.roles || [], sessionId };
+    const payload = {
+      sub: user._id.toString(),
+      roles: user.roles || [],
+      sessionId,
+    };
     const result = {
       ...user,
       accessToken: this.jwt.sign(payload, {
@@ -101,7 +105,7 @@ export class AuthService {
     };
 
     await this.redisService.setSession(
-      user.id,
+      user._id,
       result.accessToken,
       result.refreshToken,
       sessionId,
