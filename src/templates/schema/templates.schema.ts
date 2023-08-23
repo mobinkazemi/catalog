@@ -51,6 +51,75 @@ export class Part extends Base {
   categoryIds?: Array<ObjectIdOrString>;
 }
 
+export class About {
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  title?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  description?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'File',
+  })
+  logoFileId?: ObjectIdOrString;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  address?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  location?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  phone?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  cellphone?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  email?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  telegram?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  instagram?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  twitter?: string;
+}
+
 @Schema({ id: true, timestamps: true })
 export class Template extends Base {
   @ApiProperty({ type: String })
@@ -101,6 +170,12 @@ export class Template extends Base {
     autoPopulate: true,
   })
   categoryId?: ObjectIdOrString;
+
+  @ApiProperty({ type: About })
+  @Prop({
+    type: About,
+  })
+  about?: About;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);
