@@ -14,7 +14,7 @@ import {
 import mongoose from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
-import { Part, Template } from 'src/templates/schema/templates.schema';
+import { About, Part, Template } from 'src/templates/schema/templates.schema';
 import { CreateTemplateDto } from './create-template.dto';
 
 export class UpdateTemplateDto extends PartialType(
@@ -62,6 +62,10 @@ export class UpdateTemplateDto extends PartialType(
   @IsDateString()
   @IsOptional()
   expiredAt?: Date;
+
+  @IsOptional()
+  @ApiProperty({ type: About })
+  about?: About;
 }
 
 export class UpdatePartOfTemplateDto extends PartialType(
