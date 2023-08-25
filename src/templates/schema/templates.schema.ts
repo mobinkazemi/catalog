@@ -34,14 +34,18 @@ export class Part extends Base {
   })
   link?: string;
 
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Array<String> })
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'File',
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File',
+      },
+    ],
     autoPopulate: true,
     required: true,
   })
-  fileId: ObjectIdOrString;
+  fileIds: Array<ObjectIdOrString>;
 
   @ApiProperty({ type: Array<String> })
   @Prop({

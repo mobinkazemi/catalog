@@ -91,11 +91,11 @@ export class UpdatePartOfTemplateDto extends PartialType(
   @IsString()
   text: string;
 
-  @ApiProperty({ type: String })
-  @Matches(ObjectIdRegex)
+  @ApiProperty({ type: Array<String> })
   @IsOptional()
-  @IsString()
-  fileId: ObjectIdOrString;
+  @IsArray()
+  @Matches(ObjectIdRegex, { each: true })
+  fileIds: Array<ObjectIdOrString>;
 
   @ApiProperty({ type: String })
   @IsOptional()
@@ -121,6 +121,6 @@ export class UpdatePartOfTemplateDto extends PartialType(
   @ApiProperty({ type: Array<String> })
   @IsOptional()
   @IsArray()
-  @Type(() => String)
+  @Matches(ObjectIdRegex, { each: true })
   categoryIds?: Array<ObjectIdOrString>;
 }

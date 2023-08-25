@@ -43,7 +43,9 @@ export class TemplatesRepository extends BaseRepository {
 
   private partItemsToObjectId(part: Partial<Part>): Partial<Part> {
     // convert fileId to ObjectId
-    part.fileId = this.convertToObjectId(part.fileId as string);
+    part.fileIds = part.fileIds.map((id) =>
+      this.convertToObjectId(id as string),
+    );
 
     // convert pid to ObjectId
     if (part.pid) {
@@ -160,9 +162,9 @@ export class TemplatesRepository extends BaseRepository {
       .findOne<Template>(query, {}, { lean: true })
       .populate('backgroundFileId')
       .populate({
-        path: 'parts.fileId',
+        path: 'parts.fileIds',
         foreignField: '_id',
-        localField: 'parts.fileId',
+        localField: 'parts.fileIds',
         model: 'File',
       })
       .populate({

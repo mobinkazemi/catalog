@@ -3,15 +3,15 @@ import { Category } from 'src/category/schema/category.schema';
 import { Part, Template } from 'src/templates/schema/templates.schema';
 import { File } from '../../../files/schema/files.schema';
 import * as _ from 'lodash';
-class populatedPart extends OmitType(Part, ['fileId']) {
-  fileId: File & { id: string };
+class populatedPart extends OmitType(Part, ['fileIds']) {
+  fileIds: Array<File & { id: string }>;
   constructor(data: any) {
     super();
     if (!data) data = {};
 
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;
-    this.fileId = data.fileId;
+    this.fileIds = data.fileId;
     this._id = data._id;
     this.link = data.link;
     this.ord = data.ord;
@@ -20,7 +20,6 @@ class populatedPart extends OmitType(Part, ['fileId']) {
     this.text = data.text;
     this.title = data.title;
     this.updatedAt = data.updatedAt;
-    this.fileId = data.fileId;
     if (data.categoryIds) {
       this.categoryIds = data.categoryIds.map((item: Category) => {
         return _.pick(item, ['_id', 'name']);
@@ -58,15 +57,14 @@ export class FindTemplateWithFilesDto extends OmitType(Template, [
   }
 }
 
-class PartResponseDto extends OmitType(Part, ['fileId']) {
-  fileId: File & { id: string };
+class PartResponseDto extends OmitType(Part, ['fileIds']) {
+  fileIds: Array<File & { id: string }>;
   constructor(data: any) {
     super();
     if (!data) data = {};
 
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;
-    this.fileId = data.fileId;
     this._id = data._id;
     this.link = data.link;
     this.ord = data.ord;
@@ -75,6 +73,6 @@ class PartResponseDto extends OmitType(Part, ['fileId']) {
     this.text = data.text;
     this.title = data.title;
     this.updatedAt = data.updatedAt;
-    this.fileId = data.fileId;
+    this.fileIds = data.fileIds;
   }
 }

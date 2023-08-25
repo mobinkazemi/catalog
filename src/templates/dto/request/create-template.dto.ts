@@ -90,10 +90,10 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
   @IsString()
   text: string;
 
-  @ApiProperty({ type: String })
-  @Matches(ObjectIdRegex)
-  @IsString()
-  fileId: ObjectIdOrString;
+  @ApiProperty({ type: Array<String> })
+  @Matches(ObjectIdRegex, { each: true })
+  @IsArray()
+  fileIds: Array<ObjectIdOrString>;
 
   @ApiProperty({ type: String })
   @IsOptional()
@@ -119,19 +119,6 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
   @ApiProperty({ type: Array<String> })
   @IsOptional()
   @IsArray()
-  @Type(() => String)
+  @Matches(ObjectIdRegex, { each: true })
   categoryIds?: Array<ObjectIdOrString>;
-
-  constructor(data: Partial<Part>) {
-    super();
-    if (!data) data = {};
-    this.title = data.title;
-    this.text = data.text;
-    this.fileId = data.fileId;
-    this.position = data.position;
-    this.ord = data.ord;
-    this.pid = data.pid;
-    this.link = data.link;
-    this.categoryIds = data.categoryIds;
-  }
 }
