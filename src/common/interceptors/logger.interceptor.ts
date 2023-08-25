@@ -38,16 +38,16 @@ export class LoggerInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap((data: ResponseFormatterDto) => {
-        logData.message = data.message;
-        logData.statusCode = data.statusCode;
+        logData.message = data?.message;
+        logData.statusCode = data?.statusCode;
         this.logService.create(logData);
         return data;
       }),
       catchError((error: Error) => {
-        logData.message = error.message;
+        logData.message = error?.message;
 
         // 500's reason is because when app crashes, error type is not kind of http exception
-        logData.statusCode = ExceptionNameToCode[error.name] || 500;
+        logData.statusCode = ExceptionNameToCode[error?.name] || 500;
 
         if (logData.statusCode == 500) {
           logData.message = error.stack;
