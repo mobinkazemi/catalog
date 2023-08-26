@@ -27,6 +27,6 @@ export class AppController {
       { id: data.id, expired: false },
       true,
     );
-    return new FindTemplateWithFilesDto(result);
+    return result;
   }
 }
