@@ -11,7 +11,7 @@ class populatedPart extends OmitType(Part, ['fileIds']) {
 
     this.createdAt = data.createdAt;
     this.deletedAt = data.deletedAt;
-    this.fileIds = data.fileId;
+    this.fileIds = data.fileIds;
     this._id = data._id;
     this.link = data.link;
     this.ord = data.ord;
