@@ -43,9 +43,11 @@ export class TemplatesRepository extends BaseRepository {
 
   private partItemsToObjectId(part: Partial<Part>): Partial<Part> {
     // convert fileId to ObjectId
-    part.fileIds = part.fileIds.map((id) =>
-      this.convertToObjectId(id as string),
-    );
+    if (part?.fileIds?.length) {
+      part.fileIds = part.fileIds.map((id) =>
+        this.convertToObjectId(id as string),
+      );
+    }
 
     // convert pid to ObjectId
     if (part.pid) {
