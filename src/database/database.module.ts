@@ -8,9 +8,24 @@ import mongoose from 'mongoose';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        return {
+        console.log({
+          ////
           uri: configService.getOrThrow('database.uri'),
+          dbName: configService.getOrThrow('database.name'),
           connectTimeoutMS: configService.getOrThrow('database.timeout'),
+          authMechanism: 'DEFAULT',
+          user: configService.getOrThrow('database.username'),
+          pass: configService.getOrThrow('database.password'),
+        });
+
+        return {
+          ////
+          uri: configService.getOrThrow('database.uri'),
+          dbName: configService.getOrThrow('database.name'),
+          connectTimeoutMS: configService.getOrThrow('database.timeout'),
+          authMechanism: 'DEFAULT',
+          user: configService.getOrThrow('database.username'),
+          pass: configService.getOrThrow('database.password'),
         };
       },
     }),

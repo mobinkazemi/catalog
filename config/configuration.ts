@@ -3,6 +3,7 @@ import { defaults } from './defaults';
 const env = process.env;
 
 export default () => ({
+  //
   // Application name & port & file upload size
   appName: env.APP_NAME || defaults.appName,
   port: env.PORT || defaults.port,
@@ -25,8 +26,9 @@ export default () => ({
     timeout: env.DATABASE_TIMEOUT || defaults.database.timeout,
     uri: `mongodb://${env.DATABASE_HOST || defaults.database.host}:${
       env.DATABASE_PORT || defaults.database.port
-    }/${env.DATABASE_NAME || defaults.database.name}`,
-    username: env.DATABSE_USERNAME || defaults.database.username,
+    }`,
+    name: env.DATABASE_NAME || defaults.database.name,
+    username: env.DATABASE_USERNAME || defaults.database.username,
     password: env.DATABASE_PASSWORD || defaults.database.password,
   },
 
