@@ -34,12 +34,6 @@ import { LogService } from 'src/log/log.service';
 import { LogRepository } from 'src/log/log.repository.ts';
 import { Log, LogSchema } from 'src/log/schema/log.schema';
 
-let envFilePath = [];
-if (process.env.NODE_ENV == 'test') {
-  envFilePath.push(`test.env`);
-} else {
-  envFilePath.push('app.env');
-}
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -48,7 +42,7 @@ if (process.env.NODE_ENV == 'test') {
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath,
+      envFilePath: ['app.env', 'test.env'],
       load: [configuration],
     }),
     ThrottlerModule.forRoot({
