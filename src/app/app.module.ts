@@ -35,10 +35,10 @@ import { LogRepository } from 'src/log/log.repository.ts';
 import { Log, LogSchema } from 'src/log/schema/log.schema';
 
 let envFilePath = [];
-if (process.env.NODE_ENV) {
-  envFilePath.push(`${process.env.NODE_ENV}.env`);
+if (process.env.NODE_ENV == 'test') {
+  envFilePath.push(`test.env`);
 } else {
-  envFilePath.push('.env');
+  envFilePath.push('app.env');
 }
 @Module({
   imports: [
