@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   addListOptionsDto,
   findByIdDto,
-  OptionsDto,
+  RepositoryOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from 'src/database/repository/base.repository';
 import { File, FileDocument } from './schema/files.schema';
@@ -16,7 +16,10 @@ export class FilesRepository extends BaseRepository {
     super();
   }
 
-  async findOne<File>(id: string, options?: OptionsDto): Promise<File> {
+  async findOne<File>(
+    id: string,
+    options?: RepositoryOptionsDto,
+  ): Promise<File> {
     let query = {
       _id: this.convertToObjectId(id),
       deletedAt: null,
@@ -32,7 +35,7 @@ export class FilesRepository extends BaseRepository {
   async findAll<T>(
     data?: any,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<T[]> {
     let query = {};
     if (!data) data = {};

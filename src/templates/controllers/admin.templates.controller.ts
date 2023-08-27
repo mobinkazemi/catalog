@@ -64,7 +64,7 @@ export class TemplatesController {
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.templatesService.remove(data, true);
+    return await this.templatesService.remove(data, { error: true });
   }
 
   @ApiOperation({ summary: 'Get template list' })
@@ -82,7 +82,7 @@ export class TemplatesController {
   async findOne(@Param() data: findByIdDto) {
     const result = await this.templatesService.fineOneWithFiles(
       { id: data.id },
-      true,
+      { error: true },
     );
     return new FindTemplateWithFilesDto(result);
   }
@@ -91,7 +91,9 @@ export class TemplatesController {
   @ApiBody({ type: UpdateTemplateDto })
   @Patch('update')
   async update(@Body() updateTemplateDto: UpdateTemplateDto) {
-    return await this.templatesService.update(updateTemplateDto, true);
+    return await this.templatesService.update(updateTemplateDto, {
+      error: true,
+    });
   }
 
   // ----- PART -----

@@ -40,7 +40,9 @@ export class CategoryController {
   @ApiBody({ type: CreateCategoryDto })
   @Post('create')
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    const result = await this.categoryService.create(createCategoryDto, true);
+    const result = await this.categoryService.create(createCategoryDto, {
+      error: true,
+    });
 
     return new FindCategoryResponseDto(result);
   }
@@ -59,7 +61,9 @@ export class CategoryController {
   @ApiOperation({ summary: 'Get category info' })
   @Get(':id')
   async findOne(@Param() data: findByIdDto) {
-    const result = await this.categoryService.findOne(data, true);
+    const result = await this.categoryService.findOne(data, {
+      error: true,
+    });
     return new FindCategoryResponseDto(result);
   }
 

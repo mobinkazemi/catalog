@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import {
-  OptionsDto,
+  RepositoryOptionsDto,
   addListOptionsDto,
   findByIdDto,
 } from '../common/dto/base-repository-dtos.dto';
@@ -103,7 +103,7 @@ export class TemplatesRepository extends BaseRepository {
 
   async findOne<Template>(
     data?: FindTemplateDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Template> {
     let query = {};
     if (!data) data = {};
@@ -135,7 +135,7 @@ export class TemplatesRepository extends BaseRepository {
 
   async findOneWithFiles<Template>(
     data?: FindTemplateDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ) {
     let query = {};
     if (!data) data = {};
@@ -182,7 +182,7 @@ export class TemplatesRepository extends BaseRepository {
   async findAll<Template>(
     data?: FindTemplateDto,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Template[]> {
     let query = {};
     if (!data) data = {};

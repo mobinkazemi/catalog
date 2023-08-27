@@ -7,6 +7,7 @@ import {
   addListOptionsDto,
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
+import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { CategorysRepository } from './category.repository';
 import { FindCategoryDto } from './dto/find-category.dto';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
@@ -20,14 +21,14 @@ export class CategoryService {
 
   async create(
     createCategoryDto: CreateCategoryDto,
-    error?: boolean,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     // Check duplicate in here
     const duplicate = await this.categoryRepository.findOne({
       name: createCategoryDto.name,
     });
 
-    if (duplicate && error) throw new ConflictException();
+    if (duplicate && serviceOptions?.error) throw new ConflictException();
     if (duplicate) return;
     //then create
     return await this.categoryRepository.create(createCategoryDto);
@@ -37,22 +38,31 @@ export class CategoryService {
     return await this.categoryRepository.findAll(data, options);
   }
 
-  async findOne(data?: FindCategoryDto, error?: boolean): Promise<Category> {
+  async findOne(
+    data?: FindCategoryDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Category> {
     const result = await this.categoryRepository.findOne<Category>(data);
 
-    if (!result && error) throw new NotFoundException();
+    if (!result && serviceOptions?.error) throw new NotFoundException();
 
     return result;
   }
 
-  async update(updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+  async update(
+    updateCategoryDto: UpdateCategoryDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Category> {
     const { id } = updateCategoryDto;
     delete updateCategoryDto.id;
     return await this.categoryRepository.updateOne({ id }, updateCategoryDto);
   }
 
-  async remove(data: findByIdDto, error?: boolean): Promise<void> {
-    const category = await this.findOne({ id: data.id }, error);
+  async remove(
+    data: findByIdDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<void> {
+    const category = await this.findOne({ id: data.id }, serviceOptions);
 
     if (!category) return;
 

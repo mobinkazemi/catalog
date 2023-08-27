@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import {
   addListOptionsDto,
   findByIdDto,
@@ -24,7 +25,7 @@ export class RolesService {
   constructor(private readonly roleRepository: RolesRepository) {}
   async create(
     createRoleDto: CreateRoleDto,
-    error?: boolean,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<ResponseAfterCreateDto> {
     const duplicate = await this.roleRepository.findOne(
       {
@@ -32,7 +33,7 @@ export class RolesService {
       },
       { show: 'all' },
     );
-    if (duplicate && error) throw new ConflictException();
+    if (duplicate && serviceOptions?.error) throw new ConflictException();
     if (duplicate) return;
 
     const result = await this.roleRepository.create({
@@ -49,16 +50,19 @@ export class RolesService {
     return await this.roleRepository.findAll(data, listOptions);
   }
 
-  async findOne(data: FindRoleDto, error?: boolean): Promise<Role> {
+  async findOne(
+    data: FindRoleDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Role> {
     const role = await this.roleRepository.findOne<Role>(data);
-    if (!role && error) throw new NotFoundException();
+    if (!role && serviceOptions?.error) throw new NotFoundException();
     // if (!role) return null;/
 
     return role;
   }
 
-  async remove(data: findByIdDto, error?: boolean) {
-    await this.findOne({ id: data.id }, error);
+  async remove(data: findByIdDto, serviceOptions?: ServiceOptionsDto) {
+    await this.findOne({ id: data.id }, serviceOptions);
 
     await this.roleRepository.remove(data);
   }

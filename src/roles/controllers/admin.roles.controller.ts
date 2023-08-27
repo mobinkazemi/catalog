@@ -40,7 +40,7 @@ export class RolesController {
   async create(
     @Body() createRoleDto: CreateRoleDto,
   ): Promise<ResponseAfterCreateDto> {
-    return await this.rolesService.create(createRoleDto, true);
+    return await this.rolesService.create(createRoleDto, { error: true });
   }
 
   @ApiOperation({ summary: 'Get role list' })
@@ -58,7 +58,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Get role info' })
   @Get('info')
   async findOne(@Query() data: FindRoleDto) {
-    const result = await this.rolesService.findOne(data, true);
+    const result = await this.rolesService.findOne(data, { error: true });
     return new findRoleResponseDto(result);
   }
 
@@ -66,6 +66,6 @@ export class RolesController {
   @ApiOperation({ summary: 'Delete role' })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.rolesService.remove(data, true);
+    return await this.rolesService.remove(data, { error: true });
   }
 }

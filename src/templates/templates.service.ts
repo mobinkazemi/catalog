@@ -18,6 +18,7 @@ import {
 import { Template } from './schema/templates.schema';
 import { TemplatesRepository } from './templates.repository';
 import * as _ from 'lodash';
+import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 @Injectable()
 export class TemplatesService {
   constructor(private readonly templateRepository: TemplatesRepository) {}
@@ -36,28 +37,37 @@ export class TemplatesService {
     return await this.templateRepository.findAll(data, options);
   }
 
-  async findOne(id: ObjectIdOrString, error?: boolean) {
+  async findOne(id: ObjectIdOrString, serviceOptions?: ServiceOptionsDto) {
     const result = await this.templateRepository.findOne({ id: id as string });
 
-    if (!result && error) throw new NotFoundException();
+    if (!result && serviceOptions?.error) throw new NotFoundException();
 
     return result;
   }
 
-  async fineOneWithFiles(data: FindTemplateDto, error?: boolean) {
+  async fineOneWithFiles(
+    data: FindTemplateDto,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
     const result = await this.templateRepository.findOneWithFiles({
       id: data.id as string,
     });
 
-    if (!result && error) throw new NotFoundException();
+    if (!result && serviceOptions?.error) throw new NotFoundException();
 
     return result;
   }
 
-  async findOneWithFilesAndExpiration(data: FindTemplateDto, error?: boolean) {
+  async findOneWithFilesAndExpiration(
+    data: FindTemplateDto,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
     delete data.expired;
 
-    const result = (await this.fineOneWithFiles(data, error)) as Template;
+    const result = (await this.fineOneWithFiles(
+      data,
+      serviceOptions,
+    )) as Template;
 
     if (result['expiredAt'] && result['expiredAt'] < new Date()) {
       throw new GoneException();
@@ -80,14 +90,20 @@ export class TemplatesService {
     return result;
   }
 
-  async update(updateTemplateDto: UpdateTemplateDto, error?: boolean) {
-    await this.findOne(updateTemplateDto.templateId, error);
+  async update(
+    updateTemplateDto: UpdateTemplateDto,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
+    await this.findOne(updateTemplateDto.templateId, serviceOptions);
 
     return await this.templateRepository.update(updateTemplateDto);
   }
 
-  async remove(data: findByIdDto, error?: boolean): Promise<void> {
-    const template = await this.findOne(data.id, error);
+  async remove(
+    data: findByIdDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<void> {
+    const template = await this.findOne(data.id, serviceOptions);
 
     if (!template) return;
 
@@ -97,14 +113,14 @@ export class TemplatesService {
   // ----- PARTS -----
   async createPart(
     createPartOfTemplateDto: CreatePartOfTemplateDto,
-    error?: boolean,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<Template> {
     return await this.templateRepository.createPart(createPartOfTemplateDto);
   }
 
   async removePart(
     data: RemovePartOfTemplateDto,
-    error?: boolean,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<Template> {
     return await this.templateRepository.removePart(data);
   }

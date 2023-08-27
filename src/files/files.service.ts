@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
+import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { MinioClientService } from '../minio/minio.service';
 import { CreateFileDto } from './dto/request/create-file.dto';
@@ -34,17 +35,20 @@ export class FilesService {
     throw new NotImplementedException();
   }
 
-  async findOne(id: string, error?: boolean) {
+  async findOne(id: string, serviceOptions?: ServiceOptionsDto) {
     const file = await this.fileRepository.findOne<File>(id);
-    if (!file && error) throw new NotFoundException();
+    if (!file && serviceOptions.error) throw new NotFoundException();
 
     return file;
   }
 
-  async findOneWithStoredObject(id: string, error?: boolean) {
-    const file = await this.findOne(id, error);
+  async findOneWithStoredObject(
+    id: string,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
+    const file = await this.findOne(id, serviceOptions);
 
-    if (!file && !error) return;
+    if (!file && !serviceOptions.error) return;
 
     const objectStream = await this.minioService.getFile(file.id);
 
@@ -54,8 +58,11 @@ export class FilesService {
     };
   }
 
-  async remove(data: findByIdDto, error?: boolean): Promise<void> {
-    const file = await this.findOne(data.id, error);
+  async remove(
+    data: findByIdDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<void> {
+    const file = await this.findOne(data.id, serviceOptions);
 
     if (!file) return;
 

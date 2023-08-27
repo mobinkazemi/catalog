@@ -4,19 +4,19 @@ import {
   addListOptionsDto,
   addPaginationDto,
   addSortDto,
-  OptionsDto,
+  RepositoryOptionsDto,
 } from '../../common/dto/base-repository-dtos.dto';
 import * as _ from 'lodash';
 import { ObjectIdType } from 'src/common/types/types';
 export abstract class BaseRepository {
-  abstract findOne<T>(data: any, options?: OptionsDto): Promise<T>;
+  abstract findOne<T>(data: any, options?: RepositoryOptionsDto): Promise<T>;
   abstract findAll<T>(
     data?: any,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<T[]>;
 
-  protected addOptions(data: any, options: OptionsDto) {
+  protected addOptions(data: any, options: RepositoryOptionsDto) {
     if (options.show) {
       switch (options.show) {
         case 'all':

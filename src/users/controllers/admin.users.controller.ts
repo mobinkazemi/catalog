@@ -69,7 +69,7 @@ export class UsersAdminController {
     });
     if (exist) throw new ConflictException();
 
-    return await this.usersService.create(createUserDto, true);
+    return await this.usersService.create(createUserDto, { error: true });
   }
 
   @ApiOperation({ summary: 'Get user info' })
@@ -110,6 +110,6 @@ export class UsersAdminController {
   @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
   remove(@Body() data: RemoveUserDto) {
-    return this.usersService.remove(data.id, true);
+    return this.usersService.remove(data.id, { error: true });
   }
 }

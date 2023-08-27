@@ -23,6 +23,7 @@ import * as bcrypt from 'bcrypt';
 import { UpdateRoleDto } from 'src/roles/dto/request/update-role.dto';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
+import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -31,7 +32,7 @@ export class UsersService {
   ) {}
   async create(
     createUserDto: CreateUserDto,
-    error?: boolean,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<ResponseAfterCreateDto> {
     const duplicateUsername = await this.userRepository.findOne(
       {
@@ -40,7 +41,9 @@ export class UsersService {
       { show: 'all' },
     );
 
-    if (duplicateUsername && error) throw new ConflictException();
+    if (duplicateUsername && serviceOptions?.error) {
+      throw new ConflictException();
+    }
     if (duplicateUsername) return;
 
     const result = await this.userRepository.create(createUserDto);
@@ -56,9 +59,12 @@ export class UsersService {
     return result;
   }
 
-  async findOne(data: FindUserDto, error?: boolean): Promise<User> {
+  async findOne(
+    data: FindUserDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<User> {
     const result: User = await this.userRepository.findOne(data);
-    if (!result && error) throw new NotFoundException();
+    if (!result && serviceOptions?.error) throw new NotFoundException();
     return result;
   }
 
@@ -72,19 +78,22 @@ export class UsersService {
     return result;
   }
 
-  async remove(id: ObjectIdOrString, error?: boolean) {
-    await this.findOne({ id: id.toString() }, error);
+  async remove(id: ObjectIdOrString, serviceOptions?: ServiceOptionsDto) {
+    await this.findOne({ id: id.toString() }, serviceOptions);
 
     await this.userRepository.remove(id);
   }
 
-  async addRole(data: CreateUserRoleDto, error?: boolean): Promise<User> {
+  async addRole(
+    data: CreateUserRoleDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<User> {
     const user = await this.userRepository.findOne<User>({ id: data.userId });
     const role = await this.roleService.findOne({ id: data.roleId });
 
-    if (error && !user) throw new NotFoundException();
+    if (serviceOptions?.error && !user) throw new NotFoundException();
     if (!user) return;
-    if (error && !role) throw new NotFoundException();
+    if (serviceOptions?.error && !role) throw new NotFoundException();
     if (!role) return;
 
     const rolesList = [...new Set([role.name, ...user.roles])];
@@ -98,13 +107,16 @@ export class UsersService {
     return result;
   }
 
-  async removeRole(data: RemoveUserRoleDto, error?: boolean) {
+  async removeRole(
+    data: RemoveUserRoleDto,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
     const user = await this.userRepository.findOne<User>({ id: data.userId });
     const role = await this.roleService.findOne({ id: data.roleId });
 
-    if (error && !user) throw new NotFoundException();
+    if (serviceOptions?.error && !user) throw new NotFoundException();
     if (!user) return;
-    if (error && !role) throw new NotFoundException();
+    if (serviceOptions?.error && !role) throw new NotFoundException();
     if (!role) return;
 
     const rolesList = user.roles.filter((r) => r != role.name);

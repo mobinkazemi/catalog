@@ -25,7 +25,7 @@ export class AppController {
   async findOne(@Param() data: findByIdDto) {
     const result = await this.templatesService.findOneWithFilesAndExpiration(
       { id: data.id, expired: false },
-      true,
+      { error: true },
     );
     return result;
   }

@@ -57,7 +57,7 @@ export class FilesController {
   @Get(':id')
   async findOne(@Param() data: FindFileByIdDto, @Res() res: Response) {
     const { fileInfo, stream } =
-      await this.filesService.findOneWithStoredObject(data.id, true);
+      await this.filesService.findOneWithStoredObject(data.id, { error: true });
 
     res.set({
       'Content-Type': fileInfo.mime,
@@ -71,6 +71,6 @@ export class FilesController {
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.filesService.remove(data, true);
+    return await this.filesService.remove(data, { error: true });
   }
 }

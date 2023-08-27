@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   addListOptionsDto,
-  OptionsDto,
+  RepositoryOptionsDto,
 } from 'src/common/dto/base-repository-dtos.dto';
 import { BaseRepository } from 'src/database/repository/base.repository';
 import { Log, LogDocument } from './schema/log.schema';
@@ -23,12 +23,12 @@ export class LogRepository extends BaseRepository {
   async findAll<Log>(
     data?: any,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Log[]> {
     return;
   }
 
-  async findOne<Log>(data: any, options?: OptionsDto): Promise<Log> {
+  async findOne<Log>(data: any, options?: RepositoryOptionsDto): Promise<Log> {
     return;
   }
 }

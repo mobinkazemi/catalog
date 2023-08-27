@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  OptionsDto,
+  RepositoryOptionsDto,
   findByIdDto,
   addListOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
@@ -26,7 +26,7 @@ export class CategorysRepository extends BaseRepository {
 
   async findOne<Category>(
     data?: FindCategoryDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Category> {
     let query = {};
     if (!data) data = {};
@@ -52,7 +52,7 @@ export class CategorysRepository extends BaseRepository {
   async findAll<Category>(
     data?: FindCategoryDto,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Category[]> {
     let query = {};
     if (!data) data = {};

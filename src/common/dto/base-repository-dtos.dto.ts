@@ -18,7 +18,7 @@ export class findByIdDto {
   id: string;
 }
 
-export class OptionsDto {
+export class RepositoryOptionsDto {
   show: 'all' | 'removed';
 }
 

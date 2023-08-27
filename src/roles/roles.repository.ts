@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   addListOptionsDto,
   findByIdDto,
-  OptionsDto,
+  RepositoryOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from '../database/repository/base.repository';
 import { CreateRoleDto } from './dto/request/create-role.dto';
@@ -20,7 +20,10 @@ export class RolesRepository extends BaseRepository {
     super();
   }
 
-  async findOne<Role>(data?: FindRoleDto, options?: OptionsDto): Promise<Role> {
+  async findOne<Role>(
+    data?: FindRoleDto,
+    options?: RepositoryOptionsDto,
+  ): Promise<Role> {
     let query = {};
     if (!data) data = {};
 
@@ -47,7 +50,7 @@ export class RolesRepository extends BaseRepository {
   async findAll<Role>(
     data?: FindRolesListDto,
     listOptions?: addListOptionsDto,
-    options?: OptionsDto,
+    options?: RepositoryOptionsDto,
   ): Promise<Role[]> {
     let query = {};
     if (!data) data = {};
