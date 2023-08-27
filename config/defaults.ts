@@ -20,6 +20,8 @@ export const defaults = {
     port: 27017,
     host: 'localhost',
     name: 'catalog-default',
+    username: 'root',
+    password: '12345678',
   },
 
   // Cache DB

@@ -26,6 +26,8 @@ export default () => ({
     uri: `mongodb://${env.DATABASE_HOST || defaults.database.host}:${
       env.DATABASE_PORT || defaults.database.port
     }/${env.DATABASE_NAME || defaults.database.name}`,
+    username: env.DATABSE_USERNAME || defaults.database.username,
+    password: env.DATABASE_PASSWORD || defaults.database.password,
   },
 
   // Cache DB

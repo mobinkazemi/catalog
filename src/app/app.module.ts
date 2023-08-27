@@ -42,7 +42,7 @@ import { Log, LogSchema } from 'src/log/schema/log.schema';
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`${process.env.NODE_ENV}.env`],
+      envFilePath: [`${process.env.NODE_ENV}.env`, '.env'],
       load: [configuration],
     }),
     ThrottlerModule.forRoot({
