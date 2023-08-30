@@ -11,7 +11,7 @@ import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { CategorysRepository } from './category.repository';
 import { FindCategoryDto } from './dto/find-category.dto';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
-import { FindCategoryListRequestDto } from './dto/request/fnd-category.dto';
+import { FindCategoryListRequestDto } from './dto/request/find-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-category.dto';
 import { Category } from './schema/category.schema';
 

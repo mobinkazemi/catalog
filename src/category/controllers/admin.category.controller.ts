@@ -26,7 +26,7 @@ import {
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { CategoryService } from '../category.service';
 import { CreateCategoryDto } from '../dto/request/create-category.dto';
-import { FindCategoryListRequestDto } from '../dto/request/fnd-category.dto';
+import { FindCategoryListRequestDto } from '../dto/request/find-category.dto';
 import { FindCategoryResponseDto } from '../dto/response/find-category.dto';
 
 @Roles(RolesEnum.ADMIN)
