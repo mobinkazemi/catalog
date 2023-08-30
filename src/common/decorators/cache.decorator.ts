@@ -1,8 +1,18 @@
 import { Inject } from '@nestjs/common';
 import { RedisProxyService } from 'src/redis/redis.service';
+import * as _ from 'lodash';
 
-export function Cacher(prekey: string, ttl?: number) {
-  if (!ttl) ttl = 600; // 10 Minutes
+interface OptionsDto {
+  ttl?: number;
+  numArgsToUseFromFirst?: number;
+  numArgsToUseFromLast?: number;
+  pickArgsToUse?: Array<String>;
+}
+
+export function Cacher(prekey: string, options?: OptionsDto) {
+  options = options || {};
+
+  if (!options.ttl) options.ttl = 600; // 10 Minutes
   const redisService = Inject(RedisProxyService);
 
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
@@ -10,7 +20,20 @@ export function Cacher(prekey: string, ttl?: number) {
     redisService(target, 'redis');
 
     descriptor.value = async function (...args: any[]) {
-      const key = prekey.concat(JSON.stringify(args));
+      let argsForKey = options.numArgsToUseFromFirst
+        ? args.slice(0, options.numArgsToUseFromFirst)
+        : options.numArgsToUseFromLast
+        ? args.slice(-options.numArgsToUseFromLast)
+        : args;
+
+      if (options.pickArgsToUse) {
+        argsForKey = argsForKey.map((item) => {
+          item = _.pick(item, options.pickArgsToUse);
+          return item;
+        });
+      }
+
+      const key = prekey.concat(JSON.stringify(argsForKey));
       let result = await this.redis.get(key);
 
       if (result) return JSON.parse(result);
@@ -18,7 +41,7 @@ export function Cacher(prekey: string, ttl?: number) {
       result = await fn.apply(this, args);
 
       // Below code will not execute for Error responses
-      await this.redis.set(key, JSON.stringify(result), ttl);
+      await this.redis.set(key, JSON.stringify(result), options.ttl);
 
       return result;
     };
