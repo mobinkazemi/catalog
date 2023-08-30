@@ -9,11 +9,10 @@ import {
 } from 'src/common/dto/base-repository-dtos.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { CategorysRepository } from './category.repository';
-import { FindCategoryDto } from './dto/find-category.dto';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
-import { FindCategoryListRequestDto } from './dto/request/find-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-category.dto';
 import { Category } from './schema/category.schema';
+import { FindCategoryType } from './types/find-category.types';
 
 @Injectable()
 export class CategoryService {
@@ -39,7 +38,7 @@ export class CategoryService {
   }
 
   async findOne(
-    data?: FindCategoryDto,
+    data?: FindCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     const result = await this.categoryRepository.findOne<Category>(data);

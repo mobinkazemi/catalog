@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   RepositoryOptionsDto,
-  findByIdDto,
   addListOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from '../database/repository/base.repository';
@@ -13,7 +12,7 @@ import { Category, CategoryDocument } from './schema/category.schema';
 import * as _ from 'lodash';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
-import { FindCategoryDto } from './dto/find-category.dto';
+import { FindCategoryType } from './types/find-category.types';
 
 @Injectable()
 export class CategorysRepository extends BaseRepository {
@@ -25,7 +24,7 @@ export class CategorysRepository extends BaseRepository {
   }
 
   async findOne<Category>(
-    data?: FindCategoryDto,
+    data?: FindCategoryType,
     options?: RepositoryOptionsDto,
   ): Promise<Category> {
     let query = {};
@@ -50,7 +49,7 @@ export class CategorysRepository extends BaseRepository {
   }
 
   async findAll<Category>(
-    data?: FindCategoryDto,
+    data?: FindCategoryType,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Category[]> {
@@ -91,7 +90,7 @@ export class CategorysRepository extends BaseRepository {
   }
 
   async updateOne<Category>(
-    data: FindCategoryDto,
+    data: FindCategoryType,
     updateData: UpdateCategoryDto & BaseSchemaDto,
   ): Promise<Category> {
     let query = {};
