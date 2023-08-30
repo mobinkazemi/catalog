@@ -88,6 +88,15 @@ export class RedisProxyService {
     await this.setSession(userId, newAcc, newRef, newSessionId);
   }
 
+  async set(key: string, value: string, ttl: number) {
+    await this.redis.set(key, value);
+    await this.redis.expire(key, ttl);
+  }
+
+  async get(key: string) {
+    return await this.redis.get(key);
+  }
+
   async getHello() {
     return await this.redis.hello();
   }
