@@ -49,35 +49,3 @@ export class FindTemplateListRequestDto {
   @IsOptional()
   name: string;
 }
-
-export class SWAGGER_FindTemplateListRequestDto {
-  @ApiProperty()
-  categoryId: ObjectIdOrString;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  expiredAt: Date;
-
-  @ApiProperty()
-  deletedAt: Date;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  sort?: string;
-
-  @ApiProperty()
-  asc?: boolean;
-
-  @ApiProperty()
-  limit?: number;
-
-  @ApiProperty()
-  page?: number;
-}
-
-// -------------------------------------------
-// -------------------------------------------

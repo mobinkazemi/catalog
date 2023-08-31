@@ -38,10 +38,7 @@ import {
   addListOptionsDto,
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
-import {
-  FindTemplateListRequestDto,
-  SWAGGER_FindTemplateListRequestDto,
-} from '../dto/request/find-template.dto';
+import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 
 @Roles(RolesEnum.ADMIN)

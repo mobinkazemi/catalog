@@ -16,7 +16,7 @@ import {
 import mongoose, { isObjectIdOrHexString, ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
-import { About, Part, Template } from '../../schema/templates.schema';
+import { About, Part, Template, UI } from '../../schema/templates.schema';
 
 export class CreateTemplateDto extends OmitType(Template, [
   'id',
@@ -33,6 +33,7 @@ export class CreateTemplateDto extends OmitType(Template, [
   @ApiProperty({ type: String })
   @IsOptional()
   @IsString()
+  @Matches(ObjectIdRegex)
   pid: ObjectIdOrString;
 
   @IsString()
@@ -66,6 +67,10 @@ export class CreateTemplateDto extends OmitType(Template, [
   @IsOptional()
   @ApiProperty({ type: About })
   about?: About;
+
+  @IsOptional()
+  @ApiProperty({ type: UI })
+  ui?: UI;
 }
 
 export class CreatePartOfTemplateDto extends OmitType(Part, [

@@ -124,6 +124,34 @@ export class About {
   twitter?: string;
 }
 
+const UI_Defaults = {
+  buttonOfVitrine: 'مشاهده ویترین',
+  buttonOfAbout: 'درباره ما',
+  textOfPartDesc: 'توضیحات',
+};
+export class UI {
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+    default: UI_Defaults.buttonOfVitrine,
+  })
+  buttonOfVitrine?: String;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+    default: UI_Defaults.buttonOfAbout,
+  })
+  buttonOfAbout?: String;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+    default: UI_Defaults.textOfPartDesc,
+  })
+  textOfPartDesc?: String;
+}
+
 @Schema({ id: true, timestamps: true })
 export class Template extends Base {
   @ApiProperty({ type: String })
@@ -180,6 +208,14 @@ export class Template extends Base {
     type: About,
   })
   about?: About;
+
+  @ApiProperty({ type: UI })
+  @Prop({
+    type: UI,
+    required: true,
+    default: UI_Defaults,
+  })
+  ui?: UI;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);

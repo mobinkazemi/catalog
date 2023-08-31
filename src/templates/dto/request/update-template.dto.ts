@@ -14,7 +14,12 @@ import {
 import mongoose from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
-import { About, Part, Template } from 'src/templates/schema/templates.schema';
+import {
+  About,
+  Part,
+  Template,
+  UI,
+} from 'src/templates/schema/templates.schema';
 import { CreateTemplateDto } from './create-template.dto';
 
 export class UpdateTemplateDto extends PartialType(
@@ -38,6 +43,7 @@ export class UpdateTemplateDto extends PartialType(
   ord: number;
 
   @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
   @IsOptional()
   @IsString()
   pid: ObjectIdOrString;
@@ -66,6 +72,10 @@ export class UpdateTemplateDto extends PartialType(
   @IsOptional()
   @ApiProperty({ type: About })
   about?: About;
+
+  @IsOptional()
+  @ApiProperty({ type: UI })
+  ui?: UI;
 }
 
 export class UpdatePartOfTemplateDto extends PartialType(
