@@ -13,7 +13,7 @@ import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { CachePreKeyEnum } from 'src/common/enums/cachePreKeys.enum';
 import { FindTemplateWithFilesDto } from 'src/templates/dto/response/find-one-with-file.dto';
 import { TemplatesService } from 'src/templates/templates.service';
-import { AppService } from './app.service';
+import { AppService } from '../app.service';
 @Controller()
 export class AppController {
   constructor(
