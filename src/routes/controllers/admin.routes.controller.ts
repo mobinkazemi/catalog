@@ -14,7 +14,7 @@ import { UpdateRouteDto } from '../dto/update-route.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('routes')
+@Controller('routes/admin')
 export class RoutesController {
   constructor(private readonly routesService: RoutesService) {}
 
