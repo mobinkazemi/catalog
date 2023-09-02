@@ -6,6 +6,8 @@ import configuration from 'config/configuration';
 import { ResponseFormatterInterceptor } from './common/interceptors/response-formatter.interceptor';
 import { LogService } from './log/log.service';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
+import { ReqAuthenticatorInterceptor } from './common/interceptors/request-authenticator.interceptor';
+import { RedisProxyService } from './redis/redis.service';
 
 async function bootstrap() {
   // Get application configs
@@ -16,7 +18,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // Interceptors
-  const interceptors = [new ResponseFormatterInterceptor()];
+  const loggerService = app.get<RedisProxyService>(RedisProxyService);
+  const interceptors = [
+    new ResponseFormatterInterceptor(),
+    new ReqAuthenticatorInterceptor(loggerService),
+  ];
 
   if (applicationConfigs.logger) {
     const loggerService = app.get<LogService>(LogService);

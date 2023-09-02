@@ -3,6 +3,8 @@ import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { RedisKeyEnums } from '../auth/eunms/redis-keys.enums';
 import { HasSessionDto } from '../auth/dto/hasSession.dto';
+import { RoutesRedisKeysEnum } from 'src/routes/enums/redis-keys-enums';
+import { deleteRedisKey } from './types/delete.type';
 
 @Injectable()
 export class RedisProxyService {
@@ -88,9 +90,11 @@ export class RedisProxyService {
     await this.setSession(userId, newAcc, newRef, newSessionId);
   }
 
-  async set(key: string, value: string, ttl: number) {
+  async set(key: string, value: string, ttl?: number) {
     await this.redis.set(key, value);
-    await this.redis.expire(key, ttl);
+    if (ttl) {
+      await this.redis.expire(key, ttl);
+    }
   }
 
   async get(key: string) {
@@ -99,5 +103,15 @@ export class RedisProxyService {
 
   async getHello() {
     return await this.redis.hello();
+  }
+
+  async delete(data: deleteRedisKey) {
+    if (data.key) {
+      await this.redis.del(data.key);
+    } else {
+      const pattern = data.pattern.concat('*');
+      const keys = await this.redis.keys(pattern);
+      await Promise.all(keys.map((k) => this.redis.del(k)));
+    }
   }
 }

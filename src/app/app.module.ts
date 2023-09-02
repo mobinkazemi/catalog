@@ -33,12 +33,18 @@ import { LogModule } from 'src/log/log.module';
 import { LogService } from 'src/log/log.service';
 import { LogRepository } from 'src/log/log.repository.ts';
 import { Log, LogSchema } from 'src/log/schema/log.schema';
+import { AdminAppController } from './controllers/admin.app.controller';
+import { RoutesModule } from 'src/routes/routes.module';
+import { RoutesService } from 'src/routes/routes.service';
+import { RoutesRepository } from 'src/routes/routes.repository';
+import { Route, RouteSchema } from 'src/routes/schema/routes.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Template.name, schema: TemplateSchema },
       { name: Log.name, schema: LogSchema },
+      { name: Route.name, schema: RouteSchema },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -60,8 +66,9 @@ import { Log, LogSchema } from 'src/log/schema/log.schema';
     SeederModule,
     TemplatesModule,
     CategoryModule,
+    RoutesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AdminAppController],
   providers: [
     AppService,
     MinioClientService,
@@ -70,6 +77,8 @@ import { Log, LogSchema } from 'src/log/schema/log.schema';
     TemplatesRepository,
     LogService,
     LogRepository,
+    RoutesService,
+    RoutesRepository,
   ],
 })
 export class AppModule implements NestModule {
