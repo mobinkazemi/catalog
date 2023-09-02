@@ -30,6 +30,7 @@ export class ReqAuthenticatorInterceptor implements NestInterceptor {
 
     const key = RouteAuthRedisKeyMaker(url, method);
     let value: string | RedisValueType = await this.redisService.get(key);
+    console.log(url);
 
     //
     for (let item of whiteExceptions) {
