@@ -33,7 +33,7 @@ export class ReqAuthenticatorInterceptor implements NestInterceptor {
 
     //
     for (let item of whiteExceptions) {
-      if (url.toLowerCase().includes(item)) {
+      if (url.toLowerCase().includes(item.toLowerCase())) {
         return next.handle();
       }
     }
