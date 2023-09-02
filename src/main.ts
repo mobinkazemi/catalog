@@ -12,11 +12,16 @@ import { RedisProxyService } from './redis/redis.service';
 async function bootstrap() {
   // Get application configs
   const applicationConfigs = configuration();
-
+  //
+  //
+  //
   // Creating Nestjs application + Initial Configs
   const app = await NestFactory.create(AppModule, {});
   app.setGlobalPrefix('api/v1');
 
+  //
+  //
+  //
   // Interceptors
   const loggerService = app.get<RedisProxyService>(RedisProxyService);
   const interceptors = [
@@ -30,10 +35,15 @@ async function bootstrap() {
   }
 
   app.useGlobalInterceptors(...interceptors);
-
+  //
+  //
+  //
   // Pipes
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  //
+  //
+  //
   // CORS
   const corsOptions = {
     origin: applicationConfigs.client.uri, // Replace with the URL of your React app
@@ -42,6 +52,9 @@ async function bootstrap() {
   };
   app.enableCors(corsOptions);
 
+  //
+  //
+  //
   // SWAGGER
   const swaggerConfig = new DocumentBuilder()
     .setTitle(applicationConfigs.appName)
@@ -51,6 +64,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
+  //
+  //
+  //
   // RUNNING APPLICATION
   const PORT = applicationConfigs.port;
   await app.listen(PORT, () => {

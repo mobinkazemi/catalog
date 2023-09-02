@@ -1,5 +1,4 @@
 import { ObjectIdType } from 'src/common/types/types';
-import { RolesEnum } from '../../../common/enums/roles.enum';
 import { User } from '../../../users/schema/users.schema';
 
 export class FindUserResponseDto {

@@ -17,6 +17,7 @@ import { CreateRoleDto } from './dto/request/create-role.dto';
 import { FindRoleDto } from './dto/request/find-role.dto';
 import { FindRolesListDto } from './dto/request/find-roles.dto';
 import { UpdateRoleDto } from './dto/request/update-role.dto';
+import { RoleMessagesEnum } from './enums/messages.enum';
 import { RolesRepository } from './roles.repository';
 import { Role, RoleDocument } from './schema/roles.schema';
 
@@ -55,7 +56,8 @@ export class RolesService {
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Role> {
     const role = await this.roleRepository.findOne<Role>(data);
-    if (!role && serviceOptions?.error) throw new NotFoundException();
+    if (!role && serviceOptions?.error)
+      throw new NotFoundException(RoleMessagesEnum.ROLE_NOT_FOUND);
     // if (!role) return null;/
 
     return role;

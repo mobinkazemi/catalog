@@ -43,11 +43,16 @@ export class AppService {
       ),
     );
 
+    await this.reloadRoutes();
+  }
+
+  async reloadRoutes() {
+    const routes = await this.routeService.findAll({}, { limit: 1000 });
+
     await this.redisService.delete({
       pattern: RoutesRedisKeysEnum.PRE_ROUTE_AUTH_KEY,
     });
 
-    const routes = await this.routeService.findAll({}, { limit: 1000 });
     await Promise.all(
       routes.map((item) => {
         const key = RouteAuthRedisKeyMaker(item.path, item.method);

@@ -20,9 +20,8 @@ import {
   UpdatePartOfTemplateDto,
   UpdateTemplateDto,
 } from '../dto/request/update-template.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { RolesEnum } from 'src/common/enums/roles.enum';
-import { RolesGuard } from 'src/auth/strategy/role.strategy';
+// import { Roles } from 'src/auth/decorators/roles.decorator';
+// import { RolesGuard } from 'src/auth/strategy/role.strategy';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBody,
@@ -41,8 +40,8 @@ import {
 import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 
-@Roles(RolesEnum.ADMIN)
-@UseGuards(RolesGuard)
+// @Roles(RolesEnum.ADMIN)
+// @UseGuards(RolesGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('templates/admin')
 export class TemplatesController {

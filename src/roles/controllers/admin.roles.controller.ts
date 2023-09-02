@@ -15,9 +15,9 @@ import { RolesService } from '../roles.service';
 import { CreateRoleDto } from '../dto/request/create-role.dto';
 import { FindRoleDto } from '../dto/request/find-role.dto';
 import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
-import { RolesGuard } from '../../auth/strategy/role.strategy';
-import { RolesEnum } from '../../common/enums/roles.enum';
-import { Roles } from '../../auth/decorators/roles.decorator';
+// import { RolesGuard } from '../../auth/strategy/role.strategy';
+// import { RolesEnum } from '../../common/enums/roles.enum';
+// import { Roles } from '../../auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import {
   addListOptionsDto,
@@ -27,8 +27,8 @@ import { FindRolesListDto } from '../dto/request/find-roles.dto';
 import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { findRoleResponseDto } from '../dto/response/find-role.dto';
 
-@UseGuards(RolesGuard)
-@Roles(RolesEnum.ADMIN)
+// @UseGuards(RolesGuard)
+// @Roles(RolesEnum.ADMIN)
 @UseGuards(AuthGuard('jwt'))
 @Controller('roles/admin')
 export class RolesController {

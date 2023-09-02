@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AppService } from 'src/app/app.service';
 import { RedisProxyService } from 'src/redis/redis.service';
 import { RoutesRepository } from 'src/routes/routes.repository';
 import { RoutesService } from 'src/routes/routes.service';
@@ -18,12 +19,14 @@ import { SeederService } from './seeder.service';
       { name: Role.name, schema: RoleSchema },
       { name: Route.name, schema: RouteSchema },
     ]),
+    RolesModule,
   ],
   providers: [
     SeederService,
     RedisProxyService,
     RoutesService,
     RoutesRepository,
+    AppService,
   ],
 })
 export class SeederModule {}

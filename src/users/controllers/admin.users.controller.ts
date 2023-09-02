@@ -16,9 +16,9 @@ import { UsersService } from '../users.service';
 import { CreateUserDto } from '../dto/request/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.dto';
-import { RolesGuard } from '../../auth/strategy/role.strategy';
-import { Roles } from '../../auth/decorators/roles.decorator';
-import { RolesEnum } from '../../common/enums/roles.enum';
+// import { RolesGuard } from '../../auth/strategy/role.strategy';
+// import { Roles } from '../../auth/decorators/roles.decorator';
+// import { RolesEnum } from '../../common/enums/roles.enum';
 import {
   ApiBody,
   ApiExcludeEndpoint,
@@ -51,8 +51,8 @@ import { FindUserDto } from '../dto/request/findone-user.dto';
 import mongoose from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 
-@Roles(RolesEnum.ADMIN)
-@UseGuards(RolesGuard)
+// @Roles(RolesEnum.ADMIN)
+// @UseGuards(RolesGuard)
 @Controller('users/admin')
 @UseGuards(AuthGuard('jwt'))
 export class UsersAdminController {
