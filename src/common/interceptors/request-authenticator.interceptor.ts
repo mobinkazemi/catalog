@@ -24,7 +24,7 @@ export class ReqAuthenticatorInterceptor implements NestInterceptor {
   ): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
 
-    const url = request.url.split('/').slice(3).join('/');
+    const url = request.route.path.toLowerCase().split('/').slice(3).join('/');
     const method = request.method.toUpperCase();
     const userRoles = (request?.user?.payload?.roles as string[]) || [];
 
