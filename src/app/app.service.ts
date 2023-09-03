@@ -65,5 +65,10 @@ export class AppService {
         return this.redisService.set(key, value);
       }),
     );
+
+    await this.redisService.set(
+      RoutesRedisKeysEnum.ROUTE_KEYS_REACHABLE,
+      'true',
+    );
   }
 }
