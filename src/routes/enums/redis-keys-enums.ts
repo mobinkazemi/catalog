@@ -1,3 +1,4 @@
 export enum RoutesRedisKeysEnum {
+  ROUTE_KEYS_REACHABLE = 'ROUTE_KEYS_REACHABLE',
   PRE_ROUTE_AUTH_KEY = 'ROUTE_ACCESS_ROLES',
 }

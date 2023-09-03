@@ -8,6 +8,7 @@ import { LogService } from './log/log.service';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 import { ReqAuthenticatorInterceptor } from './common/interceptors/request-authenticator.interceptor';
 import { RedisProxyService } from './redis/redis.service';
+import { AppService } from './app/app.service';
 
 async function bootstrap() {
   // Get application configs
@@ -24,9 +25,10 @@ async function bootstrap() {
   //
   // Interceptors
   const loggerService = app.get<RedisProxyService>(RedisProxyService);
+  const appService = app.get<AppService>(AppService);
   const interceptors = [
     new ResponseFormatterInterceptor(),
-    new ReqAuthenticatorInterceptor(loggerService),
+    new ReqAuthenticatorInterceptor(loggerService, appService),
   ];
 
   if (applicationConfigs.logger) {
