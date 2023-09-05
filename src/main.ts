@@ -50,7 +50,7 @@ async function bootstrap() {
   const corsOptions = {
     origin: applicationConfigs.client.uri, // Replace with the URL of your React app
     methods: applicationConfigs.client.methods,
-    credentials: true,
+    credentials: false,
   };
   app.enableCors(corsOptions);
 
