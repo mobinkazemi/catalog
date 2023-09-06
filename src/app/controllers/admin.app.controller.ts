@@ -24,6 +24,6 @@ export class AdminAppController {
   @Get('postman')
   async postman(@Res() res) {
     const port = this.configService.get('port');
-    return res.redirect(`http://localhost:${port}/docs-json`);
+    return await res.redirect(`http://localhost:${port}/docs-json`);
   }
 }
