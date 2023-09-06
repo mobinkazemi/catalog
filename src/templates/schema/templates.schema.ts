@@ -216,6 +216,13 @@ export class Template extends Base {
     default: UI_Defaults,
   })
   ui?: UI;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  })
+  ownerId?: ObjectIdOrString;
 }
 
 const TemplateSchemaBase = SchemaFactory.createForClass(Template);

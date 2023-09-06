@@ -44,7 +44,7 @@ import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 // @UseGuards(RolesGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('templates/admin')
-export class TemplatesController {
+export class TemplateAdminController {
   constructor(private readonly templatesService: TemplatesService) {}
 
   @ApiOperation({ summary: 'Create template' })
@@ -76,7 +76,7 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Get template info (with files info)' })
   @Get(':id')
   async findOne(@Param() data: findByIdDto) {
-    const result = await this.templatesService.fineOneWithFiles(
+    const result = await this.templatesService.findOneWithFiles(
       { id: data.id },
       { error: true },
     );
@@ -87,9 +87,12 @@ export class TemplatesController {
   @ApiBody({ type: UpdateTemplateDto })
   @Patch('update')
   async update(@Body() updateTemplateDto: UpdateTemplateDto) {
-    return await this.templatesService.update(updateTemplateDto, {
-      error: true,
-    });
+    const { templateId: id } = updateTemplateDto;
+    delete updateTemplateDto.templateId;
+    return await this.templatesService.update(
+      { id: id as string },
+      updateTemplateDto,
+    );
   }
 
   // ----- PART -----

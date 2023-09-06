@@ -1,7 +1,8 @@
-import { Controller, Get, Request } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { AppService } from '../app.service';
 import { Request as ExpressRequest } from 'express';
-
+import { AuthGuard } from '@nestjs/passport';
+@UseGuards(AuthGuard('jwt'))
 @Controller('admin')
 export class AdminAppController {
   constructor(private readonly appService: AppService) {}

@@ -14,16 +14,9 @@ export class UpdateRouteDto {
   @ApiProperty({ type: String })
   @Matches(ObjectIdRegex)
   @IsString()
-  id: ObjectIdOrString;
-
-  @ApiProperty({ type: Array<String> })
-  @Transform((item) => item.value.map((item: string) => item.toUpperCase()))
-  @IsArray()
-  @IsOptional()
-  roles?: Array<string>;
+  id: string;
 
   @ApiProperty({ type: Boolean })
-  @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
 }
