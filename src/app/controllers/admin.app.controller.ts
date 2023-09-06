@@ -20,10 +20,4 @@ export class AdminAppController {
   async reloadEndpoints() {
     await this.appService.reloadRoutes();
   }
-
-  @Get('postman')
-  async postman(@Res() res) {
-    const port = this.configService.get('port');
-    return await res.redirect(`http://localhost:${port}/docs-json`);
-  }
 }
