@@ -23,6 +23,7 @@ export default () => ({
 
   // Main DB
   database: {
+    requiredAuth: defaults.database.requiredAuth,
     timeout: env.DATABASE_TIMEOUT || defaults.database.timeout,
     uri: `mongodb://${env.DATABASE_HOST || defaults.database.host}:${
       env.DATABASE_PORT || defaults.database.port

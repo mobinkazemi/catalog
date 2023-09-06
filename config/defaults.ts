@@ -16,6 +16,7 @@ export const defaults = {
 
   // Main DB
   database: {
+    requiredAuth: true,
     timeout: 500,
     port: 27017,
     host: 'localhost',
