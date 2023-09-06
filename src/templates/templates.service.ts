@@ -3,6 +3,7 @@ import { Category } from 'src/category/schema/category.schema';
 import {
   addListOptionsDto,
   findByIdDto,
+  RepositoryOptionsDto,
 } from 'src/common/dto/base-repository-dtos.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import {
@@ -22,10 +23,11 @@ import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 @Injectable()
 export class TemplatesService {
   constructor(private readonly templateRepository: TemplatesRepository) {}
+
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
     const result = await this.templateRepository.create(createTemplateDto);
 
-    return (await this.fineOneWithFiles({
+    return (await this.findOneWithFiles({
       id: result._id.toString(),
     })) as Template;
   }
@@ -33,23 +35,32 @@ export class TemplatesService {
   async findAll(
     data: Partial<Template>,
     options?: addListOptionsDto,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<Partial<Template[]>> {
-    return await this.templateRepository.findAll(data, options);
+    return await this.templateRepository.findAll(
+      data,
+      options,
+      serviceOptions as RepositoryOptionsDto,
+    );
   }
 
   async findOne(id: ObjectIdOrString, serviceOptions?: ServiceOptionsDto) {
-    const result = await this.templateRepository.findOne({ id: id as string });
+    const result = await this.templateRepository.findOne(
+      { id: id as string },
+      serviceOptions as RepositoryOptionsDto,
+    );
 
     if (!result && serviceOptions?.error) throw new NotFoundException();
 
     return result;
   }
 
-  async fineOneWithFiles(
+  async findOneWithFiles(
     data: FindTemplateDto,
     serviceOptions?: ServiceOptionsDto,
   ) {
     const result = await this.templateRepository.findOneWithFiles({
+      ...data,
       id: data.id as string,
     });
 
@@ -64,7 +75,7 @@ export class TemplatesService {
   ) {
     delete data.expired;
 
-    const result = (await this.fineOneWithFiles(
+    const result = (await this.findOneWithFiles(
       data,
       serviceOptions,
     )) as Template;

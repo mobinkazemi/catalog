@@ -48,4 +48,9 @@ export class FindTemplateListRequestDto {
   @IsString()
   @IsOptional()
   name: string;
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsOptional()
+  @IsOptional()
+  ownerId?: ObjectIdOrString;
 }

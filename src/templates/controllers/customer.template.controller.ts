@@ -39,45 +39,36 @@ import {
 } from 'src/common/dto/base-repository-dtos.dto';
 import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
+import { GetPayload } from 'src/common/decorators/getUser.decorator';
+import { getPayloadDecoratorDto } from 'src/users/dto/response/get-user-decorator.dto';
 
-// @Roles(RolesEnum.ADMIN)
-// @UseGuards(RolesGuard)
 @UseGuards(AuthGuard('jwt'))
-@Controller('templates/admin')
-export class TemplateAdminController {
+@Controller('templates/customer')
+export class TemplateCustomerController {
   constructor(private readonly templatesService: TemplatesService) {}
 
-  @ApiOperation({ summary: 'Create template' })
-  @ApiBody({ type: CreateTemplateDto })
-  @Post('create')
-  async create(@Body() createTemplateDto: CreateTemplateDto) {
-    const result = await this.templatesService.create(createTemplateDto);
-
-    return result;
-  }
-
-  @ApiOperation({ summary: 'Delete template' })
-  @ApiBody({ type: findByIdDto })
-  @Delete('remove')
-  async remove(@Body() data: findByIdDto) {
-    return await this.templatesService.remove(data, { error: true });
-  }
-
-  @ApiOperation({ summary: 'Get template list' })
+  @ApiOperation({ summary: 'Get template list by customer' })
   @Get('list')
   async findAll(
     @Query() listOptions: addListOptionsDto,
     @Query() data: FindTemplateListRequestDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
   ): Promise<Array<FindTemplateListResponseDto>> {
-    const result = await this.templatesService.findAll(data, listOptions);
+    data.ownerId = payload._id;
+    const result = await this.templatesService.findAll(data, listOptions, {
+      show: 'all',
+    });
     return result.map((item) => new FindTemplateListResponseDto(item));
   }
 
-  @ApiOperation({ summary: 'Get template info (with files info)' })
+  @ApiOperation({ summary: 'Get template info (with files info) by customer' })
   @Get(':id')
-  async findOne(@Param() data: findByIdDto) {
+  async findOne(
+    @Param() data: findByIdDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
     const result = await this.templatesService.findOneWithFiles(
-      { id: data.id },
+      { id: data.id, ownerId: payload._id },
       { error: true },
     );
     return new FindTemplateWithFilesDto(result);
