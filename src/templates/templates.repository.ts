@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, ObjectId } from 'mongoose';
 import {
   RepositoryOptionsDto,
   addListOptionsDto,
@@ -20,6 +20,7 @@ import {
   UpdatePartOfTemplateDto,
   UpdateTemplateDto,
 } from './dto/request/update-template.dto';
+import { PartialTemplateType } from './types/partial-template.type';
 
 @Injectable()
 export class TemplatesRepository extends BaseRepository {
@@ -67,14 +68,18 @@ export class TemplatesRepository extends BaseRepository {
   private templateItemsToObjectId(
     template: Partial<Template>,
   ): Partial<Template> {
+    if (template.id) {
+      template._id = this.convertToObjectId(template.id as string);
+      delete template.id;
+    }
+    if (template.pid) {
+      template.pid = this.convertToObjectId(template.pid as string);
+    }
+
     if (template.backgroundFileId) {
       template.backgroundFileId = this.convertToObjectId(
         template.backgroundFileId as string,
       );
-    }
-
-    if (template.pid) {
-      template.pid = this.convertToObjectId(template.pid as string);
     }
 
     if (template?.parts?.length) {
@@ -84,19 +89,24 @@ export class TemplatesRepository extends BaseRepository {
         part = this.partItemsToObjectId(part) as Part;
       });
     }
+
+    if (template.ownerId) {
+      template.ownerId = this.convertToObjectId(template.ownerId as string);
+    }
+
     return template;
   }
 
-  async update(data: UpdateTemplateDto): Promise<Template> {
-    const { templateId } = data;
-    delete data.templateId;
+  async update(
+    findData: PartialTemplateType,
+    updateData: PartialTemplateType,
+  ): Promise<Template> {
+    findData = this.templateItemsToObjectId(findData);
+    updateData = this.templateItemsToObjectId(updateData);
 
-    const template = this.templateItemsToObjectId(data);
     return await this.templateModel.findOneAndUpdate(
-      {
-        _id: this.convertToObjectId(templateId as string),
-      },
-      { $set: template },
+      findData,
+      { $set: updateData },
       { new: true },
     );
   }

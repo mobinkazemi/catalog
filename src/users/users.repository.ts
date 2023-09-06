@@ -16,6 +16,7 @@ import * as _ from 'lodash';
 import { UpdateRoleDto } from '../roles/dto/request/update-role.dto';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
+import { UserPartialType } from './types/partial-user.type';
 
 @Injectable()
 export class UsersRepository extends BaseRepository {
@@ -94,7 +95,7 @@ export class UsersRepository extends BaseRepository {
   }
 
   async updateOne<User>(
-    data: FindUserDto,
+    data: UserPartialType,
     updateData: UpdateUserDto & BaseSchemaDto,
   ): Promise<User> {
     let query = {};
@@ -103,8 +104,6 @@ export class UsersRepository extends BaseRepository {
       query['_id'] = this.convertToObjectId(data.id);
       delete data.id;
     }
-    console.log(query);
-    console.log(updateData);
 
     query = {
       ...query,
@@ -112,9 +111,13 @@ export class UsersRepository extends BaseRepository {
       deletedAt: null,
     };
 
-    return await this.userModel.findOneAndUpdate(query, updateData, {
-      new: true,
-    });
+    return await this.userModel.findOneAndUpdate(
+      query,
+      { $set: updateData },
+      {
+        new: true,
+      },
+    );
   }
 
   async remove(id: ObjectIdOrString) {

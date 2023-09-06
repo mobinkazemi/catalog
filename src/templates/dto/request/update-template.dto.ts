@@ -76,6 +76,57 @@ export class UpdateTemplateDto extends PartialType(
   @IsOptional()
   @ApiProperty({ type: UI })
   ui?: UI;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
+  ownerId?: ObjectIdOrString;
+}
+
+export class UpdateTemplateDtoByCustomer extends OmitType(UpdateTemplateDto, [
+  'ownerId',
+  'expiredAt',
+]) {
+  @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
+  @IsString()
+  templateId: ObjectIdOrString;
+
+  @ApiProperty({ type: Number })
+  @IsOptional()
+  @IsNumber()
+  ord: number;
+
+  @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
+  @IsOptional()
+  @IsString()
+  pid: ObjectIdOrString;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @Matches(ObjectIdRegex)
+  @IsString()
+  backgroundFileId?: ObjectIdOrString;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  backgroundColor?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: About })
+  about?: About;
+
+  @IsOptional()
+  @ApiProperty({ type: UI })
+  ui?: UI;
 }
 
 export class UpdatePartOfTemplateDto extends PartialType(

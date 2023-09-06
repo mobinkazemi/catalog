@@ -87,9 +87,12 @@ export class TemplateAdminController {
   @ApiBody({ type: UpdateTemplateDto })
   @Patch('update')
   async update(@Body() updateTemplateDto: UpdateTemplateDto) {
-    return await this.templatesService.update(updateTemplateDto, {
-      error: true,
-    });
+    const { templateId: id } = updateTemplateDto;
+    delete updateTemplateDto.templateId;
+    return await this.templatesService.update(
+      { id: id as string },
+      updateTemplateDto,
+    );
   }
 
   // ----- PART -----

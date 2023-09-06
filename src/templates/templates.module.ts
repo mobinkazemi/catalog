@@ -4,6 +4,7 @@ import { TemplateAdminController } from './controllers/admin.templates.controlle
 import { TemplatesRepository } from './templates.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Template, TemplateSchema } from './schema/templates.schema';
+import { TemplateCustomerController } from './controllers/customer.template.controller';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { Template, TemplateSchema } from './schema/templates.schema';
       { name: Template.name, schema: TemplateSchema },
     ]),
   ],
-  controllers: [TemplateAdminController],
+  controllers: [TemplateAdminController, TemplateCustomerController],
   providers: [TemplatesService, TemplatesRepository],
 })
 export class TemplatesModule {}

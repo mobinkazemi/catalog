@@ -10,6 +10,8 @@ import {
   NotImplementedException,
   Req,
   Query,
+  ForbiddenException,
+  HttpStatus,
 } from '@nestjs/common';
 import { TemplatesService } from '../templates.service';
 import {
@@ -19,6 +21,7 @@ import {
 import {
   UpdatePartOfTemplateDto,
   UpdateTemplateDto,
+  UpdateTemplateDtoByCustomer,
 } from '../dto/request/update-template.dto';
 // import { Roles } from 'src/auth/decorators/roles.decorator';
 // import { RolesGuard } from 'src/auth/strategy/role.strategy';
@@ -41,6 +44,7 @@ import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 import { GetPayload } from 'src/common/decorators/getUser.decorator';
 import { getPayloadDecoratorDto } from 'src/users/dto/response/get-user-decorator.dto';
+import { TemplateMessagesEnum } from '../enums/messages.enum';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('templates/customer')
@@ -71,35 +75,102 @@ export class TemplateCustomerController {
       { id: data.id, ownerId: payload._id },
       { error: true },
     );
-    return new FindTemplateWithFilesDto(result);
+    return result;
   }
 
-  @ApiOperation({ summary: 'Update template' })
-  @ApiBody({ type: UpdateTemplateDto })
+  @ApiOperation({ summary: 'Update template by customer' })
+  @ApiBody({ type: UpdateTemplateDtoByCustomer })
   @Patch('update')
-  async update(@Body() updateTemplateDto: UpdateTemplateDto) {
-    return await this.templatesService.update(updateTemplateDto, {
-      error: true,
-    });
+  async update(
+    @Body() updateTemplateDto: UpdateTemplateDtoByCustomer,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
+    const { templateId: id } = updateTemplateDto;
+    delete updateTemplateDto.templateId;
+
+    return await this.templatesService.update(
+      { id: id as string, ownerId: payload.id },
+      updateTemplateDto,
+    );
   }
 
   // ----- PART -----
-  @ApiOperation({ summary: 'Create Part' })
+  @ApiOperation({ summary: 'Create Part by customer' })
   @ApiBody({ type: CreatePartOfTemplateDto })
   @Post('part/create')
-  async createPart(@Body() createPartOfTemplateDto: CreatePartOfTemplateDto) {
-    return this.templatesService.createPart(createPartOfTemplateDto);
+  async createPart(
+    @Body() data: CreatePartOfTemplateDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
+    try {
+      await this.templatesService.findOne(
+        {
+          id: data.templateId as string,
+          ownerId: payload._id,
+        },
+        { error: true },
+      );
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw new ForbiddenException(
+          TemplateMessagesEnum.TEMPLATE_FORBIDDEN_CHANGES,
+        );
+      }
+
+      throw error;
+    }
+    return await this.templatesService.createPart(data);
   }
 
-  @ApiOperation({ summary: 'Update part' })
+  @ApiOperation({ summary: 'Update part by customer' })
   @Patch('part/update')
-  async updatePart(@Body() data: UpdatePartOfTemplateDto) {
+  async updatePart(
+    @Body() data: UpdatePartOfTemplateDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
+    try {
+      await this.templatesService.findOne(
+        {
+          id: data.templateId as string,
+          ownerId: payload._id,
+        },
+        { error: true },
+      );
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw new ForbiddenException(
+          TemplateMessagesEnum.TEMPLATE_FORBIDDEN_CHANGES,
+        );
+      }
+
+      throw error;
+    }
     return await this.templatesService.updatePart(data);
   }
 
-  @ApiOperation({ summary: 'Delete Part' })
+  @ApiOperation({ summary: 'Delete Part by customer' })
   @Delete('part/remove')
-  async removePart(@Body() data: RemovePartOfTemplateDto) {
+  async removePart(
+    @Body() data: RemovePartOfTemplateDto,
+    @GetPayload() payload: getPayloadDecoratorDto,
+  ) {
+    try {
+      await this.templatesService.findOne(
+        {
+          id: data.templateId as string,
+          ownerId: payload._id,
+        },
+        { error: true },
+      );
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw new ForbiddenException(
+          TemplateMessagesEnum.TEMPLATE_FORBIDDEN_CHANGES,
+        );
+      }
+
+      throw error;
+    }
     return await this.templatesService.removePart(data);
   }
 }

@@ -7,7 +7,8 @@ import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { RolesService } from 'src/roles/roles.service';
-import { UpdateRouteDto } from './dto/update-route.dto';
+import { ChangeRouteRoleDto } from './dto/request/change-role.dto';
+import { UpdateRouteDto } from './dto/request/update-route.dto';
 import { RouteMessagesEnum } from './enums/messages.enums';
 import { RoutesRepository } from './routes.repository';
 import { Route } from './schema/routes.schema';
@@ -58,7 +59,7 @@ export class RoutesService {
     return await this.routeRepository.findAll(data, listOptions);
   }
 
-  async update(data: UpdateRouteDto, serviceOptions?: ServiceOptionsDto) {
+  async update(data: FindRouteType, serviceOptions?: ServiceOptionsDto) {
     await this.findOne({ id: data.id as string }, { error: true });
 
     if (data?.roles?.length) {
@@ -69,5 +70,55 @@ export class RoutesService {
       );
     }
     return await this.routeRepository.update(data);
+  }
+
+  async addRole(
+    data: ChangeRouteRoleDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Route> {
+    const route = await this.findOne(
+      { id: data.routeId },
+      { error: serviceOptions.error },
+    );
+    const role = await this.roleService.findOne(
+      { id: data.roleId },
+      { error: serviceOptions.error },
+    );
+
+    if ((!route || !role) && !serviceOptions.error) return;
+
+    const rolesList = [...new Set([role.name, ...route.roles])];
+
+    const result = await this.routeRepository.update({
+      id: data.routeId,
+      roles: rolesList,
+    });
+
+    return result;
+  }
+
+  async removeRole(
+    data: ChangeRouteRoleDto,
+    serviceOptions?: ServiceOptionsDto,
+  ) {
+    const route = await this.findOne(
+      { id: data.routeId },
+      { error: serviceOptions.error },
+    );
+    const role = await this.roleService.findOne(
+      { id: data.roleId },
+      { error: serviceOptions.error },
+    );
+
+    if ((!route || !role) && !serviceOptions.error) return;
+
+    const rolesList = route.roles.filter((r) => r != role.name);
+
+    const result = await this.routeRepository.update({
+      id: data.routeId,
+      roles: rolesList,
+    });
+
+    return result;
   }
 }

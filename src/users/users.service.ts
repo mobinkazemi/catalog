@@ -9,21 +9,17 @@ import { FindUserDto } from './dto/request/findone-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { User } from './schema/users.schema';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
-import {
-  UserResponseListDto,
-  FilterRequestUserDto,
-} from './dto/request/filter-user.dto';
+import { FilterRequestUserDto } from './dto/request/filter-user.dto';
 import { UsersRepository } from './users.repository';
-import { CreateUserRoleDto } from './dto/request/create-user-role.dto';
+import { ChangeUserRoleDto } from './dto/request/change-user-role.dto';
 import { RolesService } from '../roles/roles.service';
-import { RemoveUserRoleDto } from '../roles/dto/request/remove-user-role.dto';
-import { Role } from 'src/roles/schema/roles.schema';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import * as bcrypt from 'bcrypt';
-import { UpdateRoleDto } from 'src/roles/dto/request/update-role.dto';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
+import { UserMessagesEnum } from './enums/messages.enum';
+import { UserPartialType } from './types/partial-user.type';
 @Injectable()
 export class UsersService {
   constructor(
@@ -64,11 +60,15 @@ export class UsersService {
     serviceOptions?: ServiceOptionsDto,
   ): Promise<User> {
     const result: User = await this.userRepository.findOne(data);
-    if (!result && serviceOptions?.error) throw new NotFoundException();
+
+    if (!result && serviceOptions?.error) {
+      throw new NotFoundException(UserMessagesEnum.USER_NOT_FOUND);
+    }
+
     return result;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto & BaseSchemaDto) {
+  async update(id: string, updateUserDto: UserPartialType) {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 8);
     }
@@ -85,39 +85,47 @@ export class UsersService {
   }
 
   async addRole(
-    data: CreateUserRoleDto,
+    data: ChangeUserRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<User> {
-    const user = await this.userRepository.findOne<User>({ id: data.userId });
-    const role = await this.roleService.findOne({ id: data.roleId });
+    const user = await this.findOne(
+      { id: data.userId },
+      { error: serviceOptions.error },
+    );
+    const role = await this.roleService.findOne(
+      { id: data.roleId },
+      { error: serviceOptions.error },
+    );
 
-    if (serviceOptions?.error && !user) throw new NotFoundException();
-    if (!user) return;
-    if (serviceOptions?.error && !role) throw new NotFoundException();
-    if (!role) return;
+    if ((!user || !role) && !serviceOptions.error) return;
 
     const rolesList = [...new Set([role.name, ...user.roles])];
+    console.log(rolesList);
+
     const result = await this.userRepository.updateOne<User>(
       {
         id: data.userId,
       },
-      { role: rolesList } as UpdateUserDto,
+      { roles: rolesList },
     );
 
     return result;
   }
 
   async removeRole(
-    data: RemoveUserRoleDto,
+    data: ChangeUserRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ) {
-    const user = await this.userRepository.findOne<User>({ id: data.userId });
-    const role = await this.roleService.findOne({ id: data.roleId });
+    const user = await this.findOne(
+      { id: data.userId },
+      { error: serviceOptions.error },
+    );
+    const role = await this.roleService.findOne(
+      { id: data.roleId },
+      { error: serviceOptions.error },
+    );
 
-    if (serviceOptions?.error && !user) throw new NotFoundException();
-    if (!user) return;
-    if (serviceOptions?.error && !role) throw new NotFoundException();
-    if (!role) return;
+    if ((!user || !role) && !serviceOptions.error) return;
 
     const rolesList = user.roles.filter((r) => r != role.name);
 
@@ -125,7 +133,7 @@ export class UsersService {
       {
         id: data.userId,
       },
-      { role: rolesList } as UpdateUserDto,
+      { roles: rolesList },
     );
 
     return result;

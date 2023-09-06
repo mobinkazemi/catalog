@@ -71,6 +71,12 @@ export class CreateTemplateDto extends OmitType(Template, [
   @IsOptional()
   @ApiProperty({ type: UI })
   ui?: UI;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ type: String })
+  @Matches(ObjectIdRegex)
+  ownerId?: ObjectIdOrString;
 }
 
 export class CreatePartOfTemplateDto extends OmitType(Part, [

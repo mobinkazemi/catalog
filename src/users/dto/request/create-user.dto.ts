@@ -5,7 +5,7 @@ export class CreateUserDto {
   @ApiProperty({ type: String })
   @IsString()
   @MinLength(4, { message: 'min username length is 4' })
-  @MaxLength(12, { message: 'max username length is 24' })
+  @MaxLength(24, { message: 'max username length is 24' })
   username: string;
 
   @ApiProperty({ type: String })

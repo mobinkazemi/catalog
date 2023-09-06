@@ -50,6 +50,7 @@ import { RemoveUserDto } from '../dto/request/remove-user-dto';
 import { FindUserDto } from '../dto/request/findone-user.dto';
 import mongoose from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
+import { ChangeUserRoleDto } from '../dto/request/change-user-role.dto';
 
 // @Roles(RolesEnum.ADMIN)
 // @UseGuards(RolesGuard)
@@ -109,7 +110,21 @@ export class UsersAdminController {
   @ApiBody({ type: RemoveUserDto })
   @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
-  remove(@Body() data: RemoveUserDto) {
-    return this.usersService.remove(data.id, { error: true });
+  async remove(@Body() data: RemoveUserDto) {
+    return await this.usersService.remove(data.id, { error: true });
+  }
+
+  @ApiBody({ type: ChangeUserRoleDto })
+  @ApiOperation({ summary: 'add role to user' })
+  @Patch('role/add')
+  async addRole(@Body() data: ChangeUserRoleDto) {
+    return await this.usersService.addRole(data, { error: true });
+  }
+
+  @ApiBody({ type: ChangeUserRoleDto })
+  @ApiOperation({ summary: 'remove role from user' })
+  @Patch('role/remove')
+  async removeRole(@Body() data: ChangeUserRoleDto) {
+    return await this.usersService.removeRole(data, { error: true });
   }
 }
