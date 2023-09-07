@@ -3,7 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
+import {
+  addListOptionsDto,
+  findByIdDto,
+} from 'src/common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { RolesService } from 'src/roles/roles.service';
@@ -70,6 +73,12 @@ export class RoutesService {
       );
     }
     return await this.routeRepository.update(data);
+  }
+
+  async remove(data: findByIdDto, serviceOptions?: ServiceOptionsDto) {
+    await this.findOne({ id: data.id }, serviceOptions);
+
+    await this.routeRepository.remove(data);
   }
 
   async addRole(

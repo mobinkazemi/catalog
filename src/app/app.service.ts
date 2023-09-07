@@ -30,19 +30,41 @@ export class AppService {
       .filter((item) => item.method != 'acl')
       .map((item) => ({
         method: item.method.toUpperCase(),
-        path: item.path.split('/').slice(3).join('/'),
+        path: item.path.split('/').slice(3).join('/').toLowerCase(),
       }));
   }
 
   async syncApi(req: Request) {
-    const endpointsList = this.getEndpoints(req);
+    // => Get current routes in db
+    const dbEndpoints = await this.routeService.findAll({}, { limit: 1000 });
+
+    // => Extract all routes in app
+    const appEndpoints = this.getEndpoints(req);
+
+    // => Find deleted routes and removed them
+    const removedEndpoints = dbEndpoints.filter(
+      (dbItem: Route) =>
+        !appEndpoints.some((appItem) => appItem.path == dbItem.path),
+    );
+
+    await Promise.allSettled(
+      removedEndpoints.map((item) =>
+        this.routeService.remove({ id: item._id.toString() }, { error: false }),
+      ),
+    );
+    // => Find newly added routes and insert them
+    const newEndpoints = appEndpoints.filter(
+      (appItem) =>
+        !dbEndpoints.some((dbItem: Route) => appItem.path == dbItem.path),
+    );
 
     await Promise.all(
-      endpointsList.map((item) =>
+      newEndpoints.map((item) =>
         this.routeService.create(item as Route, { error: false }),
       ),
     );
 
+    // => Reload in Redis
     await this.reloadRoutes();
   }
 
