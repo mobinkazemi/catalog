@@ -5,7 +5,7 @@ import {
   addPaginationDto,
   addSortDto,
   RepositoryOptionsDto,
-} from '../../common/dto/base-repository-dtos.dto';
+} from '../dto/base-repository-dtos.dto';
 import * as _ from 'lodash';
 import { ObjectIdType } from 'src/common/types/types';
 export abstract class BaseRepository {

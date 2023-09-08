@@ -5,7 +5,7 @@ import {
   RepositoryOptionsDto,
   addListOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from '../database/repository/base.repository';
+import { BaseRepository } from '../common/repository/base.repository';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-category.dto';
 import { Category, CategoryDocument } from './schema/category.schema';

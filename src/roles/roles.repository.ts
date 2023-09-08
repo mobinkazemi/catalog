@@ -6,7 +6,7 @@ import {
   findByIdDto,
   RepositoryOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from '../database/repository/base.repository';
+import { BaseRepository } from '../common/repository/base.repository';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { FindRoleDto } from './dto/request/find-role.dto';
 import { FindRolesListDto } from './dto/request/find-roles.dto';

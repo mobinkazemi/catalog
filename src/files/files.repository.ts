@@ -6,7 +6,7 @@ import {
   findByIdDto,
   RepositoryOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from 'src/database/repository/base.repository';
+import { BaseRepository } from 'src/common/repository/base.repository';
 import { File, FileDocument } from './schema/files.schema';
 @Injectable()
 export class FilesRepository extends BaseRepository {

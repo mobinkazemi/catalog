@@ -6,7 +6,7 @@ import {
   findByIdDto,
   addListOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from '../database/repository/base.repository';
+import { BaseRepository } from '../common/repository/base.repository';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { FilterRequestUserDto } from './dto/request/filter-user.dto';
 import { FindUserDto } from './dto/request/findone-user.dto';

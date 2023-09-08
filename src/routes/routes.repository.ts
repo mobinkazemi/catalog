@@ -6,7 +6,7 @@ import {
   findByIdDto,
   RepositoryOptionsDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from '../database/repository/base.repository';
+import { BaseRepository } from '../common/repository/base.repository';
 import { UpdateRouteDto } from './dto/request/update-route.dto';
 import { Route, RouteDocument } from './schema/routes.schema';
 import { FindRouteType } from './types/find-route.types';

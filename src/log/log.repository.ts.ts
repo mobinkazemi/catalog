@@ -5,7 +5,7 @@ import {
   addListOptionsDto,
   RepositoryOptionsDto,
 } from 'src/common/dto/base-repository-dtos.dto';
-import { BaseRepository } from 'src/database/repository/base.repository';
+import { BaseRepository } from 'src/common/repository/base.repository';
 import { Log, LogDocument } from './schema/log.schema';
 
 @Injectable()

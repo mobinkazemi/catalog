@@ -6,7 +6,7 @@ import {
   addListOptionsDto,
   findByIdDto,
 } from '../common/dto/base-repository-dtos.dto';
-import { BaseRepository } from '../database/repository/base.repository';
+import { BaseRepository } from '../common/repository/base.repository';
 import * as _ from 'lodash';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { Part, Template, TemplateDocument } from './schema/templates.schema';
