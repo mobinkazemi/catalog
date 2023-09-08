@@ -45,6 +45,7 @@ import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 import { GetPayload } from 'src/common/decorators/getUser.decorator';
 import { getPayloadDecoratorDto } from 'src/users/dto/response/get-user-decorator.dto';
 import { TemplateMessagesEnum } from '../enums/messages.enum';
+import { PartialTemplateType } from '../types/partial-template.type';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('templates/customer')
@@ -90,7 +91,7 @@ export class TemplateCustomerController {
 
     return await this.templatesService.update(
       { id: id as string, ownerId: payload.id },
-      updateTemplateDto,
+      updateTemplateDto as PartialTemplateType,
     );
   }
 

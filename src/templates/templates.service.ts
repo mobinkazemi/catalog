@@ -22,32 +22,41 @@ import * as _ from 'lodash';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { PartialTemplateType } from './types/partial-template.type';
 import { TemplateMessagesEnum } from './enums/messages.enum';
+import { BaseService } from 'src/common/services/base.service';
 @Injectable()
-export class TemplatesService {
-  constructor(private readonly templateRepository: TemplatesRepository) {}
+export class TemplatesService extends BaseService {
+  constructor(private readonly templateRepository: TemplatesRepository) {
+    super();
+  }
 
-  async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
-    const result = await this.templateRepository.create(createTemplateDto);
+  async create<Template>(
+    data: PartialTemplateType,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Template> {
+    const result = await this.templateRepository.create(data);
 
     return (await this.findOneWithFiles({
       id: result._id.toString(),
     })) as Template;
   }
 
-  async findAll(
-    data: Partial<Template>,
-    options?: addListOptionsDto,
+  async findAll<Template>(
+    data: PartialTemplateType,
+    listOptions?: addListOptionsDto,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Partial<Template[]>> {
+  ): Promise<Template[]> {
     return await this.templateRepository.findAll(
       data,
-      options,
-      serviceOptions as RepositoryOptionsDto,
+      listOptions,
+      serviceOptions,
     );
   }
 
-  async findOne(data: PartialTemplateType, serviceOptions?: ServiceOptionsDto) {
-    const result = await this.templateRepository.findOne(
+  async findOne<Template>(
+    data: Partial<Template>,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Template> {
+    const result = await this.templateRepository.findOne<Template>(
       data,
       serviceOptions as RepositoryOptionsDto,
     );
@@ -55,6 +64,7 @@ export class TemplatesService {
     if (!result && serviceOptions?.error) {
       throw new NotFoundException(TemplateMessagesEnum.TEMPLATE_NOT_FOUND);
     }
+
     return result;
   }
 
@@ -104,25 +114,19 @@ export class TemplatesService {
     return result;
   }
 
-  async update(
-    findData: PartialTemplateType,
-    updateData: PartialTemplateType,
+  async update<Template>(
+    findData: Partial<Template>,
+    updateData: Partial<Template>,
     serviceOptions?: ServiceOptionsDto,
-  ) {
-    await this.findOne(findData, { ...serviceOptions, error: true });
-
-    return await this.templateRepository.update(findData, updateData);
+  ): Promise<Template> {
+    return await this.templateRepository.update<Template>(findData, updateData);
   }
 
-  async remove(
-    data: findByIdDto,
+  async remove<Template>(
+    data: Partial<Template>,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<void> {
-    const template = await this.findOne({ id: data.id }, serviceOptions);
-
-    if (!template) return;
-
-    return await this.templateRepository.remove(data);
+    return await this.templateRepository.remove<Template>(data);
   }
 
   // ----- PARTS -----

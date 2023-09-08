@@ -39,6 +39,7 @@ import {
 } from 'src/common/dto/base-repository-dtos.dto';
 import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
+import { PartialTemplateType } from '../types/partial-template.type';
 
 // @Roles(RolesEnum.ADMIN)
 // @UseGuards(RolesGuard)
@@ -89,9 +90,10 @@ export class TemplateAdminController {
   async update(@Body() updateTemplateDto: UpdateTemplateDto) {
     const { templateId: id } = updateTemplateDto;
     delete updateTemplateDto.templateId;
+
     return await this.templatesService.update(
       { id: id as string },
-      updateTemplateDto,
+      updateTemplateDto as PartialTemplateType,
     );
   }
 

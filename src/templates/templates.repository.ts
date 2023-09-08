@@ -97,7 +97,7 @@ export class TemplatesRepository extends BaseRepository {
     return template;
   }
 
-  async update(
+  async update<Template>(
     findData: PartialTemplateType,
     updateData: PartialTemplateType,
   ): Promise<Template> {
@@ -231,12 +231,12 @@ export class TemplatesRepository extends BaseRepository {
     );
   }
 
-  async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
+  async create(createTemplateDto: PartialTemplateType): Promise<Template> {
     const template = this.templateItemsToObjectId(createTemplateDto);
     return await this.templateModel.create(template);
   }
 
-  async remove(data: findByIdDto): Promise<void> {
+  async remove<Template>(data: PartialTemplateType): Promise<void> {
     await this.templateModel.updateOne(
       {
         _id: this.convertToObjectId(data.id),
