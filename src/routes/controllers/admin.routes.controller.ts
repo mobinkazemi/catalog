@@ -8,22 +8,37 @@ import {
   Delete,
   NotImplementedException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { RoutesService } from '../routes.service';
 import { UpdateRouteDto } from '../dto/request/update-route.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { ChangeRouteRoleDto } from '../dto/request/change-role.dto';
+import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
+import { Route } from '../schema/routes.schema';
+import { RouteListRequestDto } from '../dto/request/find-route.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('routes/admin')
 export class RoutesController {
   constructor(private readonly routesService: RoutesService) {}
+
   @ApiOperation({ summary: 'Update route' })
   @ApiBody({ type: UpdateRouteDto })
   @Patch('update')
   async update(@Body() updateRouteDto: UpdateRouteDto) {
     return await this.routesService.update(updateRouteDto, { error: true });
+  }
+
+  @ApiOperation({ summary: 'Get template list' })
+  @Get('list')
+  async findAll(
+    @Query() listOptions: addListOptionsDto,
+    @Query() data: RouteListRequestDto,
+  ): Promise<Array<Route>> {
+    const result = await this.routesService.findAll(data, listOptions);
+    return result;
   }
 
   @ApiOperation({ summary: 'add role to route' })
