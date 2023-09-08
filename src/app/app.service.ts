@@ -36,11 +36,20 @@ export class AppService {
 
   async syncApi(req: Request) {
     // => Get current routes in db
-    const dbEndpoints = await this.routeService.findAll({}, { limit: 1000 });
+    const dbEndpoints = await this.routeService.findAll<Route>(
+      {},
+      { limit: 1000 },
+    );
 
+    //
+    //
+    //
     // => Extract all routes in app
     const appEndpoints = this.getEndpoints(req);
 
+    //
+    //
+    //
     // => Find deleted routes and removed them
     const removedEndpoints = dbEndpoints.filter(
       (dbItem: Route) =>
@@ -52,6 +61,10 @@ export class AppService {
         this.routeService.remove({ id: item._id.toString() }, { error: false }),
       ),
     );
+
+    //
+    //
+    //
     // => Find newly added routes and insert them
     const newEndpoints = appEndpoints.filter(
       (appItem) =>
@@ -64,12 +77,15 @@ export class AppService {
       ),
     );
 
+    //
+    //
+    //
     // => Reload in Redis
     await this.reloadRoutes();
   }
 
   async reloadRoutes() {
-    const routes = await this.routeService.findAll({}, { limit: 1000 });
+    const routes = await this.routeService.findAll<Route>({}, { limit: 1000 });
 
     await this.redisService.delete({
       pattern: RoutesRedisKeysEnum.PRE_ROUTE_AUTH_KEY,

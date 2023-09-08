@@ -28,7 +28,11 @@ export class RoutesController {
   @ApiBody({ type: UpdateRouteDto })
   @Patch('update')
   async update(@Body() updateRouteDto: UpdateRouteDto) {
-    return await this.routesService.update(updateRouteDto, { error: true });
+    const findData = { id: updateRouteDto.id };
+    delete updateRouteDto.id;
+    return await this.routesService.update(findData, updateRouteDto, {
+      error: true,
+    });
   }
 
   @ApiOperation({ summary: 'Get template list' })
@@ -37,7 +41,7 @@ export class RoutesController {
     @Query() listOptions: addListOptionsDto,
     @Query() data: RouteListRequestDto,
   ): Promise<Array<Route>> {
-    const result = await this.routesService.findAll(data, listOptions);
+    const result = await this.routesService.findAll<Route>(data, listOptions);
     return result;
   }
 

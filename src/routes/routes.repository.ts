@@ -9,7 +9,7 @@ import {
 import { BaseRepository } from '../common/repository/base.repository';
 import { UpdateRouteDto } from './dto/request/update-route.dto';
 import { Route, RouteDocument } from './schema/routes.schema';
-import { FindRouteType } from './types/find-route.types';
+import { PartialRouteType } from './types/partial-route.type';
 
 @Injectable()
 export class RoutesRepository extends BaseRepository {
@@ -20,7 +20,7 @@ export class RoutesRepository extends BaseRepository {
   }
 
   async findOne<Route>(
-    data?: FindRouteType,
+    data?: PartialRouteType,
     options?: RepositoryOptionsDto,
   ): Promise<Route> {
     let query = {};
@@ -45,7 +45,7 @@ export class RoutesRepository extends BaseRepository {
   }
 
   async findAll<Route>(
-    data?: FindRouteType,
+    data?: PartialRouteType,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Route[]> {
@@ -68,11 +68,11 @@ export class RoutesRepository extends BaseRepository {
     return await this.routeModel.find(query, {}, { sort, limit, skip });
   }
 
-  async create(data: FindRouteType): Promise<Route> {
-    return await this.routeModel.create(data);
+  async create<Route>(data: PartialRouteType): Promise<Route> {
+    return (await this.routeModel.create(data)).toObject();
   }
 
-  async remove(data: findByIdDto): Promise<void> {
+  async remove(data: PartialRouteType): Promise<void> {
     await this.routeModel.updateOne(
       {
         _id: this.convertToObjectId(data.id),
@@ -83,16 +83,30 @@ export class RoutesRepository extends BaseRepository {
     );
   }
 
-  async update(data: FindRouteType): Promise<Route> {
-    const { id } = data;
-    delete data.id;
+  async update<Route>(
+    findData: PartialRouteType,
+    updateData: PartialRouteType,
+    options?: RepositoryOptionsDto,
+  ): Promise<Route> {
+    let query = {};
 
-    return await this.routeModel.findOneAndUpdate(
-      {
-        _id: this.convertToObjectId(id as string),
-      },
-      { $set: data },
-      { new: true },
-    );
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    query = {
+      ...query,
+      ...findData,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    return await this.routeModel.findOneAndUpdate(query, updateData, {
+      new: true,
+    });
   }
 }

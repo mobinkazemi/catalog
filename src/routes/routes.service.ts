@@ -9,6 +9,7 @@ import {
 } from 'src/common/dto/base-repository-dtos.dto';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
+import { BaseService } from 'src/common/services/base.service';
 import { RolesService } from 'src/roles/roles.service';
 import { Role } from 'src/roles/schema/roles.schema';
 import { ChangeRouteRoleDto } from './dto/request/change-role.dto';
@@ -16,69 +17,92 @@ import { UpdateRouteDto } from './dto/request/update-route.dto';
 import { RouteMessagesEnum } from './enums/messages.enums';
 import { RoutesRepository } from './routes.repository';
 import { Route } from './schema/routes.schema';
-import { FindRouteType } from './types/find-route.types';
+import { PartialRouteType } from './types/partial-route.type';
 
 @Injectable()
-export class RoutesService {
+export class RoutesService extends BaseService {
   constructor(
     private readonly routeRepository: RoutesRepository,
     private readonly roleService: RolesService,
-  ) {}
+  ) {
+    super();
+  }
 
-  async create(
-    data: Route,
+  async create<Route>(
+    data: PartialRouteType,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<ResponseAfterCreateDto> {
+  ): Promise<Route> {
     const duplicate = await this.findOne(
       { method: data.method, path: data.path },
       { error: false },
     );
 
-    if (duplicate && serviceOptions?.error) throw new ConflictException();
+    if (duplicate && serviceOptions?.error) {
+      //TODO msg
+      throw new ConflictException();
+    }
     if (duplicate) return;
 
-    const result: Route = await this.routeRepository.create({
+    const result = await this.routeRepository.create<Route>({
       ...data,
     });
 
-    return new ResponseAfterCreateDto(result);
+    return result;
   }
 
-  async findOne(
-    data: FindRouteType,
+  async findOne<Route>(
+    data: Partial<Route>,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Route> {
-    const route = await this.routeRepository.findOne<Route>(data);
-    if (!route && serviceOptions?.error)
+    const route = await this.routeRepository.findOne<Route>(
+      data,
+      serviceOptions,
+    );
+
+    if (!route && serviceOptions?.error) {
       throw new NotFoundException(RouteMessagesEnum.ROUTE_NOT_FOUND);
-    // if (!route) return null;/
+    }
 
     return route;
   }
 
-  async findAll(
-    data?: FindRouteType,
+  async findAll<Route>(
+    data: Partial<Route>,
     listOptions?: addListOptionsDto,
+    serviceOptions?: ServiceOptionsDto,
   ): Promise<Route[]> {
-    return await this.routeRepository.findAll(data, listOptions);
+    return await this.routeRepository.findAll(
+      data,
+      listOptions,
+      serviceOptions,
+    );
   }
 
-  async update(data: FindRouteType, serviceOptions?: ServiceOptionsDto) {
-    await this.findOne({ id: data.id as string }, { error: true });
+  async update<Route>(
+    findData: PartialRouteType,
+    updateData: PartialRouteType,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Route> {
+    await this.findOne({ id: findData.id as string }, { error: true });
 
-    if (data?.roles?.length) {
+    if (updateData?.roles?.length) {
       await Promise.all(
-        data.roles.map((item) =>
+        updateData.roles.map((item) =>
           this.roleService.findOne({ name: item }, { error: true }),
         ),
       );
     }
-    return await this.routeRepository.update(data);
+    return await this.routeRepository.update(
+      findData,
+      updateData,
+      serviceOptions,
+    );
   }
 
-  async remove(data: findByIdDto, serviceOptions?: ServiceOptionsDto) {
-    await this.findOne({ id: data.id }, serviceOptions);
-
+  async remove<Route>(
+    data: PartialRouteType,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<void> {
     await this.routeRepository.remove(data);
   }
 
@@ -86,7 +110,7 @@ export class RoutesService {
     data: ChangeRouteRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Route> {
-    const route = await this.findOne(
+    const route = await this.findOne<Route>(
       { id: data.routeId },
       { error: serviceOptions.error },
     );
@@ -99,10 +123,14 @@ export class RoutesService {
 
     const rolesList = [...new Set([role.name, ...route.roles])];
 
-    const result = await this.routeRepository.update({
-      id: data.routeId,
-      roles: rolesList,
-    });
+    const result = await this.routeRepository.update<Route>(
+      {
+        id: data.routeId,
+      },
+      {
+        roles: rolesList,
+      },
+    );
 
     return result;
   }
@@ -111,7 +139,7 @@ export class RoutesService {
     data: ChangeRouteRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ) {
-    const route = await this.findOne(
+    const route = await this.findOne<Route>(
       { id: data.routeId },
       { error: serviceOptions.error },
     );
@@ -124,10 +152,14 @@ export class RoutesService {
 
     const rolesList = route.roles.filter((r) => r != role.name);
 
-    const result = await this.routeRepository.update({
-      id: data.routeId,
-      roles: rolesList,
-    });
+    const result = await this.routeRepository.update(
+      {
+        id: data.routeId,
+      },
+      {
+        roles: rolesList,
+      },
+    );
 
     return result;
   }
