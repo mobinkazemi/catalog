@@ -12,6 +12,7 @@ import { BaseService } from 'src/common/services/base.service';
 import { CategorysRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-category.dto';
+import { CategoryMessagesEnum } from './enums/messages.enum';
 import { Category } from './schema/category.schema';
 import { PartialCategoryType } from './types/partial-category.types';
 
@@ -27,8 +28,9 @@ export class CategoryService extends BaseService {
   ): Promise<Category> {
     // Check duplicate in here
     const duplicate = await this.findOne(data, { show: 'all' });
-    //TODO WRITE MSG
-    if (duplicate && serviceOptions?.error) throw new ConflictException();
+
+    if (duplicate && serviceOptions?.error)
+      throw new ConflictException(CategoryMessagesEnum.CATEGORY_CONFLICT_NAME);
     if (duplicate) return;
 
     //then create
@@ -52,8 +54,8 @@ export class CategoryService extends BaseService {
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     const result = await this.categoryRepository.findOne<Category>(data);
-    //TODO WRITE MSG
-    if (!result && serviceOptions?.error) throw new NotFoundException();
+    if (!result && serviceOptions?.error)
+      throw new NotFoundException(CategoryMessagesEnum.CATEGORY_NOT_FOUND);
 
     return result;
   }
@@ -74,7 +76,7 @@ export class CategoryService extends BaseService {
     data: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<void> {
-    const category = await this.findOne(data);
+    const category = await this.findOne(data, serviceOptions);
 
     if (!category) return;
 
