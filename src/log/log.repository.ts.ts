@@ -7,6 +7,7 @@ import {
 } from 'src/common/dto/base-repository-dtos.dto';
 import { BaseRepository } from 'src/common/repository/base.repository';
 import { Log, LogDocument } from './schema/log.schema';
+import { PartialLogType } from './types/partial-log.type';
 
 @Injectable()
 export class LogRepository extends BaseRepository {
@@ -16,19 +17,69 @@ export class LogRepository extends BaseRepository {
     super();
   }
 
-  async create(createLogDto: Partial<Log>) {
-    await this.logModel.create(createLogDto);
+  async create<Log>(createLogDto: PartialLogType): Promise<Log> {
+    return (await this.logModel.create(createLogDto)).toObject();
+  }
+
+  async findOne<Log>(
+    data?: PartialLogType,
+    options?: RepositoryOptionsDto,
+  ): Promise<Log> {
+    let query = {};
+    if (!data) data = {};
+
+    if (data.id) {
+      query['_id'] = this.convertToObjectId(data.id);
+      delete data.id;
+    }
+
+    query = {
+      ...query,
+      ...data,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    return await this.logModel.findOne(query);
   }
 
   async findAll<Log>(
-    data?: any,
+    data?: PartialLogType,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Log[]> {
-    return;
-  }
+    let query = {};
+    if (!data) data = {};
+    if (!listOptions) listOptions = {};
 
-  async findOne<Log>(data: any, options?: RepositoryOptionsDto): Promise<Log> {
-    return;
+    if (data.id) {
+      query['_id'] = this.convertToObjectId(data.id);
+      delete data.id;
+    }
+
+    query = {
+      ...query,
+      ...data,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    const { sort, limit, skip } = this.addListOptions(listOptions);
+
+    return await this.logModel.find(
+      query,
+      {},
+      {
+        sort,
+        limit,
+        skip,
+      },
+    );
   }
 }
