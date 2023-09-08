@@ -21,46 +21,58 @@ import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { UserMessagesEnum } from './enums/messages.enum';
 import { UserPartialType } from './types/partial-user.type';
 import { Role } from 'src/roles/schema/roles.schema';
+import { BaseService } from 'src/common/services/base.service';
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService {
   constructor(
     private readonly userRepository: UsersRepository,
     private readonly roleService: RolesService,
-  ) {}
-  async create(
-    createUserDto: CreateUserDto,
+  ) {
+    super();
+  }
+  async create<User>(
+    data: UserPartialType,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<ResponseAfterCreateDto> {
+  ): Promise<User> {
     const duplicateUsername = await this.userRepository.findOne(
       {
-        username: createUserDto.username,
+        username: data.username,
       },
       { show: 'all' },
     );
 
     if (duplicateUsername && serviceOptions?.error) {
+      //TODO msg
       throw new ConflictException();
     }
     if (duplicateUsername) return;
 
-    const result = await this.userRepository.create(createUserDto);
+    const result = await this.userRepository.create<User>(data);
 
-    return new ResponseAfterCreateDto(result);
-  }
-
-  async findAll(
-    data?: FilterRequestUserDto,
-    listOptions?: addListOptionsDto,
-  ): Promise<Array<User>> {
-    const result: User[] = await this.userRepository.findAll(data, listOptions);
     return result;
   }
 
-  async findOne(
-    data: FindUserDto,
+  async findAll<User>(
+    data: UserPartialType,
+    listOptions?: addListOptionsDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<User[]> {
+    const result: User[] = await this.userRepository.findAll(
+      data,
+      listOptions,
+      serviceOptions,
+    );
+    return result;
+  }
+
+  async findOne<User>(
+    data: UserPartialType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<User> {
-    const result: User = await this.userRepository.findOne(data);
+    const result: User = await this.userRepository.findOne(
+      data,
+      serviceOptions,
+    );
 
     if (!result && serviceOptions?.error) {
       throw new NotFoundException(UserMessagesEnum.USER_NOT_FOUND);
@@ -69,27 +81,35 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, updateUserDto: UserPartialType) {
-    if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 8);
+  async update<User>(
+    findData: UserPartialType,
+    updateData: UserPartialType,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<User> {
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 8);
     }
 
-    const result = await this.userRepository.updateOne({ id }, updateUserDto);
+    const result = await this.userRepository.updateOne<User>(
+      findData,
+      updateData,
+    );
 
     return result;
   }
 
-  async remove(id: ObjectIdOrString, serviceOptions?: ServiceOptionsDto) {
-    await this.findOne({ id: id.toString() }, serviceOptions);
-
-    await this.userRepository.remove(id);
+  async remove<User>(
+    data: UserPartialType,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<void> {
+    await this.userRepository.remove(data);
   }
 
   async addRole(
     data: ChangeUserRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<User> {
-    const user = await this.findOne(
+    const user = await this.findOne<User>(
       { id: data.userId },
       { error: serviceOptions.error },
     );
@@ -117,7 +137,7 @@ export class UsersService {
     data: ChangeUserRoleDto,
     serviceOptions?: ServiceOptionsDto,
   ) {
-    const user = await this.findOne(
+    const user = await this.findOne<User>(
       { id: data.userId },
       { error: serviceOptions.error },
     );

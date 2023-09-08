@@ -20,7 +20,7 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<User> | undefined {
-    const user = await this.userService.findOne({ username });
+    const user = await this.userService.findOne<User>({ username });
     if (!user) return undefined;
 
     const paired = await bcrypt.compare(password, user.password);

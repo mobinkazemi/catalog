@@ -50,7 +50,10 @@ export class UsersController {
     @Body() updateUserDto: UpdateNotAdminUserDto,
     @GetPayload() payload: getPayloadDecoratorDto,
   ) {
-    const user = await this.usersService.update(payload.id, updateUserDto);
+    const user = await this.usersService.update(
+      { _id: payload._id },
+      updateUserDto,
+    );
     return new userWithoutPasswordDto(user as User);
   }
 }

@@ -90,8 +90,8 @@ export class UsersRepository extends BaseRepository {
     );
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userModel.create(createUserDto);
+  async create<User>(createUserDto: UserPartialType): Promise<User> {
+    return await (await this.userModel.create(createUserDto)).toObject();
   }
 
   async updateOne<User>(
@@ -120,12 +120,11 @@ export class UsersRepository extends BaseRepository {
     );
   }
 
-  async remove(id: ObjectIdOrString) {
-    await this.userModel.updateOne(
-      {
-        _id: this.convertToObjectId(id as string),
-      },
-      { $set: { deletedAt: Date.now() } },
-    );
+  async remove(data: UserPartialType) {
+    if (data.id) {
+      data._id = this.convertToObjectId(data.id as string);
+      delete data.id;
+    }
+    await this.userModel.updateOne(data, { $set: { deletedAt: Date.now() } });
   }
 }

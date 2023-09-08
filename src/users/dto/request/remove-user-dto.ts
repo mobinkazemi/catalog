@@ -7,5 +7,5 @@ export class RemoveUserDto {
   @ApiProperty({ type: String })
   @IsString()
   @Matches(ObjectIdRegex)
-  id: ObjectIdOrString;
+  id: string;
 }

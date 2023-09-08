@@ -103,7 +103,10 @@ export class UsersAdminController {
     @Param() idData: findByIdDto,
     @Body() updateUserDto: UpdateUserByAdminDto,
   ) {
-    const user = await this.usersService.update(idData.id, updateUserDto);
+    const user = await this.usersService.update(
+      { id: idData.id },
+      updateUserDto,
+    );
     return new userWithoutPasswordDto(user as User);
   }
 
@@ -111,7 +114,7 @@ export class UsersAdminController {
   @ApiOperation({ summary: 'Delete user' })
   @Delete('remove')
   async remove(@Body() data: RemoveUserDto) {
-    return await this.usersService.remove(data.id, { error: true });
+    return await this.usersService.remove({ id: data.id }, { error: true });
   }
 
   @ApiBody({ type: ChangeUserRoleDto })
