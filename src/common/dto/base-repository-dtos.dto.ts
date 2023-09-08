@@ -19,7 +19,7 @@ export class findByIdDto {
 }
 
 export class RepositoryOptionsDto {
-  show: 'all' | 'removed';
+  show?: 'all' | 'removed';
 }
 
 export class addSortDto {

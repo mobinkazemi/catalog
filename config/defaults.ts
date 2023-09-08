@@ -27,9 +27,11 @@ export const defaults = {
 
   // Cache DB
   redis: {
+    auth: true,
     port: 6379,
     host: 'localhost',
     name: 'catalog-default',
+    password: 'redis-password',
   },
 
   // Object Storage DB

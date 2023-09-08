@@ -8,60 +8,73 @@ import {
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
+import { BaseService } from 'src/common/services/base.service';
 import { CategorysRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-category.dto';
 import { Category } from './schema/category.schema';
-import { FindCategoryType } from './types/find-category.types';
+import { PartialCategoryType } from './types/partial-category.types';
 
 @Injectable()
-export class CategoryService {
-  constructor(private readonly categoryRepository: CategorysRepository) {}
+export class CategoryService extends BaseService {
+  constructor(private readonly categoryRepository: CategorysRepository) {
+    super();
+  }
 
-  async create(
-    createCategoryDto: CreateCategoryDto,
+  async create<Category>(
+    data: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     // Check duplicate in here
-    const duplicate = await this.categoryRepository.findOne({
-      name: createCategoryDto.name,
-    });
-
+    const duplicate = await this.findOne(data, { show: 'all' });
+    //TODO WRITE MSG
     if (duplicate && serviceOptions?.error) throw new ConflictException();
     if (duplicate) return;
+
     //then create
-    return await this.categoryRepository.create(createCategoryDto);
+    return await this.categoryRepository.create<Category>(data);
   }
 
-  async findAll(data?: Partial<Category>, options?: addListOptionsDto) {
-    return await this.categoryRepository.findAll(data, options);
+  async findAll<Category>(
+    data: PartialCategoryType,
+    listOptions?: addListOptionsDto,
+    serviceOptions?: ServiceOptionsDto,
+  ): Promise<Partial<Category>[]> {
+    return await this.categoryRepository.findAll(
+      data,
+      listOptions,
+      serviceOptions,
+    );
   }
 
-  async findOne(
-    data?: FindCategoryType,
+  async findOne<Category>(
+    data?: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     const result = await this.categoryRepository.findOne<Category>(data);
-
+    //TODO WRITE MSG
     if (!result && serviceOptions?.error) throw new NotFoundException();
 
     return result;
   }
 
-  async update(
-    updateCategoryDto: UpdateCategoryDto,
+  async update<Category>(
+    findData: PartialCategoryType,
+    updateData: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Category> {
-    const { id } = updateCategoryDto;
-    delete updateCategoryDto.id;
-    return await this.categoryRepository.updateOne({ id }, updateCategoryDto);
+  ): Promise<Partial<Category>> {
+    return await this.categoryRepository.updateOne(
+      findData,
+      updateData,
+      serviceOptions,
+    );
   }
 
-  async remove(
-    data: findByIdDto,
+  async remove<Category>(
+    data: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<void> {
-    const category = await this.findOne({ id: data.id }, serviceOptions);
+    const category = await this.findOne(data);
 
     if (!category) return;
 

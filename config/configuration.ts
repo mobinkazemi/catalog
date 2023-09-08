@@ -35,9 +35,11 @@ export default () => ({
 
   // Cache DB
   redis: {
+    auth: defaults.redis.auth,
     port: env.REDIS_PORT || defaults.redis.port,
     host: env.REDIS_HOST || defaults.redis.host,
     name: env.REDIS_NAME || defaults.redis.name,
+    pass: env.REDIS_PASS || defaults.redis.password,
   },
 
   // Object Storage DB

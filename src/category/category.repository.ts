@@ -12,7 +12,7 @@ import { Category, CategoryDocument } from './schema/category.schema';
 import * as _ from 'lodash';
 import { BaseSchemaDto } from 'src/database/dto/base.dto';
 import { ObjectIdOrString } from 'src/common/types/types';
-import { FindCategoryType } from './types/find-category.types';
+import { PartialCategoryType } from './types/partial-category.types';
 
 @Injectable()
 export class CategorysRepository extends BaseRepository {
@@ -24,7 +24,7 @@ export class CategorysRepository extends BaseRepository {
   }
 
   async findOne<Category>(
-    data?: FindCategoryType,
+    data?: PartialCategoryType,
     options?: RepositoryOptionsDto,
   ): Promise<Category> {
     let query = {};
@@ -49,7 +49,7 @@ export class CategorysRepository extends BaseRepository {
   }
 
   async findAll<Category>(
-    data?: FindCategoryType,
+    data?: PartialCategoryType,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Category[]> {
@@ -85,26 +85,35 @@ export class CategorysRepository extends BaseRepository {
     );
   }
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    return await this.categoryModel.create(createCategoryDto);
+  async create<Category>(
+    createCategoryDto: PartialCategoryType,
+  ): Promise<Category> {
+    return await (
+      await this.categoryModel.create(createCategoryDto)
+    ).toObject();
   }
 
   async updateOne<Category>(
-    data: FindCategoryType,
-    updateData: UpdateCategoryDto & BaseSchemaDto,
+    findData: PartialCategoryType,
+    updateData: PartialCategoryType,
+    options?: RepositoryOptionsDto,
   ): Promise<Category> {
     let query = {};
 
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
     }
 
     query = {
       ...query,
-      ...data,
+      ...findData,
       deletedAt: null,
     };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
 
     return await this.categoryModel.findOneAndUpdate(query, updateData, {
       new: true,
