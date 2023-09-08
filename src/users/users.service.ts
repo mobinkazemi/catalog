@@ -20,6 +20,7 @@ import { ObjectIdOrString } from 'src/common/types/types';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { UserMessagesEnum } from './enums/messages.enum';
 import { UserPartialType } from './types/partial-user.type';
+import { Role } from 'src/roles/schema/roles.schema';
 @Injectable()
 export class UsersService {
   constructor(
@@ -92,7 +93,7 @@ export class UsersService {
       { id: data.userId },
       { error: serviceOptions.error },
     );
-    const role = await this.roleService.findOne(
+    const role = await this.roleService.findOne<Role>(
       { id: data.roleId },
       { error: serviceOptions.error },
     );
@@ -120,7 +121,7 @@ export class UsersService {
       { id: data.userId },
       { error: serviceOptions.error },
     );
-    const role = await this.roleService.findOne(
+    const role = await this.roleService.findOne<Role>(
       { id: data.roleId },
       { error: serviceOptions.error },
     );

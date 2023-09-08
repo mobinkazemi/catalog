@@ -41,7 +41,7 @@ export class CategoryService extends BaseService {
     data: PartialCategoryType,
     listOptions?: addListOptionsDto,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Partial<Category>[]> {
+  ): Promise<Category[]> {
     return await this.categoryRepository.findAll(
       data,
       listOptions,
@@ -64,7 +64,7 @@ export class CategoryService extends BaseService {
     findData: PartialCategoryType,
     updateData: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Partial<Category>> {
+  ): Promise<Category> {
     return await this.categoryRepository.updateOne(
       findData,
       updateData,

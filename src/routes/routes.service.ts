@@ -10,6 +10,7 @@ import {
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { RolesService } from 'src/roles/roles.service';
+import { Role } from 'src/roles/schema/roles.schema';
 import { ChangeRouteRoleDto } from './dto/request/change-role.dto';
 import { UpdateRouteDto } from './dto/request/update-route.dto';
 import { RouteMessagesEnum } from './enums/messages.enums';
@@ -89,7 +90,7 @@ export class RoutesService {
       { id: data.routeId },
       { error: serviceOptions.error },
     );
-    const role = await this.roleService.findOne(
+    const role = await this.roleService.findOne<Role>(
       { id: data.roleId },
       { error: serviceOptions.error },
     );
@@ -114,7 +115,7 @@ export class RoutesService {
       { id: data.routeId },
       { error: serviceOptions.error },
     );
-    const role = await this.roleService.findOne(
+    const role = await this.roleService.findOne<Role>(
       { id: data.roleId },
       { error: serviceOptions.error },
     );

@@ -11,6 +11,7 @@ import { CreateRoleDto } from './dto/request/create-role.dto';
 import { FindRoleDto } from './dto/request/find-role.dto';
 import { FindRolesListDto } from './dto/request/find-roles.dto';
 import { Role, RoleDocument } from './schema/roles.schema';
+import { PartialRoleType } from './types/partial-role.type';
 
 @Injectable()
 export class RolesRepository extends BaseRepository {
@@ -71,17 +72,43 @@ export class RolesRepository extends BaseRepository {
     return await this.roleModel.find(query, {}, { sort, limit, skip });
   }
 
-  async create(data: CreateRoleDto) {
-    return await this.roleModel.create(data);
+  async create<Role>(data: PartialRoleType): Promise<Role> {
+    return await (await this.roleModel.create(data)).toObject();
   }
-  async remove(data: findByIdDto): Promise<void> {
-    await this.roleModel.updateOne(
-      {
-        _id: this.convertToObjectId(data.id),
-      },
-      {
-        $set: { deletedAt: Date.now() },
-      },
-    );
+  async remove(data: PartialRoleType): Promise<void> {
+    if (data.id) {
+      data._id = this.convertToObjectId(data.id);
+    }
+
+    await this.roleModel.updateOne(data, {
+      $set: { deletedAt: Date.now() },
+    });
+  }
+
+  async updateOne<Role>(
+    findData: PartialRoleType,
+    updateData: PartialRoleType,
+    options?: RepositoryOptionsDto,
+  ): Promise<Role> {
+    let query = {};
+
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    query = {
+      ...query,
+      ...findData,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    return await this.roleModel.findOneAndUpdate(query, updateData, {
+      new: true,
+    });
   }
 }

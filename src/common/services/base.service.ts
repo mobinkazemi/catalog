@@ -10,19 +10,19 @@ export abstract class BaseService {
   abstract findOne<T>(
     data: Partial<T>,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Partial<T>>;
+  ): Promise<T>;
 
   abstract findAll<T>(
     data: Partial<T>,
     listOptions?: addListOptionsDto,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Array<Partial<T>>>;
+  ): Promise<Array<T>>;
 
   abstract update<T>(
     findData: Partial<T>,
     updateData: Partial<T>,
     serviceOptions?: ServiceOptionsDto,
-  ): Promise<Partial<T>>;
+  ): Promise<T>;
 
   abstract remove<T>(
     data: Partial<T>,
