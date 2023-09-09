@@ -7,8 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  NotImplementedException,
-  Req,
   Query,
   ForbiddenException,
   HttpStatus,
@@ -20,21 +18,12 @@ import {
 } from '../dto/request/create-template.dto';
 import {
   UpdatePartOfTemplateDto,
-  UpdateTemplateDto,
   UpdateTemplateDtoByCustomer,
 } from '../dto/request/update-template.dto';
 // import { Roles } from 'src/auth/decorators/roles.decorator';
 // import { RolesGuard } from 'src/auth/strategy/role.strategy';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBody,
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiProperty,
-  ApiQuery,
-  refs,
-} from '@nestjs/swagger';
-import { FindTemplateWithFilesDto } from '../dto/response/find-one-with-file.dto';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { RemovePartOfTemplateDto } from '../dto/request/remove-template.dto';
 import {
   addListOptionsDto,

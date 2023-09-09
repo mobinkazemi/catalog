@@ -7,7 +7,33 @@ import { addTemplateHooks } from '../hook/templates.hooks';
 
 export type TemplateDocument = Document & Template;
 
-@Schema({ id: true, timestamps: true })
+export class Specification {
+  @ApiProperty({ type: Number })
+  @Prop({
+    type: Number,
+  })
+  ord?: number;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+  })
+  tag?: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+    required: true,
+  })
+  key: string;
+
+  @ApiProperty({ type: String })
+  @Prop({
+    type: String,
+    required: true,
+  })
+  value: string;
+}
 export class Part extends Base {
   @ApiProperty({ type: String })
   @Prop({
@@ -53,6 +79,12 @@ export class Part extends Base {
     autoPopulate: true,
   })
   categoryIds?: Array<ObjectIdOrString>;
+
+  @ApiProperty({ type: [Specification] })
+  @Prop({
+    type: Array<Specification>,
+  })
+  specifications?: Array<Specification>;
 }
 
 export class About {

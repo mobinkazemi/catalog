@@ -16,7 +16,13 @@ import {
 import mongoose, { isObjectIdOrHexString, ObjectId, Schema } from 'mongoose';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
-import { About, Part, Template, UI } from '../../schema/templates.schema';
+import {
+  About,
+  Part,
+  Specification,
+  Template,
+  UI,
+} from '../../schema/templates.schema';
 
 export class CreateTemplateDto extends OmitType(Template, [
   'id',
@@ -132,4 +138,9 @@ export class CreatePartOfTemplateDto extends OmitType(Part, [
   @IsArray()
   @Matches(ObjectIdRegex, { each: true })
   categoryIds?: Array<ObjectIdOrString>;
+
+  @ApiProperty({ type: Array<Specification> })
+  @IsOptional()
+  @IsArray()
+  specifications?: Specification[];
 }

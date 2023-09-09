@@ -17,6 +17,7 @@ import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
 import {
   About,
   Part,
+  Specification,
   Template,
   UI,
 } from 'src/templates/schema/templates.schema';
@@ -184,4 +185,9 @@ export class UpdatePartOfTemplateDto extends PartialType(
   @IsArray()
   @Matches(ObjectIdRegex, { each: true })
   categoryIds?: Array<ObjectIdOrString>;
+
+  @ApiProperty({ type: Array<Specification> })
+  @IsOptional()
+  @IsArray()
+  specifications?: Specification[];
 }
