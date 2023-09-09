@@ -40,6 +40,7 @@ import {
 import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 import { PartialTemplateType } from '../types/partial-template.type';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 
 // @Roles(RolesEnum.ADMIN)
 // @UseGuards(RolesGuard)
@@ -54,7 +55,7 @@ export class TemplateAdminController {
   async create(@Body() createTemplateDto: CreateTemplateDto) {
     const result = await this.templatesService.create(createTemplateDto);
 
-    return result;
+    return new ResponseAfterCreateDto(result);
   }
 
   @ApiOperation({ summary: 'Delete template' })

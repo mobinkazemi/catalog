@@ -23,6 +23,7 @@ import {
   addListOptionsDto,
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
+import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
 // import { RolesEnum } from 'src/common/enums/roles.enum';
 import { CategoryService } from '../category.service';
 import { CreateCategoryDto } from '../dto/request/create-category.dto';
@@ -44,7 +45,7 @@ export class CategoryController {
       error: true,
     });
 
-    return new FindCategoryResponseDto(result);
+    return new ResponseAfterCreateDto(result);
   }
 
   @ApiOperation({ summary: 'Get category list' })

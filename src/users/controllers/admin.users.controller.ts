@@ -7,10 +7,8 @@ import {
   Param,
   Delete,
   Query,
-  BadRequestException,
   UseGuards,
   ConflictException,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
 import { CreateUserDto } from '../dto/request/create-user.dto';
@@ -19,14 +17,7 @@ import { ResponseAfterCreateDto } from '../../common/dto/response-after-create.d
 // import { RolesGuard } from '../../auth/strategy/role.strategy';
 // import { Roles } from '../../auth/decorators/roles.decorator';
 // import { RolesEnum } from '../../common/enums/roles.enum';
-import {
-  ApiBody,
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiParam,
-  ApiProperty,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
 import {
   FilterRequestUserDto,
   UserResponseListDto,
@@ -35,21 +26,13 @@ import {
   addListOptionsDto,
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
-import {
-  UpdateUserDto,
-  UpdateUserByAdminDto,
-} from '../dto/request/update-user.dto';
+import { UpdateUserByAdminDto } from '../dto/request/update-user.dto';
 import {
   FindUserResponseDto,
   userWithoutPasswordDto,
 } from '../dto/response/findOne-user.dto';
 import { User } from '../schema/users.schema';
-import { BaseSchemaDto } from 'src/database/dto/base.dto';
-import { ObjectIdOrString } from 'src/common/types/types';
 import { RemoveUserDto } from '../dto/request/remove-user-dto';
-import { FindUserDto } from '../dto/request/findone-user.dto';
-import mongoose from 'mongoose';
-import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { ChangeUserRoleDto } from '../dto/request/change-user-role.dto';
 
 // @Roles(RolesEnum.ADMIN)
@@ -70,7 +53,10 @@ export class UsersAdminController {
     });
     if (exist) throw new ConflictException();
 
-    return await this.usersService.create(createUserDto, { error: true });
+    const result = await this.usersService.create(createUserDto, {
+      error: true,
+    });
+    return new ResponseAfterCreateDto(result);
   }
 
   @ApiOperation({ summary: 'Get user info' })

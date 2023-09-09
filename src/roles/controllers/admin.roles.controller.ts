@@ -40,7 +40,11 @@ export class RolesController {
   async create(
     @Body() createRoleDto: CreateRoleDto,
   ): Promise<ResponseAfterCreateDto> {
-    return await this.rolesService.create(createRoleDto, { error: true });
+    const result = await this.rolesService.create(createRoleDto, {
+      error: true,
+    });
+
+    return new ResponseAfterCreateDto(result);
   }
 
   @ApiOperation({ summary: 'Get role list' })
