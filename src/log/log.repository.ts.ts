@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -79,6 +79,37 @@ export class LogRepository extends BaseRepository {
         sort,
         limit,
         skip,
+      },
+    );
+  }
+
+  async update<Log>(
+    findData: PartialLogType,
+    updateData: PartialLogType,
+    options?: RepositoryOptionsDto,
+  ): Promise<Log> {
+    let query = {};
+
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    query = {
+      ...query,
+      ...findData,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    return await this.logModel.findOneAndUpdate(
+      query,
+      { $set: updateData },
+      {
+        new: true,
       },
     );
   }

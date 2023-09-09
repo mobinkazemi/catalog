@@ -10,12 +10,21 @@ import * as _ from 'lodash';
 import { ObjectIdType } from 'src/common/types/types';
 export abstract class BaseRepository {
   abstract findOne<T>(data: any, options?: RepositoryOptionsDto): Promise<T>;
+
   abstract findAll<T>(
     data?: any,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<T[]>;
 
+  abstract create<T>(data: Partial<T> | unknown): Promise<T>;
+
+  abstract update<T>(
+    findData: Partial<T>,
+    updateData: Partial<T>,
+    options?: RepositoryOptionsDto,
+  ): Promise<T>;
+  //
   protected addOptions(data: any, options: RepositoryOptionsDto) {
     if (options.show) {
       switch (options.show) {

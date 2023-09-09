@@ -8,6 +8,7 @@ import {
 } from '../common/dto/base-repository-dtos.dto';
 import { BaseRepository } from 'src/common/repository/base.repository';
 import { File, FileDocument } from './schema/files.schema';
+import { PartialFileType } from './types/partial-file.type';
 @Injectable()
 export class FilesRepository extends BaseRepository {
   constructor(
@@ -43,13 +44,15 @@ export class FilesRepository extends BaseRepository {
 
     return await this.fileModel.find();
   }
-  async create(file: Express.Multer.File): Promise<File> {
+  async create<File>(file: Express.Multer.File): Promise<File> {
     const { size, originalname, mimetype } = file;
-    return await this.fileModel.create({
+
+    const result = await this.fileModel.create({
       size,
       name: originalname,
       mime: mimetype,
     });
+    return result.toObject();
   }
 
   async remove(data: findByIdDto): Promise<void> {
@@ -59,6 +62,37 @@ export class FilesRepository extends BaseRepository {
       },
       {
         $set: { deletedAt: Date.now() },
+      },
+    );
+  }
+
+  async update<File>(
+    findData: PartialFileType,
+    updateData: PartialFileType,
+    options?: RepositoryOptionsDto,
+  ): Promise<File> {
+    let query = {};
+
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    query = {
+      ...query,
+      ...findData,
+      deletedAt: null,
+    };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
+
+    return await this.fileModel.findOneAndUpdate(
+      query,
+      { $set: updateData },
+      {
+        new: true,
       },
     );
   }

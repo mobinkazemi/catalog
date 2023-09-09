@@ -95,7 +95,7 @@ export class RolesService extends BaseService {
       }
     }
 
-    return await this.roleRepository.updateOne(
+    return await this.roleRepository.update(
       findData,
       updateData,
       serviceOptions,

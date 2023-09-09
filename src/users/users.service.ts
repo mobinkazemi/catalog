@@ -90,9 +90,10 @@ export class UsersService extends BaseService {
       updateData.password = await bcrypt.hash(updateData.password, 8);
     }
 
-    const result = await this.userRepository.updateOne<User>(
+    const result = await this.userRepository.update<User>(
       findData,
       updateData,
+      serviceOptions,
     );
 
     return result;
@@ -123,7 +124,7 @@ export class UsersService extends BaseService {
     const rolesList = [...new Set([role.name, ...user.roles])];
     console.log(rolesList);
 
-    const result = await this.userRepository.updateOne<User>(
+    const result = await this.userRepository.update<User>(
       {
         id: data.userId,
       },
@@ -150,7 +151,7 @@ export class UsersService extends BaseService {
 
     const rolesList = user.roles.filter((r) => r != role.name);
 
-    const result = await this.userRepository.updateOne<User>(
+    const result = await this.userRepository.update<User>(
       {
         id: data.userId,
       },

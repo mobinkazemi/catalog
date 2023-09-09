@@ -93,7 +93,7 @@ export class CategorysRepository extends BaseRepository {
     ).toObject();
   }
 
-  async updateOne<Category>(
+  async update<Category>(
     findData: PartialCategoryType,
     updateData: PartialCategoryType,
     options?: RepositoryOptionsDto,

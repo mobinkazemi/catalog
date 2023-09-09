@@ -85,7 +85,7 @@ export class RolesRepository extends BaseRepository {
     });
   }
 
-  async updateOne<Role>(
+  async update<Role>(
     findData: PartialRoleType,
     updateData: PartialRoleType,
     options?: RepositoryOptionsDto,

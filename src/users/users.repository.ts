@@ -94,22 +94,27 @@ export class UsersRepository extends BaseRepository {
     return await (await this.userModel.create(createUserDto)).toObject();
   }
 
-  async updateOne<User>(
-    data: UserPartialType,
-    updateData: UpdateUserDto & BaseSchemaDto,
+  async update<User>(
+    findData: UserPartialType,
+    updateData: UserPartialType,
+    options?: RepositoryOptionsDto,
   ): Promise<User> {
     let query = {};
 
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
+    if (findData.id) {
+      query['_id'] = this.convertToObjectId(findData.id);
+      delete findData.id;
     }
 
     query = {
       ...query,
-      ...data,
+      ...findData,
       deletedAt: null,
     };
+
+    if (options) {
+      query = this.addOptions(query, options);
+    }
 
     return await this.userModel.findOneAndUpdate(
       query,

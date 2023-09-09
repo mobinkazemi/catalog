@@ -33,11 +33,9 @@ export class TemplatesService extends BaseService {
     data: PartialTemplateType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Template> {
-    const result = await this.templateRepository.create(data);
+    const result = await this.templateRepository.create<Template>(data);
 
-    return (await this.findOneWithFiles({
-      id: result._id.toString(),
-    })) as Template;
+    return result;
   }
 
   async findAll<Template>(

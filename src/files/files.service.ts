@@ -24,7 +24,7 @@ export class FilesService {
     // should be first to also check if minio service is running in background, before inserting anything to mongo
     await this.minioService.createBucketIfNotExists();
 
-    const savedFile = await this.fileRepository.create(file);
+    const savedFile = await this.fileRepository.create<File>(file);
 
     await this.minioService.uploadFile(file, savedFile.id);
 

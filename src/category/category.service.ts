@@ -65,7 +65,7 @@ export class CategoryService extends BaseService {
     updateData: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
-    return await this.categoryRepository.updateOne(
+    return await this.categoryRepository.update(
       findData,
       updateData,
       serviceOptions,

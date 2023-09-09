@@ -231,9 +231,10 @@ export class TemplatesRepository extends BaseRepository {
     );
   }
 
-  async create(createTemplateDto: PartialTemplateType): Promise<Template> {
-    const template = this.templateItemsToObjectId(createTemplateDto);
-    return await this.templateModel.create(template);
+  async create<Template>(data: PartialTemplateType): Promise<Template> {
+    const checkedData = this.templateItemsToObjectId(data);
+    const result = await this.templateModel.create(checkedData);
+    return result.toObject();
   }
 
   async remove<Template>(data: PartialTemplateType): Promise<void> {
