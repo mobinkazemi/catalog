@@ -80,6 +80,6 @@ export class CategoryService extends BaseService {
 
     if (!category) return;
 
-    await this.categoryRepository.remove(data.id);
+    await this.categoryRepository.remove(data, serviceOptions);
   }
 }

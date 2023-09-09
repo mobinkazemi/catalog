@@ -237,15 +237,22 @@ export class TemplatesRepository extends BaseRepository {
     return result.toObject();
   }
 
-  async remove<Template>(data: PartialTemplateType): Promise<void> {
-    await this.templateModel.updateOne(
-      {
-        _id: this.convertToObjectId(data.id),
-      },
-      {
+  async remove<Template>(
+    findData: PartialTemplateType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    if (options?.hardDelete) {
+      await this.templateModel.deleteOne(findData);
+    } else {
+      await this.templateModel.updateOne(findData, {
         $set: { deletedAt: Date.now() },
-      },
-    );
+      });
+    }
   }
 
   // ----- PART -----

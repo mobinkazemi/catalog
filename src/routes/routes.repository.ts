@@ -72,15 +72,22 @@ export class RoutesRepository extends BaseRepository {
     return (await this.routeModel.create(data)).toObject();
   }
 
-  async remove(data: PartialRouteType): Promise<void> {
-    await this.routeModel.updateOne(
-      {
-        _id: this.convertToObjectId(data.id),
-      },
-      {
+  async remove<Route>(
+    findData: PartialRouteType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    if (options?.hardDelete) {
+      await this.routeModel.deleteOne(findData);
+    } else {
+      await this.routeModel.updateOne(findData, {
         $set: { deletedAt: Date.now() },
-      },
-    );
+      });
+    }
   }
 
   async update<Route>(

@@ -55,15 +55,22 @@ export class FilesRepository extends BaseRepository {
     return result.toObject();
   }
 
-  async remove(data: findByIdDto): Promise<void> {
-    await this.fileModel.updateOne(
-      {
-        _id: this.convertToObjectId(data.id),
-      },
-      {
+  async remove<File>(
+    findData: PartialFileType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    if (options?.hardDelete) {
+      await this.fileModel.deleteOne(findData);
+    } else {
+      await this.fileModel.updateOne(findData, {
         $set: { deletedAt: Date.now() },
-      },
-    );
+      });
+    }
   }
 
   async update<File>(

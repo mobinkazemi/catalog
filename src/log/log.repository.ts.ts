@@ -113,4 +113,22 @@ export class LogRepository extends BaseRepository {
       },
     );
   }
+
+  async remove<Log>(
+    findData: PartialLogType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    if (options?.hardDelete) {
+      await this.logModel.deleteOne(findData);
+    } else {
+      await this.logModel.updateOne(findData, {
+        $set: { deletedAt: Date.now() },
+      });
+    }
+  }
 }

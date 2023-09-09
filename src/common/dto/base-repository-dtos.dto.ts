@@ -20,6 +20,7 @@ export class findByIdDto {
 
 export class RepositoryOptionsDto {
   show?: 'all' | 'removed';
+  hardDelete?: boolean;
 }
 
 export class addSortDto {

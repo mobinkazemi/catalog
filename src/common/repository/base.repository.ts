@@ -24,6 +24,11 @@ export abstract class BaseRepository {
     updateData: Partial<T>,
     options?: RepositoryOptionsDto,
   ): Promise<T>;
+
+  abstract remove<T>(
+    findData: Partial<T>,
+    options?: RepositoryOptionsDto,
+  ): Promise<void>;
   //
   protected addOptions(data: any, options: RepositoryOptionsDto) {
     if (options.show) {

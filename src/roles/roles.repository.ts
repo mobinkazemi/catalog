@@ -75,14 +75,22 @@ export class RolesRepository extends BaseRepository {
   async create<Role>(data: PartialRoleType): Promise<Role> {
     return await (await this.roleModel.create(data)).toObject();
   }
-  async remove(data: PartialRoleType): Promise<void> {
-    if (data.id) {
-      data._id = this.convertToObjectId(data.id);
+  async remove<Role>(
+    findData: PartialRoleType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
     }
 
-    await this.roleModel.updateOne(data, {
-      $set: { deletedAt: Date.now() },
-    });
+    if (options?.hardDelete) {
+      await this.roleModel.deleteOne(findData);
+    } else {
+      await this.roleModel.updateOne(findData, {
+        $set: { deletedAt: Date.now() },
+      });
+    }
   }
 
   async update<Role>(

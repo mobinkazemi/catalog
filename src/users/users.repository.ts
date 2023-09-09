@@ -125,11 +125,21 @@ export class UsersRepository extends BaseRepository {
     );
   }
 
-  async remove(data: UserPartialType) {
-    if (data.id) {
-      data._id = this.convertToObjectId(data.id as string);
-      delete data.id;
+  async remove<User>(
+    findData: UserPartialType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
     }
-    await this.userModel.updateOne(data, { $set: { deletedAt: Date.now() } });
+
+    if (options?.hardDelete) {
+      await this.userModel.deleteOne(findData);
+    } else {
+      await this.userModel.updateOne(findData, {
+        $set: { deletedAt: Date.now() },
+      });
+    }
   }
 }

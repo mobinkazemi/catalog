@@ -120,12 +120,21 @@ export class CategorysRepository extends BaseRepository {
     });
   }
 
-  async remove(id: ObjectIdOrString) {
-    await this.categoryModel.updateOne(
-      {
-        _id: this.convertToObjectId(id as string),
-      },
-      { $set: { deletedAt: Date.now() } },
-    );
+  async remove<Category>(
+    findData: PartialCategoryType,
+    options?: RepositoryOptionsDto,
+  ): Promise<void> {
+    if (findData.id) {
+      findData._id = this.convertToObjectId(findData.id);
+      delete findData.id;
+    }
+
+    if (options?.hardDelete) {
+      await this.categoryModel.deleteOne(findData);
+    } else {
+      await this.categoryModel.updateOne(findData, {
+        $set: { deletedAt: Date.now() },
+      });
+    }
   }
 }
