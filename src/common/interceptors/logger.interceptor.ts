@@ -67,5 +67,7 @@ function getRequestData(request: any) {
     ...request.query,
   };
 
+  delete data.password;
+
   return data;
 }
