@@ -101,6 +101,10 @@ export class RedisProxyService {
     return await this.redis.get(key);
   }
 
+  async getKeys({ pattern }: { pattern: string }) {
+    return await this.redis.keys(pattern.concat('*'));
+  }
+
   async getHello() {
     return await this.redis.hello();
   }

@@ -23,9 +23,14 @@ import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { PartialTemplateType } from './types/partial-template.type';
 import { TemplateMessagesEnum } from './enums/messages.enum';
 import { BaseService } from 'src/common/services/base.service';
+import { RedisProxyService } from 'src/redis/redis.service';
+import { CachePreKeyEnum } from 'src/common/enums/cachePreKeys.enum';
 @Injectable()
 export class TemplatesService extends BaseService {
-  constructor(private readonly templateRepository: TemplatesRepository) {
+  constructor(
+    private readonly templateRepository: TemplatesRepository,
+    private readonly redis: RedisProxyService,
+  ) {
     super();
   }
 
@@ -113,11 +118,29 @@ export class TemplatesService extends BaseService {
   }
 
   async update<Template>(
-    findData: Partial<Template>,
+    findData: PartialTemplateType,
     updateData: Partial<Template>,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Template> {
-    return await this.templateRepository.update<Template>(findData, updateData);
+    const result = await this.templateRepository.update<Template>(
+      findData,
+      updateData,
+    );
+
+    // Delete template cache
+    if (result) {
+      const prekey = CachePreKeyEnum.PUBLIC_FIND_TEMPLATE;
+      const templateId = findData?.id || findData._id.toString();
+
+      const relatedKeys = await this.redis.getKeys({ pattern: prekey });
+      const targetKey = relatedKeys.filter((key) =>
+        key.includes(templateId),
+      )[0];
+
+      this.redis.delete({ key: targetKey });
+    }
+
+    return result;
   }
 
   async remove<Template>(

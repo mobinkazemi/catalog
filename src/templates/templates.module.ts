@@ -5,6 +5,7 @@ import { TemplatesRepository } from './templates.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Template, TemplateSchema } from './schema/templates.schema';
 import { TemplateCustomerController } from './controllers/customer.template.controller';
+import { RedisProxyService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { TemplateCustomerController } from './controllers/customer.template.cont
     ]),
   ],
   controllers: [TemplateAdminController, TemplateCustomerController],
-  providers: [TemplatesService, TemplatesRepository],
+  providers: [TemplatesService, TemplatesRepository, RedisProxyService], //
 })
 export class TemplatesModule {}
