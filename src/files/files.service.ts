@@ -9,6 +9,7 @@ import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
 import { MinioClientService } from '../minio/minio.service';
+import { RemoveFileServiceOptions } from './dto/other/remove-service-options.dto';
 import { CreateFileDto } from './dto/request/create-file.dto';
 import { FilesRepository } from './files.repository';
 import { File, FileDocument } from './schema/files.schema';
@@ -60,13 +61,16 @@ export class FilesService {
 
   async remove(
     data: findByIdDto,
-    serviceOptions?: ServiceOptionsDto,
+    serviceOptions?: RemoveFileServiceOptions,
   ): Promise<void> {
     const file = await this.findOne(data.id, serviceOptions);
 
     if (!file) return;
 
     await this.fileRepository.remove(data);
-    await this.minioService.deleteFile(data.id);
+
+    if (serviceOptions?.withFile) {
+      await this.minioService.deleteFile(data.id);
+    }
   }
 }

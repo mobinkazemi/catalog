@@ -57,6 +57,6 @@ export class SeederService {
   }
 
   async seedRoutes() {
-    await this.appService.reloadRoutes();
+    await this.appService.reloadRoutes(); //
   }
 }
