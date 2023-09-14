@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesService } from '../files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -25,10 +26,12 @@ import {
 } from '@nestjs/swagger';
 import { findByIdDto } from 'src/common/dto/base-repository-dtos.dto';
 import configuration from 'config/configuration';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Upload file' })
   @Post('upload')
   @UseInterceptors(
@@ -42,9 +45,11 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseAfterCreateDto> {
     const savedFile = await this.filesService.create(file);
+
     return new ResponseAfterCreateDto(savedFile);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Get file list' })
   @Get()
@@ -67,6 +72,7 @@ export class FilesController {
     stream.pipe(res);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Remove file' })
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
