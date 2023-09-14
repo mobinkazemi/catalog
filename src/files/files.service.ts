@@ -26,7 +26,7 @@ export class FilesService {
 
     const savedFile = await this.fileRepository.create<File>(file);
 
-    await this.minioService.uploadFile(file, savedFile.id);
+    await this.minioService.uploadFile(file, savedFile._id.toString());
 
     return savedFile;
   }
