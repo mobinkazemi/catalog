@@ -7,7 +7,9 @@ import {
   IsString,
   Matches,
   Max,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 import { ObjectIdRegex } from '../constants/objectId-regex.constant';
 
@@ -62,6 +64,22 @@ export class addPaginationDto {
   page: number;
 }
 
+export class addSerchDto {
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'حداقل طول فیلد جست و جو ۱ می باشد' })
+  @MaxLength(32, { message: 'حداکثر طول فیلد جست و جو ۳۲ می باشد' })
+  searchKey?: string;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'حداقل طول مقدار جست و جو ۱ می باشد' })
+  @MaxLength(32, { message: 'حداکثر طول مقدار جست و جو ۳۲ می باشد' })
+  searchValue?: string;
+}
+
 export class addListOptionsDto {
   @ApiProperty({ type: String })
   @IsOptional()
@@ -99,4 +117,18 @@ export class addListOptionsDto {
     return value;
   })
   page?: number;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'حداقل طول فیلد جست و جو ۱ می باشد' })
+  @MaxLength(32, { message: 'حداکثر طول فیلد جست و جو ۳۲ می باشد' })
+  searchKey?: string;
+
+  @ApiProperty({ type: String })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'حداقل طول مقدار جست و جو ۱ می باشد' })
+  @MaxLength(32, { message: 'حداکثر طول مقدار جست و جو ۳۲ می باشد' })
+  searchValue?: string;
 }
