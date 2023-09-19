@@ -2,7 +2,6 @@ export const defaults = {
   // Application name & port & file upload size
   appName: 'app-name',
   port: 3000,
-  maxFileUploadSize: 1024 * 1024 * 10, // 10MB
   logger: true,
 
   // Application super admin
@@ -14,6 +13,12 @@ export const defaults = {
   accessJwtExpire: '7d',
   refreshJwtExpire: '30d',
 
+  // FILE MANAGEMENT
+  file: {
+    maxUploadSize: 1024 * 1024 * 5, // 5 Megabytes
+    maxCacherSize: 1024 * 1024 * 1, // 1 Megabyte
+    cacherTTL: 60 * 30, // 30 Minutes
+  },
   // Main DB
   database: {
     requiredAuth: true,

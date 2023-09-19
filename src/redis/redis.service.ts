@@ -101,6 +101,17 @@ export class RedisProxyService {
     return await this.redis.get(key);
   }
 
+  async setBuffer(key: string, value: Buffer, ttl?: number): Promise<void> {
+    await this.redis.set(key, value);
+    if (ttl) {
+      await this.redis.expire(key, ttl);
+    }
+  }
+
+  async getBuffer(key: string): Promise<Buffer> {
+    return await this.redis.getBuffer(key);
+  }
+
   async getKeys({ pattern }: { pattern: string }) {
     return await this.redis.keys(pattern.concat('*'));
   }

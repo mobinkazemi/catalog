@@ -7,7 +7,6 @@ export default () => ({
   // Application name & port & file upload size
   appName: env.APP_NAME || defaults.appName,
   port: env.PORT || defaults.port,
-  maxFileUploadSize: defaults.maxFileUploadSize,
   logger: defaults.logger,
 
   // Application super admin
@@ -20,6 +19,13 @@ export default () => ({
   jwtSecret: env.SECRET || defaults.jwtSecret,
   accessJwtExpire: defaults.accessJwtExpire,
   refreshJwtExpire: defaults.refreshJwtExpire,
+
+  // FILE MANAGEMENT
+  file: {
+    maxUploadSize: defaults.file.maxUploadSize,
+    maxCacherSize: defaults.file.maxCacherSize,
+    cacherTTL: defaults.file.cacherTTL,
+  },
 
   // Main DB
   database: {

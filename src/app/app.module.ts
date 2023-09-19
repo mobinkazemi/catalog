@@ -28,7 +28,7 @@ import {
   TemplateSchema,
 } from 'src/templates/schema/templates.schema';
 import { CategoryModule } from 'src/category/category.module';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LogModule } from 'src/log/log.module';
 import { LogService } from 'src/log/log.service';
 import { LogRepository } from 'src/log/log.repository.ts';
@@ -38,6 +38,7 @@ import { RoutesModule } from 'src/routes/routes.module';
 import { RoutesService } from 'src/routes/routes.service';
 import { RoutesRepository } from 'src/routes/routes.repository';
 import { Route, RouteSchema } from 'src/routes/schema/routes.schema';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -52,8 +53,8 @@ import { Route, RouteSchema } from 'src/routes/schema/routes.schema';
       load: [configuration],
     }),
     ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
+      ttl: 1000 * 1,
+      limit: 60,
     }),
     LogModule,
     DatabaseModule,
@@ -79,6 +80,10 @@ import { Route, RouteSchema } from 'src/routes/schema/routes.schema';
     LogRepository,
     RoutesService,
     RoutesRepository,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
