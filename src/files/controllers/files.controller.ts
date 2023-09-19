@@ -36,15 +36,20 @@ import { Readable } from 'stream';
 import { ConfigService } from '@nestjs/config';
 @Controller('files')
 export class FilesController {
+  private cacherTTL: number;
+  private maxCacherSize: number;
+
   constructor(
     private readonly filesService: FilesService,
     private readonly minioService: MinioClientService,
     private readonly redisService: RedisProxyService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.cacherTTL = this.configService.get('file.cacherTTL');
+    this.maxCacherSize = this.configService.get('file.maxCacherSize');
+  }
 
   private async fileCacher(readable: Readable, file: File) {
-    let ttl = await this.configService.get('file.cacherTTL');
     let buffList: Buffer[] = [];
 
     const cachedFileKey = CachePreKeyEnum.FILE_CACHER.concat(
@@ -59,8 +64,16 @@ export class FilesController {
     });
     readable.on('end', async () => {
       const wholeBuff = Buffer.concat(buffList);
-      await this.redisService.setBuffer(cachedFileKey, wholeBuff, ttl);
-      await this.redisService.set(cachedFileInfoKey, JSON.stringify(file), ttl);
+      await this.redisService.setBuffer(
+        cachedFileKey,
+        wholeBuff,
+        this.cacherTTL,
+      );
+      await this.redisService.set(
+        cachedFileInfoKey,
+        JSON.stringify(file),
+        this.cacherTTL,
+      );
     });
   }
 
@@ -114,9 +127,6 @@ export class FilesController {
   async findOne(@Param() data: FindFileByIdDto, @Res() res: Response) {
     let stream: Readable;
     let fileInfo: File;
-    const MAX_FILE_SIZE_CACHE = await this.configService.get(
-      'file.maxCacherSize',
-    );
 
     const cachedFileKey = CachePreKeyEnum.FILE_CACHER.concat(data.id);
     const cachedFileInfoKey = CachePreKeyEnum.FILE_INFO.concat(data.id);
@@ -133,7 +143,7 @@ export class FilesController {
 
       stream = await this.minioService.getFile(fileInfo._id.toString());
 
-      if (fileInfo.size < MAX_FILE_SIZE_CACHE) {
+      if (fileInfo.size < this.maxCacherSize) {
         await this.fileCacher(stream, fileInfo);
       }
     }
