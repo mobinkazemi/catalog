@@ -18,6 +18,7 @@ import { ChangeRouteRoleDto } from '../dto/request/change-role.dto';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import { Route } from '../schema/routes.schema';
 import { RouteListRequestDto } from '../dto/request/find-route.dto';
+import { RouteListResponse } from '../dto/response/route-list-response.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('routes/admin')
@@ -42,7 +43,7 @@ export class RoutesController {
     @Query() data: RouteListRequestDto,
   ): Promise<Array<Route>> {
     const result = await this.routesService.findAll<Route>(data, listOptions);
-    return result;
+    return result.map((item) => new RouteListResponse(item));
   }
 
   @ApiOperation({ summary: 'add role to route' })
