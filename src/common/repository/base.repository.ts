@@ -72,7 +72,6 @@ export abstract class BaseRepository {
     if (options) {
       query = this.addOptions(query, options);
     }
-    console.log({ ...query, ...search });
 
     // SEARCH AND RETURN DATA
     return await this.model.find(
@@ -86,14 +85,12 @@ export abstract class BaseRepository {
     );
   }
   async baseCreate<T>(data: Partial<T>): Promise<T> {
-    return await (await this.model.create(data)).toObject();
+    return (await this.model.create(data)).toObject();
   }
   async baseFindOne<T>(
     data: Partial<T> | Record<string, any>,
     options?: RepositoryOptionsDto,
   ): Promise<T> {
-    console.log('Base FindOne');
-
     // ENSURE INCOMING DATA
     data = data ?? {};
 
