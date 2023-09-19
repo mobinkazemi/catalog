@@ -122,7 +122,6 @@ export class UsersService extends BaseService {
     if ((!user || !role) && !serviceOptions.error) return;
 
     const rolesList = [...new Set([role.name, ...user.roles])];
-    console.log(rolesList);
 
     const result = await this.userRepository.update<User>(
       {
