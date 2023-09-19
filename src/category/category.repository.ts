@@ -20,32 +20,14 @@ export class CategorysRepository extends BaseRepository {
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
   ) {
-    super();
+    super(categoryModel);
   }
 
   async findOne<Category>(
     data?: PartialCategoryType,
     options?: RepositoryOptionsDto,
   ): Promise<Category> {
-    let query = {};
-    if (!data) data = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.categoryModel.findOne(query);
+    return await this.baseFindOne(data as Partial<Category>, options);
   }
 
   async findAll<Category>(
@@ -53,44 +35,23 @@ export class CategorysRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Category[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
+    console.log({
+      data,
+      listOptions,
+      options,
+    });
 
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
-    return await this.categoryModel.find(
-      query,
-      {},
-      {
-        sort,
-        limit,
-        skip,
-      },
+    return await this.baseFindAll(
+      data as Partial<Category>,
+      listOptions,
+      options,
     );
   }
 
   async create<Category>(
     createCategoryDto: PartialCategoryType,
   ): Promise<Category> {
-    return await (
-      await this.categoryModel.create(createCategoryDto)
-    ).toObject();
+    return await this.baseCreate(createCategoryDto as Partial<Category>);
   }
 
   async update<Category>(
@@ -98,43 +59,17 @@ export class CategorysRepository extends BaseRepository {
     updateData: PartialCategoryType,
     options?: RepositoryOptionsDto,
   ): Promise<Category> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.categoryModel.findOneAndUpdate(query, updateData, {
-      new: true,
-    });
+    return await this.baseUpdate<Category>(
+      findData,
+      updateData as Partial<Category>,
+      options,
+    );
   }
 
   async remove<Category>(
     findData: PartialCategoryType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.categoryModel.deleteOne(findData);
-    } else {
-      await this.categoryModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    await this.baseRemove(findData, options);
   }
 }

@@ -14,36 +14,18 @@ export class LogRepository extends BaseRepository {
   constructor(
     @InjectModel(Log.name) private readonly logModel: Model<LogDocument>,
   ) {
-    super();
+    super(logModel);
   }
 
   async create<Log>(createLogDto: PartialLogType): Promise<Log> {
-    return (await this.logModel.create(createLogDto)).toObject();
+    return await this.baseCreate(createLogDto as Partial<Log>);
   }
 
   async findOne<Log>(
     data?: PartialLogType,
     options?: RepositoryOptionsDto,
   ): Promise<Log> {
-    let query = {};
-    if (!data) data = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.logModel.findOne(query);
+    return await this.baseFindOne(data as Partial<Log>, options);
   }
 
   async findAll<Log>(
@@ -51,36 +33,7 @@ export class LogRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Log[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
-    return await this.logModel.find(
-      query,
-      {},
-      {
-        sort,
-        limit,
-        skip,
-      },
-    );
+    return await this.baseFindAll(data as Partial<Log>, listOptions, options);
   }
 
   async update<Log>(
@@ -88,29 +41,10 @@ export class LogRepository extends BaseRepository {
     updateData: PartialLogType,
     options?: RepositoryOptionsDto,
   ): Promise<Log> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.logModel.findOneAndUpdate(
-      query,
-      { $set: updateData },
-      {
-        new: true,
-      },
+    return await this.baseUpdate(
+      findData as Partial<Log>,
+      updateData as Partial<Log>,
+      options,
     );
   }
 
@@ -118,17 +52,6 @@ export class LogRepository extends BaseRepository {
     findData: PartialLogType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.logModel.deleteOne(findData);
-    } else {
-      await this.logModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    return await this.baseRemove(findData as Partial<Log>, options);
   }
 }

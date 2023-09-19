@@ -50,7 +50,7 @@ export class CategoryService extends BaseService {
   }
 
   async findOne<Category>(
-    data?: PartialCategoryType,
+    data: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     const result = await this.categoryRepository.findOne<Category>(data);
@@ -76,7 +76,10 @@ export class CategoryService extends BaseService {
     data: PartialCategoryType,
     serviceOptions?: ServiceOptionsDto,
   ): Promise<void> {
-    const category = await this.findOne(data, serviceOptions);
+    const category = await this.findOne(
+      Object.assign({}, data),
+      serviceOptions,
+    );
 
     if (!category) return;
 

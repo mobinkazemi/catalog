@@ -25,7 +25,12 @@ export class FilesService {
     // should be first to also check if minio service is running in background, before inserting anything to mongo
     await this.minioService.createBucketIfNotExists();
 
-    const savedFile = await this.fileRepository.create<File>(file);
+    const { size, originalname, mimetype } = file;
+    const savedFile = await this.fileRepository.create<File>({
+      size,
+      name: originalname,
+      mime: mimetype,
+    });
 
     await this.minioService.uploadFile(file, savedFile._id.toString());
 
@@ -37,7 +42,7 @@ export class FilesService {
   }
 
   async findOne(id: string, serviceOptions?: ServiceOptionsDto) {
-    const file = await this.fileRepository.findOne<File>(id);
+    const file = await this.fileRepository.findOne<File>({ id });
     if (!file && serviceOptions.error) throw new NotFoundException();
 
     return file;

@@ -23,32 +23,14 @@ export class UsersRepository extends BaseRepository {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {
-    super();
+    super(userModel);
   }
 
   async findOne<User>(
     data?: FindUserDto,
     options?: RepositoryOptionsDto,
   ): Promise<User> {
-    let query = {};
-    if (!data) data = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.userModel.findOne(query);
+    return await this.baseFindOne(data as Partial<User>, options);
   }
 
   async findAll<User>(
@@ -56,42 +38,11 @@ export class UsersRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<User[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
-
-    data = new FilterRequestUserDto(data);
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
-    return await this.userModel.find(
-      query,
-      {},
-      {
-        sort,
-        limit,
-        skip,
-      },
-    );
+    return await this.baseFindAll(data as Partial<User>, listOptions, options);
   }
 
   async create<User>(createUserDto: UserPartialType): Promise<User> {
-    return await (await this.userModel.create(createUserDto)).toObject();
+    return await this.baseCreate(createUserDto as Partial<User>);
   }
 
   async update<User>(
@@ -99,29 +50,10 @@ export class UsersRepository extends BaseRepository {
     updateData: UserPartialType,
     options?: RepositoryOptionsDto,
   ): Promise<User> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.userModel.findOneAndUpdate(
-      query,
-      { $set: updateData },
-      {
-        new: true,
-      },
+    return await this.baseUpdate(
+      findData as Partial<User>,
+      updateData as Partial<User>,
+      options,
     );
   }
 
@@ -129,17 +61,6 @@ export class UsersRepository extends BaseRepository {
     findData: UserPartialType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.userModel.deleteOne(findData);
-    } else {
-      await this.userModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    await this.baseRemove(findData as Partial<User>, options);
   }
 }

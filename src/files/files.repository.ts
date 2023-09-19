@@ -14,63 +14,33 @@ export class FilesRepository extends BaseRepository {
   constructor(
     @InjectModel(File.name) private readonly fileModel: Model<FileDocument>,
   ) {
-    super();
+    super(fileModel);
   }
 
   async findOne<File>(
-    id: string,
+    data: PartialFileType,
     options?: RepositoryOptionsDto,
   ): Promise<File> {
-    let query = {
-      _id: this.convertToObjectId(id),
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.fileModel.findOne(query);
+    return await this.baseFindOne(data as Partial<File>, options);
   }
 
-  async findAll<T>(
-    data?: any,
+  async findAll<File>(
+    data?: PartialFileType,
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
-  ): Promise<T[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
-
-    return await this.fileModel.find();
+  ): Promise<File[]> {
+    return await this.baseFindAll(data as Partial<File>, listOptions, options);
   }
-  async create<File>(file: Express.Multer.File): Promise<File> {
-    const { size, originalname, mimetype } = file;
 
-    const result = await this.fileModel.create({
-      size,
-      name: originalname,
-      mime: mimetype,
-    });
-    return result.toObject();
+  async create<File>(data: PartialFileType): Promise<File> {
+    return await this.baseCreate(data as Partial<File>);
   }
 
   async remove<File>(
     findData: PartialFileType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.fileModel.deleteOne(findData);
-    } else {
-      await this.fileModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    await this.baseRemove(findData, options);
   }
 
   async update<File>(
@@ -78,29 +48,10 @@ export class FilesRepository extends BaseRepository {
     updateData: PartialFileType,
     options?: RepositoryOptionsDto,
   ): Promise<File> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.fileModel.findOneAndUpdate(
-      query,
-      { $set: updateData },
-      {
-        new: true,
-      },
+    return await this.baseUpdate(
+      findData as Partial<File>,
+      updateData as Partial<File>,
+      options,
     );
   }
 }

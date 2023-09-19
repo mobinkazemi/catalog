@@ -29,6 +29,7 @@ import { CategoryService } from '../category.service';
 import { CreateCategoryDto } from '../dto/request/create-category.dto';
 import { FindCategoryListRequestDto } from '../dto/request/find-category.dto';
 import { FindCategoryResponseDto } from '../dto/response/find-category.dto';
+import { Category } from '../schema/category.schema';
 
 // @Roles(RolesEnum.ADMIN)
 // @UseGuards(RolesGuard)
@@ -72,6 +73,9 @@ export class CategoryController {
   @ApiBody({ type: findByIdDto })
   @Delete('remove')
   async remove(@Body() data: findByIdDto) {
-    return await this.categoryService.remove(data);
+    return await this.categoryService.remove<Category>(
+      { id: data.id },
+      { error: true },
+    );
   }
 }

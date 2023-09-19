@@ -18,34 +18,14 @@ export class RolesRepository extends BaseRepository {
   constructor(
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
   ) {
-    super();
+    super(roleModel);
   }
 
   async findOne<Role>(
     data?: FindRoleDto,
     options?: RepositoryOptionsDto,
   ): Promise<Role> {
-    let query = {};
-    if (!data) data = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    if (query['name']) query['name'] = query['name'].toUpperCase();
-
-    return await this.roleModel.findOne(query);
+    return await this.baseFindOne(data as Partial<Role>, options);
   }
 
   async findAll<Role>(
@@ -53,44 +33,17 @@ export class RolesRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Role[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
-    return await this.roleModel.find(query, {}, { sort, limit, skip });
+    return await this.baseFindAll(data as Partial<Role>, listOptions, options);
   }
 
   async create<Role>(data: PartialRoleType): Promise<Role> {
-    return await (await this.roleModel.create(data)).toObject();
+    return await this.baseCreate(data as Partial<Role>);
   }
   async remove<Role>(
     findData: PartialRoleType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.roleModel.deleteOne(findData);
-    } else {
-      await this.roleModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    await this.baseRemove(findData as Partial<Role>, options);
   }
 
   async update<Role>(
@@ -98,25 +51,10 @@ export class RolesRepository extends BaseRepository {
     updateData: PartialRoleType,
     options?: RepositoryOptionsDto,
   ): Promise<Role> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.roleModel.findOneAndUpdate(query, updateData, {
-      new: true,
-    });
+    return await this.baseUpdate(
+      findData as Partial<Role>,
+      updateData as Partial<Role>,
+      options,
+    );
   }
 }

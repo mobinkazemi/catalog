@@ -16,32 +16,14 @@ export class RoutesRepository extends BaseRepository {
   constructor(
     @InjectModel(Route.name) private readonly routeModel: Model<RouteDocument>,
   ) {
-    super();
+    super(routeModel);
   }
 
   async findOne<Route>(
     data?: PartialRouteType,
     options?: RepositoryOptionsDto,
   ): Promise<Route> {
-    let query = {};
-    if (!data) data = {};
-
-    if (data.id) {
-      query['_id'] = this.convertToObjectId(data.id);
-      delete data.id;
-    }
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.routeModel.findOne(query);
+    return await this.baseFindOne(data as Partial<Route>, options);
   }
 
   async findAll<Route>(
@@ -49,45 +31,18 @@ export class RoutesRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Route[]> {
-    let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
-
-    query = {
-      ...query,
-      ...data,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
-    return await this.routeModel.find(query, {}, { sort, limit, skip });
+    return await this.baseFindAll(data as Partial<Route>, listOptions, options);
   }
 
   async create<Route>(data: PartialRouteType): Promise<Route> {
-    return (await this.routeModel.create(data)).toObject();
+    return await this.baseCreate(data as Partial<Route>);
   }
 
   async remove<Route>(
     findData: PartialRouteType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.routeModel.deleteOne(findData);
-    } else {
-      await this.routeModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    return await this.baseRemove(findData as Partial<Route>, options);
   }
 
   async update<Route>(
@@ -95,25 +50,10 @@ export class RoutesRepository extends BaseRepository {
     updateData: PartialRouteType,
     options?: RepositoryOptionsDto,
   ): Promise<Route> {
-    let query = {};
-
-    if (findData.id) {
-      query['_id'] = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    query = {
-      ...query,
-      ...findData,
-      deletedAt: null,
-    };
-
-    if (options) {
-      query = this.addOptions(query, options);
-    }
-
-    return await this.routeModel.findOneAndUpdate(query, updateData, {
-      new: true,
-    });
+    return await this.baseUpdate(
+      findData as Partial<Route>,
+      updateData as Partial<Route>,
+      options,
+    );
   }
 }

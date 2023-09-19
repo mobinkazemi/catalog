@@ -28,7 +28,7 @@ export class TemplatesRepository extends BaseRepository {
     @InjectModel(Template.name)
     private readonly templateModel: Model<TemplateDocument>,
   ) {
-    super();
+    super(templateModel);
   }
 
   private expirationHandler(expired: boolean, query: object) {
@@ -100,14 +100,15 @@ export class TemplatesRepository extends BaseRepository {
   async update<Template>(
     findData: PartialTemplateType,
     updateData: PartialTemplateType,
+    options?: RepositoryOptionsDto,
   ): Promise<Template> {
     findData = this.templateItemsToObjectId(findData);
     updateData = this.templateItemsToObjectId(updateData);
 
-    return await this.templateModel.findOneAndUpdate(
-      findData,
-      { $set: updateData },
-      { new: true },
+    return await this.baseUpdate(
+      findData as Partial<Template>,
+      updateData as Partial<Template>,
+      options,
     );
   }
 
@@ -194,9 +195,12 @@ export class TemplatesRepository extends BaseRepository {
     listOptions?: addListOptionsDto,
     options?: RepositoryOptionsDto,
   ): Promise<Template[]> {
+    // ENSURE INCOMING DATA
+    data = data ?? {};
+    listOptions = listOptions ?? {};
+
+    // DEFINE QUERY
     let query = {};
-    if (!data) data = {};
-    if (!listOptions) listOptions = {};
 
     if (data.id) {
       query['_id'] = this.convertToObjectId(data.id);
@@ -214,14 +218,17 @@ export class TemplatesRepository extends BaseRepository {
       deletedAt: null,
     };
 
+    // DEFINE LIST OPTIONS
+    const { sort, limit, skip, search } = this.addListOptions(listOptions);
+
+    // DEFINE QUERY OPTIONS
     if (options) {
       query = this.addOptions(query, options);
     }
 
-    const { sort, limit, skip } = this.addListOptions(listOptions);
-
+    // SEARCH AND RETURN DATA
     return await this.templateModel.find(
-      query,
+      { ...query, ...search },
       {},
       {
         sort,
@@ -233,30 +240,17 @@ export class TemplatesRepository extends BaseRepository {
 
   async create<Template>(data: PartialTemplateType): Promise<Template> {
     const checkedData = this.templateItemsToObjectId(data);
-    const result = await this.templateModel.create(checkedData);
-    return result.toObject();
+    return await this.baseCreate(checkedData as Partial<Template>);
   }
 
   async remove<Template>(
     findData: PartialTemplateType,
     options?: RepositoryOptionsDto,
   ): Promise<void> {
-    if (findData.id) {
-      findData._id = this.convertToObjectId(findData.id);
-      delete findData.id;
-    }
-
-    if (options?.hardDelete) {
-      await this.templateModel.deleteOne(findData);
-    } else {
-      await this.templateModel.updateOne(findData, {
-        $set: { deletedAt: Date.now() },
-      });
-    }
+    await this.baseRemove(findData as Partial<Template>, options);
   }
 
   // ----- PART -----
-
   async createPart(
     createPartOfTemplateDto: CreatePartOfTemplateDto,
   ): Promise<Template> {
