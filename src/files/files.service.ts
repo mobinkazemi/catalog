@@ -1,23 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  NotImplementedException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {
-  addListOptionsDto,
-  findByIdDto,
-} from 'src/common/dto/base-repository-dtos.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
 import { BaseService } from 'src/common/services/base.service';
-import { ResponseAfterCreateDto } from '../common/dto/response-after-create.dto';
-import { MinioClientService } from '../minio/minio.service';
-import { RemoveFileServiceOptions } from './dto/other/remove-service-options.dto';
-import { CreateFileDto } from './dto/request/create-file.dto';
 import { FileMessagesEnum } from './enums/messages.enum';
 import { FilesRepository } from './files.repository';
-import { File, FileDocument } from './schema/files.schema';
 import { PartialFileType } from './types/partial-file.type';
 
 @Injectable()
