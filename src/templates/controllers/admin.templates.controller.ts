@@ -64,7 +64,9 @@ export class TemplateAdminController {
     @Query() listOptions: addListOptionsDto,
     @Query() data: FindTemplateListRequestDto,
   ): Promise<Array<FindTemplateListResponseDto>> {
-    const result = await this.templatesService.findAll(data, listOptions);
+    const result = await this.templatesService.findAll(data, listOptions, {
+      show: 'all',
+    });
     return result.map((item) => new FindTemplateListResponseDto(item));
   }
 
@@ -73,7 +75,7 @@ export class TemplateAdminController {
   async findOne(@Param() data: findByIdDto) {
     const result = await this.templatesService.findOneWithFiles(
       { id: data.id },
-      { error: true },
+      { error: true, show: 'all' },
     );
     // return new FindTemplateWithFilesDto(result);
     return result;
