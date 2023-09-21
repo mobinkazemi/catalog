@@ -75,7 +75,8 @@ export class TemplateAdminController {
       { id: data.id },
       { error: true },
     );
-    return new FindTemplateWithFilesDto(result);
+    // return new FindTemplateWithFilesDto(result);
+    return result;
   }
 
   @ApiOperation({ summary: 'Update template' })
