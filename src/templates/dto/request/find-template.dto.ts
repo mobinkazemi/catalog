@@ -55,7 +55,7 @@ export class FindTemplateListRequestDto {
   @IsOptional()
   @IsOptional()
   ownerId?: ObjectIdOrString;
-  @ApiProperty({ type: ShowOptionEnum })
+  @ApiProperty({ enum: ShowOptionEnum })
   @IsEnum(ShowOptionEnum)
   @IsOptional()
   show?: ShowOptionEnum;
