@@ -8,6 +8,7 @@ import {
   findByIdDto,
 } from 'src/common/dto/base-repository-dtos.dto';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 import { BaseService } from 'src/common/services/base.service';
 import { CategorysRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
@@ -27,7 +28,7 @@ export class CategoryService extends BaseService {
     serviceOptions?: ServiceOptionsDto,
   ): Promise<Category> {
     // Check duplicate in here
-    const duplicate = await this.findOne(data, { show: 'all' });
+    const duplicate = await this.findOne(data, { show: ShowOptionEnum.all });
 
     if (duplicate && serviceOptions?.error)
       throw new ConflictException(CategoryMessagesEnum.CATEGORY_CONFLICT_NAME);

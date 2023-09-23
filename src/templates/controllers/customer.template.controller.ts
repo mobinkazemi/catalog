@@ -35,6 +35,7 @@ import { GetPayload } from 'src/common/decorators/getUser.decorator';
 import { getPayloadDecoratorDto } from 'src/users/dto/response/get-user-decorator.dto';
 import { TemplateMessagesEnum } from '../enums/messages.enum';
 import { PartialTemplateType } from '../types/partial-template.type';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('templates/customer')
@@ -50,7 +51,7 @@ export class TemplateCustomerController {
   ): Promise<Array<FindTemplateListResponseDto>> {
     data.ownerId = payload._id;
     const result = await this.templatesService.findAll(data, listOptions, {
-      show: 'all',
+      show: ShowOptionEnum.all,
     });
     return result.map((item) => new FindTemplateListResponseDto(item));
   }

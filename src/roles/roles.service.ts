@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ServiceOptionsDto } from 'src/common/dto/service-options.dto';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 import { BaseService } from 'src/common/services/base.service';
 import {
   addListOptionsDto,
@@ -36,7 +37,7 @@ export class RolesService extends BaseService {
       {
         name: createRoleDto.name,
       },
-      { show: 'all' },
+      { show: ShowOptionEnum.all },
     );
 
     if (duplicate && serviceOptions?.error)
@@ -85,7 +86,7 @@ export class RolesService extends BaseService {
     if (updateData.name) {
       const duplicate = await this.findOne(
         { name: updateData.name },
-        { show: 'all' },
+        { show: ShowOptionEnum.all },
       );
 
       if (duplicate && serviceOptions.error) {

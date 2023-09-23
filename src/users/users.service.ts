@@ -22,6 +22,7 @@ import { UserMessagesEnum } from './enums/messages.enum';
 import { UserPartialType } from './types/partial-user.type';
 import { Role } from 'src/roles/schema/roles.schema';
 import { BaseService } from 'src/common/services/base.service';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 @Injectable()
 export class UsersService extends BaseService {
   constructor(
@@ -38,7 +39,7 @@ export class UsersService extends BaseService {
       {
         username: data.username,
       },
-      { show: 'all' },
+      { show: ShowOptionEnum.all },
     );
 
     if (duplicateUsername && serviceOptions?.error) {

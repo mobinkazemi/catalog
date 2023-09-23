@@ -34,6 +34,7 @@ import { FindTemplateListRequestDto } from '../dto/request/find-template.dto';
 import { FindTemplateListResponseDto } from '../dto/response/find-list.dto';
 import { PartialTemplateType } from '../types/partial-template.type';
 import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 
 // @Roles(RolesEnum.ADMIN)
 // @UseGuards(RolesGuard)
@@ -64,8 +65,13 @@ export class TemplateAdminController {
     @Query() listOptions: addListOptionsDto,
     @Query() data: FindTemplateListRequestDto,
   ): Promise<Array<FindTemplateListResponseDto>> {
+    let show: ShowOptionEnum;
+    if (data?.show) {
+      show = data.show;
+      delete data.show;
+    }
     const result = await this.templatesService.findAll(data, listOptions, {
-      show: 'all',
+      show,
     });
     return result.map((item) => new FindTemplateListResponseDto(item));
   }
@@ -75,7 +81,7 @@ export class TemplateAdminController {
   async findOne(@Param() data: findByIdDto) {
     const result = await this.templatesService.findOneWithFiles(
       { id: data.id },
-      { error: true, show: 'all' },
+      { error: true, show: ShowOptionEnum.all },
     );
     // return new FindTemplateWithFilesDto(result);
     return result;

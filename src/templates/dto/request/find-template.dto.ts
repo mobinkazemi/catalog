@@ -3,12 +3,14 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   IsDate,
   IsDateString,
+  IsEnum,
   IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
 import { ObjectIdRegex } from 'src/common/constants/objectId-regex.constant';
 import { addListOptionsDto } from 'src/common/dto/base-repository-dtos.dto';
+import { ShowOptionEnum } from 'src/common/enums/show-option.enum';
 import { ObjectIdOrString } from 'src/common/types/types';
 import { Template } from 'src/templates/schema/templates.schema';
 
@@ -53,4 +55,8 @@ export class FindTemplateListRequestDto {
   @IsOptional()
   @IsOptional()
   ownerId?: ObjectIdOrString;
+  @ApiProperty({ type: ShowOptionEnum })
+  @IsEnum(ShowOptionEnum)
+  @IsOptional()
+  show?: ShowOptionEnum;
 }

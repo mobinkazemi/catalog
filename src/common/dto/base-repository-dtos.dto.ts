@@ -12,6 +12,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { ObjectIdRegex } from '../constants/objectId-regex.constant';
+import { ShowOptionEnum } from '../enums/show-option.enum';
 
 export class findByIdDto {
   @ApiProperty({ type: String })
@@ -21,7 +22,7 @@ export class findByIdDto {
 }
 
 export class RepositoryOptionsDto {
-  show?: 'all' | 'removed';
+  show?: ShowOptionEnum;
   hardDelete?: boolean;
 }
 
