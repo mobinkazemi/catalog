@@ -34,6 +34,24 @@ export class TemplatesService extends BaseService {
     super();
   }
 
+  private categoriesCollector(data: Template): Template {
+    let allCategories = new Map();
+    data?.parts?.forEach((item) => {
+      if (item?.categoryIds?.length) {
+        item.categoryIds.forEach((category: any) => {
+          allCategories.set(
+            category._id.toString(),
+            _.pick(category, ['_id', 'name']),
+          );
+        });
+      }
+    });
+
+    data['allPartCategories'] = [...allCategories.values()];
+
+    return data;
+  }
+
   async create<Template>(
     data: PartialTemplateType,
     serviceOptions?: ServiceOptionsDto,
@@ -75,12 +93,14 @@ export class TemplatesService extends BaseService {
     data: FindTemplateDto,
     serviceOptions?: ServiceOptionsDto,
   ) {
-    const result = await this.templateRepository.findOneWithFiles({
+    let result = await this.templateRepository.findOneWithFiles({
       ...data,
       id: data.id as string,
     });
 
     if (!result && serviceOptions?.error) throw new NotFoundException();
+
+    result = this.categoriesCollector(result as Template);
 
     return result;
   }
@@ -91,7 +111,7 @@ export class TemplatesService extends BaseService {
   ) {
     delete data.expired;
 
-    const result = (await this.findOneWithFiles(
+    let result = (await this.findOneWithFiles(
       data,
       serviceOptions,
     )) as Template;
@@ -100,19 +120,7 @@ export class TemplatesService extends BaseService {
       throw new GoneException();
     }
 
-    let allCategories = new Map();
-    result?.parts?.forEach((item) => {
-      if (item?.categoryIds?.length) {
-        item.categoryIds.forEach((category: any) => {
-          allCategories.set(
-            category._id.toString(),
-            _.pick(category, ['_id', 'name']),
-          );
-        });
-      }
-    });
-
-    result['allPartCategories'] = [...allCategories.values()];
+    result = this.categoriesCollector(result);
 
     return result;
   }
