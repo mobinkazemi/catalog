@@ -34,7 +34,7 @@ import { Category } from '../schema/category.schema';
 // @UseGuards(RolesGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('category/admin')
-export class CategoryController {
+export class CategoryAdminController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiOperation({ summary: 'Create category' })
