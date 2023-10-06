@@ -9,7 +9,7 @@ import { CategoryService } from '../category.service';
 import { FindCategoryListRequestDto } from '../dto/request/find-category.dto';
 import { Category } from '../schema/category.schema';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
