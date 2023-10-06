@@ -136,7 +136,10 @@ export class TemplateCustomerController {
 
       throw error;
     }
-    return await this.templatesService.updatePart(data);
+    await this.templatesService.updatePart(data);
+    return await this.templatesService.findOneWithFiles({
+      id: data.templateId as string,
+    });
   }
 
   @ApiOperation({ summary: 'Delete Part by customer' })
