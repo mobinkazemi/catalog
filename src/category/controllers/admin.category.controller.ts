@@ -28,7 +28,6 @@ import { ResponseAfterCreateDto } from 'src/common/dto/response-after-create.dto
 import { CategoryService } from '../category.service';
 import { CreateCategoryDto } from '../dto/request/create-category.dto';
 import { FindCategoryListRequestDto } from '../dto/request/find-category.dto';
-import { FindCategoryResponseDto } from '../dto/response/find-category.dto';
 import { Category } from '../schema/category.schema';
 
 // @Roles(RolesEnum.ADMIN)
@@ -54,19 +53,16 @@ export class CategoryController {
   async findAll(
     @Query() listOptions: addListOptionsDto,
     @Query() data: FindCategoryListRequestDto,
-  ): Promise<Array<FindCategoryResponseDto>> {
-    const result = await this.categoryService.findAll(data, listOptions);
-
-    return result.map((item) => new FindCategoryResponseDto(item));
+  ): Promise<Array<Category>> {
+    return await this.categoryService.findAll(data, listOptions);
   }
 
   @ApiOperation({ summary: 'Get category info' })
   @Get(':id')
   async findOne(@Param() data: findByIdDto) {
-    const result = await this.categoryService.findOne(data, {
+    return await this.categoryService.findOne(data, {
       error: true,
     });
-    return new FindCategoryResponseDto(result);
   }
 
   @ApiOperation({ summary: 'Delete category' })

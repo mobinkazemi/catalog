@@ -111,7 +111,10 @@ export class TemplateAdminController {
   @ApiOperation({ summary: 'Update part' })
   @Patch('part/update')
   async updatePart(@Body() data: UpdatePartOfTemplateDto) {
-    return await this.templatesService.updatePart(data);
+    await this.templatesService.updatePart(data);
+    return await this.templatesService.findOneWithFiles({
+      id: data.templateId as string,
+    });
   }
 
   @ApiOperation({ summary: 'Delete Part' })
