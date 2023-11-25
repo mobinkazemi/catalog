@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document, ObjectId } from 'mongoose';
 import { ObjectIdOrString, ObjectIdType } from 'src/common/types/types';
 import { Base } from '../../database/schema/base.schema';
+import { UI_Defaults, UI_Types_Enum } from '../defaults/ui.defaults';
 import { addTemplateHooks } from '../hook/templates.hooks';
 
 export type TemplateDocument = Document & Template;
@@ -156,11 +157,6 @@ export class About {
   twitter?: string;
 }
 
-const UI_Defaults = {
-  buttonOfVitrine: 'مشاهده ویترین',
-  buttonOfAbout: 'درباره ما',
-  textOfPartDesc: 'توضیحات',
-};
 export class UI {
   @ApiProperty({ type: String })
   @Prop({
@@ -182,6 +178,14 @@ export class UI {
     default: UI_Defaults.textOfPartDesc,
   })
   textOfPartDesc?: String;
+
+  @ApiProperty({ type: String, enum: UI_Types_Enum })
+  @Prop({
+    type: String,
+    enum: UI_Types_Enum,
+    default: UI_Types_Enum.FURNITURE,
+  })
+  type?: String;
 }
 
 @Schema({ id: true, timestamps: true })
